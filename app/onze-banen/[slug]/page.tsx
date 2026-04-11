@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Images } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { RichText } from '@/components/ui/RichText'
 import { getAllTracks, getTrackBySlug } from '@/lib/contentful/queries'
 import type { Document } from '@contentful/rich-text-types'
+import type { ContentfulImage } from '@/lib/contentful/types'
 
 export const revalidate = 1
 
@@ -59,9 +61,22 @@ export default async function TrackDetailPage({ params }: Props) {
       </div>
 
       {/* Hero */}
-      <section className="bg-[#1a1c1c] text-white py-20 relative overflow-hidden">
+      <section className="bg-[#1a1c1c] text-white relative overflow-hidden">
+        {/* Cover afbeelding als hero-achtergrond */}
+        {track.coverImage && (
+          <div className="absolute inset-0">
+            <Image
+              src={`https:${(track.coverImage as ContentfulImage).fields.file.url}?w=1600&h=700&fit=fill&f=center`}
+              alt={track.name}
+              fill
+              priority
+              className="object-cover opacity-25"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#1a1c1c] via-[#1a1c1c]/80 to-transparent" />
+          </div>
+        )}
         <div className="absolute top-0 right-0 w-1/4 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/4" />
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 py-20">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-0.5 bg-[#cc0000]" />
             <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
@@ -144,6 +159,57 @@ export default async function TrackDetailPage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      {/* Fotogalerij */}
+      {track.images && (track.images as ContentfulImage[]).length > 0 && (
+        <section className="bg-[#f3f3f3] py-16">
+          <div className="max-w-7xl mx-auto px-6 md:px-8">
+            <div className="flex items-center gap-3 mb-8">
+              <Images size={18} className="text-[#cc0000]" />
+              <h2
+                className="font-black text-2xl tracking-tight text-[#1a1c1c]"
+                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+              >
+                Fotogalerij
+              </h2>
+              <span className="text-sm text-[#926e69] font-bold ml-1">
+                {(track.images as ContentfulImage[]).length} foto&apos;s
+              </span>
+            </div>
+
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
+              {(track.images as ContentfulImage[]).map((img, i) => {
+                const url = `https:${img.fields.file.url}?w=900&fm=webp&q=80`
+                const w = img.fields.file.details.image?.width ?? 900
+                const h = img.fields.file.details.image?.height ?? 600
+
+                return (
+                  <div
+                    key={i}
+                    className="group relative overflow-hidden break-inside-avoid bg-[#e2e2e2]"
+                  >
+                    <Image
+                      src={url}
+                      alt={img.fields.title || `${track.name} foto ${i + 1}`}
+                      width={w}
+                      height={h}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    {/* Rood accent bij hover */}
+                    <div className="absolute inset-0 border-2 border-[#cc0000] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                    {img.fields.description && (
+                      <div className="absolute bottom-0 left-0 right-0 bg-[#1a1c1c]/80 px-4 py-2 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        <p className="text-xs text-white/80">{img.fields.description}</p>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Back CTA */}
       <section className="bg-[#f3f3f3] py-12">

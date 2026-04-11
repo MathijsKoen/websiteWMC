@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     'Kom naar de WMC Modelspoor Beurs 2026 in Noord-Scharwoude. Bewonder spectaculaire banen van clubs uit heel Nederland. Gratis toegang voor kinderen.',
 }
 
-export const revalidate = 3600
+export const revalidate = 1
 
 // ─── Pas hier de beurs-details aan zodra ze bekend zijn ────────────────────
 const BEURS = {

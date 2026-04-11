@@ -8,7 +8,7 @@ import { RichText } from '@/components/ui/RichText'
 import { getAllTracks, getTrackBySlug } from '@/lib/contentful/queries'
 import type { Document } from '@contentful/rich-text-types'
 
-export const revalidate = 3600
+export const revalidate = 1
 
 interface Props {
   params: Promise<{ slug: string }>

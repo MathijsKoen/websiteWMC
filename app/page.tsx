@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/Badge'
 import { getAllTracks, getUpcomingEvents, getLatestNews } from '@/lib/contentful/queries'
 import type { AgendaEvent } from '@/lib/contentful/types'
 
-export const revalidate = 3600
+export const revalidate = 1
 
 type EventCategory = AgendaEvent['category']
 

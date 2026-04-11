@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { Calendar } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowRight, Calendar } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { getAllNews } from '@/lib/contentful/queries'
 
@@ -47,35 +48,40 @@ export default async function NieuwsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-[#e2e2e2]">
               {articles.map((article) => (
-                <article
-                  key={article.id}
-                  className="bg-white p-8 border-l-4 border-[#cc0000] flex flex-col gap-4"
-                >
-                  <div className="flex items-center gap-3">
-                    {article.category && (
-                      <Badge variant="primary">{article.category}</Badge>
-                    )}
-                    <time
-                      dateTime={article.publishedAt}
-                      className="text-xs text-[#926e69] flex items-center gap-1"
-                    >
-                      <Calendar size={12} />
-                      {new Date(article.publishedAt).toLocaleDateString('nl-NL', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                      })}
-                    </time>
-                  </div>
-                  <h2
-                    className="font-black text-2xl tracking-tight text-[#1a1c1c]"
-                    style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                <article key={article.id}>
+                  <Link
+                    href={`/nieuws/${article.slug}`}
+                    className="group bg-white p-8 border-l-4 border-[#cc0000] flex flex-col gap-4 h-full hover:bg-[#fafafa] transition-colors"
                   >
-                    {article.title}
-                  </h2>
-                  <p className="text-[#4d4c4c] text-sm leading-relaxed flex-1">
-                    {article.summary}
-                  </p>
+                    <div className="flex items-center gap-3">
+                      {article.category && (
+                        <Badge variant="primary">{article.category}</Badge>
+                      )}
+                      <time
+                        dateTime={article.publishedAt}
+                        className="text-xs text-[#926e69] flex items-center gap-1"
+                      >
+                        <Calendar size={12} />
+                        {new Date(article.publishedAt).toLocaleDateString('nl-NL', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                        })}
+                      </time>
+                    </div>
+                    <h2
+                      className="font-black text-2xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors"
+                      style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                    >
+                      {article.title}
+                    </h2>
+                    <p className="text-[#4d4c4c] text-sm leading-relaxed flex-1">
+                      {article.summary}
+                    </p>
+                    <span className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-widest text-[#cc0000] group-hover:gap-2 transition-all">
+                      Lees meer <ArrowRight size={12} />
+                    </span>
+                  </Link>
                 </article>
               ))}
             </div>

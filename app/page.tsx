@@ -400,7 +400,10 @@ export default async function HomePage() {
             <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#e2e2e2]">
               {news.map((article) => (
                 <StaggerItem key={article.id}>
-                  <article className="bg-white p-8 flex flex-col gap-3 border-l-4 border-[#cc0000] h-full">
+                  <Link
+                    href={`/nieuws/${article.slug}`}
+                    className="group bg-white p-8 flex flex-col gap-3 border-l-4 border-[#cc0000] h-full hover:bg-[#fafafa] transition-colors"
+                  >
                     <div className="flex items-center gap-2 flex-wrap">
                       {article.category && <Badge variant="primary">{article.category}</Badge>}
                       <time className="text-xs text-[#926e69]">
@@ -410,13 +413,16 @@ export default async function HomePage() {
                       </time>
                     </div>
                     <h3
-                      className="font-black text-xl tracking-tight text-[#1a1c1c]"
+                      className="font-black text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors"
                       style={{ fontFamily: 'Space Grotesk, sans-serif' }}
                     >
                       {article.title}
                     </h3>
                     <p className="text-sm text-[#4d4c4c] leading-relaxed flex-1">{article.summary}</p>
-                  </article>
+                    <span className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-widest text-[#cc0000] group-hover:gap-2 transition-all">
+                      Lees meer <ArrowRight size={12} />
+                    </span>
+                  </Link>
                 </StaggerItem>
               ))}
             </StaggerContainer>

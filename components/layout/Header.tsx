@@ -1,9 +1,10 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { Menu, X, Train } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -24,22 +25,15 @@ export function Header() {
         <div className="flex items-center justify-between h-20">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative w-10 h-10 bg-[#cc0000] flex items-center justify-center overflow-hidden">
-              <div className="absolute inset-0 bg-[#9e0000] skew-15" />
-              <Train className="relative z-10 text-white" size={20} strokeWidth={2.5} />
-            </div>
-            <div className="flex flex-col leading-none">
-              <span
-                className="font-headline font-black text-xl tracking-tighter text-[#cc0000] group-hover:text-[#9e0000] transition-colors"
-                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-              >
-                De WMC
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69]">
-                Modelspoor Club
-              </span>
-            </div>
+          <Link href="/" className="flex items-center group">
+            <Image
+              src="/logo-wmc.png"
+              alt="De WMC — Westfriese Modelspoor Club"
+              width={160}
+              height={56}
+              className="h-14 w-auto object-contain transition-opacity group-hover:opacity-70"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}

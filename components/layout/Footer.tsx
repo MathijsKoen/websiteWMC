@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { Train, Mail, MapPin, Clock } from 'lucide-react'
+import Image from 'next/image'
+import { Mail, MapPin, Clock } from 'lucide-react'
 
 const footerLinks = {
   club: [
@@ -25,22 +26,14 @@ export function Footer() {
 
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-3 group mb-6">
-              <div className="relative w-10 h-10 bg-[#cc0000] flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-[#9e0000] skew-15" />
-                <Train className="relative z-10 text-white" size={20} strokeWidth={2.5} />
-              </div>
-              <div className="flex flex-col leading-none">
-                <span
-                  className="font-headline font-black text-xl tracking-tighter text-white"
-                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                >
-                  De WMC
-                </span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69]">
-                  Westfriese Modelspoor Club
-                </span>
-              </div>
+            <Link href="/" className="inline-flex mb-6 group">
+              <Image
+                src="/logo-wmc.png"
+                alt="De WMC — Westfriese Modelspoor Club"
+                width={160}
+                height={56}
+                className="h-14 w-auto object-contain brightness-0 invert transition-opacity group-hover:opacity-70"
+              />
             </Link>
 
             <p className="text-[#e8e8e8]/70 text-sm leading-relaxed max-w-sm mb-6">

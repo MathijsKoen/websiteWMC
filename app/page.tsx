@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, Train, Calendar, MapPin, Clock, ChevronRight } from 'lucide-react'
+import { ArrowRight, Train, MapPin, Clock, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { getAllTracks, getUpcomingEvents, getLatestNews } from '@/lib/contentful/queries'
@@ -16,25 +16,28 @@ const categoryLabels: Record<EventCategory, string> = {
   overig: 'Overig',
 }
 
-const categoryBadgeVariant: Record<EventCategory, 'primary' | 'secondary' | 'default' | 'outline'> = {
-  beurs: 'primary',
-  clubavond: 'default',
-  opendag: 'secondary',
-  overig: 'outline',
+const categoryAccent: Record<EventCategory, string> = {
+  beurs: 'bg-[#cc0000]',
+  clubavond: 'bg-[#4d4c4c]',
+  opendag: 'bg-[#0058bb]',
+  overig: 'bg-[#926e69]',
 }
 
-function formatDate(dateStr: string): string {
+function parseDateParts(dateStr: string): { day: string; month: string; year: string } | null {
   try {
     const d = new Date(dateStr)
-    if (isNaN(d.getTime())) return dateStr
-    return d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })
+    if (isNaN(d.getTime())) return null
+    return {
+      day: d.toLocaleDateString('nl-NL', { day: 'numeric' }),
+      month: d.toLocaleDateString('nl-NL', { month: 'short' }).replace('.', '').toUpperCase(),
+      year: d.toLocaleDateString('nl-NL', { year: 'numeric' }),
+    }
   } catch {
-    return dateStr
+    return null
   }
 }
 
 export default async function HomePage() {
-  // Parallel fetchen voor snelheid
   const [tracks, events, news] = await Promise.all([
     getAllTracks(),
     getUpcomingEvents(4),
@@ -45,26 +48,22 @@ export default async function HomePage() {
     <>
       {/* ===== HERO ===== */}
       <section className="relative bg-[#1a1c1c] text-white overflow-hidden min-h-[85vh] flex items-center">
+        {/* Grid achtergrond */}
         <div
           className="absolute inset-0 opacity-5"
           style={{
             backgroundImage:
-              'repeating-linear-gradient(0deg, #fff 0, #fff 1px, transparent 0, transparent 50%), repeating-linear-gradient(90deg, #fff 0, #fff 1px, transparent 0, transparent 50%)',
+              'repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 0,transparent 50%),repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 0,transparent 50%)',
             backgroundSize: '40px 40px',
           }}
         />
+        {/* Diagonaal rood accent */}
         <div className="absolute top-0 right-0 w-1/3 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/4" />
         <div className="absolute bottom-0 left-1/4 w-1 h-3/4 bg-[#cc0000]" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 py-24">
           <div className="max-w-3xl">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-0.5 bg-[#cc0000]" />
-              <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                Opgericht 1998 — Noord-Scharwoude
-              </span>
-            </div>
-
+            {/* Headline */}
             <h1
               className="font-black text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-none mb-8"
               style={{ fontFamily: 'Space Grotesk, sans-serif' }}
@@ -77,112 +76,175 @@ export default async function HomePage() {
             </h1>
 
             <p className="text-lg md:text-xl text-white/70 leading-relaxed max-w-xl mb-10">
-              Een passie voor modeltreinen. Elke vrijdagavond bouwen en rijden onze leden
-              aan {tracks.length > 0 ? tracks.length : 'zes'} unieke banen — van N-schaal tot het imposante 0-schaal.
+              Wij bieden onderdak aan modelspoorbouwers van alle schalen. Elke vrijdagavond
+              werken onze leden samen aan {tracks.length > 0 ? tracks.length : 'zes'} unieke banen in Noord-Scharwoude.
             </p>
 
+            {/* CTA buttons */}
             <div className="flex flex-wrap gap-4">
-              <Button href="/onze-banen" size="lg" skewed>
-                <span>Bekijk onze banen</span>
+              <Button href="/contact" size="lg" skewed>
+                <span>Wordt lid</span>
                 <ArrowRight size={18} />
               </Button>
               <Button href="/over-ons" variant="ghost" size="lg">
                 Over de club
               </Button>
             </div>
-
-            <div className="flex flex-wrap gap-8 mt-16 pt-8 border-t border-white/10">
-              {[
-                { value: '1998', label: 'Opgericht' },
-                { value: String(tracks.length || 6), label: 'Actieve banen' },
-                { value: 'Vr.', label: 'Clubavond' },
-                { value: '€175', label: 'Contributie/jaar' },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <div
-                    className="text-3xl font-black text-[#cc0000] tracking-tighter"
-                    style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                  >
-                    {stat.value}
-                  </div>
-                  <div className="text-xs font-bold uppercase tracking-widest text-white/40 mt-1">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
-
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-[#f9f9f9] clip-diagonal-bottom" />
       </section>
 
-      {/* ===== QUICK INFO ===== */}
-      <section className="bg-[#f9f9f9] py-24">
+      {/* ===== AGENDA ===== */}
+      <section className="bg-white py-20 border-b border-[#e2e2e2]">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-[#e2e2e2]">
-            {[
-              {
-                icon: <MapPin size={20} />,
-                title: 'Locatie',
-                body: 'De Mossel 23e\n1723 HX Noord-Scharwoude',
-              },
-              {
-                icon: <Clock size={20} />,
-                title: 'Openingstijden',
-                body: 'Vrijdagavond\n19:30 – 22:00 uur',
-              },
-              {
-                icon: <Train size={20} />,
-                title: 'Lid worden',
-                body: 'Contributie 2025\n€175,— per jaar',
-                cta: { label: 'Contact opnemen', href: '/contact' },
-              },
-            ].map((item, i) => (
-              <div
-                key={item.title}
-                className={[
-                  'p-8 bg-white flex flex-col gap-4',
-                  i < 2 ? 'border-b md:border-b-0 md:border-r border-[#e2e2e2]' : '',
-                ].join(' ')}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-[#cc0000] flex items-center justify-center text-white shrink-0">
-                    {item.icon}
-                  </div>
-                  <h3
-                    className="font-black text-sm uppercase tracking-widest text-[#1a1c1c]"
-                    style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                  >
-                    {item.title}
-                  </h3>
-                </div>
-                <p className="text-[#4d4c4c] text-sm leading-relaxed whitespace-pre-line">{item.body}</p>
-                {item.cta && (
-                  <Link
-                    href={item.cta.href}
-                    className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-widest text-[#cc0000] hover:text-[#9e0000] transition-colors mt-auto"
-                  >
-                    {item.cta.label}
-                    <ChevronRight size={14} />
-                  </Link>
-                )}
+          {/* Header */}
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-8 h-0.5 bg-[#cc0000]" />
+                <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
+                  Aankomende evenementen
+                </span>
               </div>
-            ))}
+              <h2
+                className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]"
+                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+              >
+                Agenda
+              </h2>
+            </div>
+            <Link
+              href="/agenda"
+              className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-[#cc0000] hover:text-[#9e0000] transition-colors"
+            >
+              Volledige agenda
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+
+          {/* Event kaarten */}
+          {events.length === 0 ? (
+            <p className="text-[#926e69] text-sm">Geen aankomende evenementen.</p>
+          ) : (
+            <div className="flex flex-col divide-y divide-[#e2e2e2] border border-[#e2e2e2]">
+              {events.map((event) => {
+                const dateParts = parseDateParts(event.date)
+                const isPublic = event.isPublic
+
+                return (
+                  <div
+                    key={event.id}
+                    className="flex items-stretch group hover:bg-[#f9f9f9] transition-colors"
+                  >
+                    {/* Datum blok */}
+                    <div className={`${categoryAccent[event.category]} w-20 md:w-24 shrink-0 flex flex-col items-center justify-center py-6 px-2`}>
+                      {dateParts ? (
+                        <>
+                          <span
+                            className="text-white font-black text-3xl md:text-4xl leading-none"
+                            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                          >
+                            {dateParts.day}
+                          </span>
+                          <span className="text-white/80 text-[10px] font-bold uppercase tracking-widest mt-1">
+                            {dateParts.month}
+                          </span>
+                          <span className="text-white/50 text-[9px] font-bold mt-0.5">
+                            {dateParts.year}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-white text-xs font-bold uppercase tracking-widest text-center leading-tight px-1">
+                          {event.date}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Inhoud */}
+                    <div className="flex-1 px-6 py-5 flex flex-col justify-center">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69]">
+                          {categoryLabels[event.category]}
+                        </span>
+                        {!isPublic && (
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69] border border-[#e2e2e2] px-1.5 py-0.5">
+                            Leden
+                          </span>
+                        )}
+                      </div>
+                      <h3
+                        className="font-black text-lg md:text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors leading-tight"
+                        style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                      >
+                        {event.title}
+                      </h3>
+                      <div className="flex flex-wrap gap-4 mt-2 text-sm text-[#926e69]">
+                        <span className="flex items-center gap-1.5">
+                          <Clock size={13} />
+                          {event.startTime}{event.endTime ? ` – ${event.endTime}` : ''}
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <MapPin size={13} />
+                          {event.location}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Prijs */}
+                    <div className="hidden sm:flex items-center pr-6 shrink-0">
+                      {event.price == null ? (
+                        <span className="text-xs font-bold text-[#926e69] uppercase tracking-widest">Alleen leden</span>
+                      ) : event.price === 0 ? (
+                        <span
+                          className="font-black text-lg text-green-600"
+                          style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                        >
+                          Gratis
+                        </span>
+                      ) : (
+                        <span
+                          className="font-black text-xl text-[#1a1c1c]"
+                          style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                        >
+                          € {event.price},—
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Pijl */}
+                    <div className="hidden md:flex items-center pr-6 shrink-0">
+                      <ChevronRight
+                        size={18}
+                        className="text-[#e2e2e2] group-hover:text-[#cc0000] group-hover:translate-x-1 transition-all"
+                      />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Mobile link */}
+          <div className="mt-6 md:hidden">
+            <Button href="/agenda" variant="secondary" className="w-full justify-center">
+              Volledige agenda
+              <ArrowRight size={16} />
+            </Button>
           </div>
         </div>
       </section>
 
       {/* ===== ONZE BANEN ===== */}
       {tracks.length > 0 && (
-        <section className="bg-[#f3f3f3] py-24">
+        <section className="bg-[#f3f3f3] py-20">
           <div className="max-w-7xl mx-auto px-6 md:px-8">
-            <div className="flex items-end justify-between mb-12">
+            {/* Header */}
+            <div className="flex items-end justify-between mb-10">
               <div>
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-3">
                   <div className="w-8 h-0.5 bg-[#cc0000]" />
                   <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                    {tracks.length} actieve groepen
+                    {tracks.length} groepen
                   </span>
                 </div>
                 <h2
@@ -192,145 +254,76 @@ export default async function HomePage() {
                   Onze Banen
                 </h2>
               </div>
-              <Button href="/onze-banen" variant="ghost" className="hidden md:inline-flex">
-                Alle banen
+              <Link
+                href="/onze-banen"
+                className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-[#cc0000] hover:text-[#9e0000] transition-colors"
+              >
+                Meer info
                 <ArrowRight size={16} />
-              </Button>
+              </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-[#e2e2e2]">
-              {tracks.map((track) => (
+            {/* Compacte lijst */}
+            <div className="bg-white border border-[#e2e2e2] divide-y divide-[#e2e2e2]">
+              {tracks.map((track, i) => (
                 <Link
                   key={track.slug}
                   href={`/onze-banen/${track.slug}`}
-                  className="group bg-white p-8 flex flex-col gap-4 hover:bg-[#cc0000]/5 transition-colors duration-200"
+                  className="group flex items-center gap-4 md:gap-6 px-6 py-5 hover:bg-[#cc0000]/5 transition-colors"
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                        {track.scale}
-                      </span>
-                      <h3
-                        className="font-black text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors"
-                        style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                      >
-                        {track.name}
-                      </h3>
-                    </div>
-                    {track.status && (
-                      <div className="flex items-center gap-1.5">
-                        <span
-                          className={[
-                            'w-2 h-2 rounded-full',
-                            track.status === 'Actief' ? 'bg-green-500' : 'bg-amber-400',
-                          ].join(' ')}
-                        />
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69]">
-                          {track.status}
-                        </span>
-                      </div>
-                    )}
+                  {/* Volgnummer */}
+                  <span
+                    className="text-[#e2e2e2] font-black text-xl w-6 shrink-0 select-none"
+                    style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                  >
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+
+                  {/* Naam */}
+                  <div className="flex-1 min-w-0">
+                    <span
+                      className="font-black text-lg text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors block truncate"
+                      style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                    >
+                      {track.name}
+                    </span>
+                    <span className="text-xs text-[#926e69]">{track.groupName}</span>
                   </div>
 
-                  <p className="text-sm text-[#4d4c4c] leading-relaxed flex-1">
-                    {track.shortDescription}
-                  </p>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-[#e8e8e8]">
+                  {/* Badges — verborgen op mobile */}
+                  <div className="hidden sm:flex items-center gap-2 shrink-0">
+                    <Badge>{track.scale}</Badge>
                     <Badge>{track.system}</Badge>
-                    <ChevronRight
-                      size={16}
-                      className="text-[#926e69] group-hover:text-[#cc0000] group-hover:translate-x-1 transition-all"
-                    />
                   </div>
+
+                  {/* Status dot */}
+                  {track.status && (
+                    <div className="hidden md:flex items-center gap-1.5 shrink-0 w-20">
+                      <span
+                        className={[
+                          'w-1.5 h-1.5 rounded-full shrink-0',
+                          track.status === 'Actief' ? 'bg-green-500' : 'bg-amber-400',
+                        ].join(' ')}
+                      />
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69]">
+                        {track.status}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Pijl */}
+                  <ChevronRight
+                    size={18}
+                    className="text-[#e2e2e2] group-hover:text-[#cc0000] group-hover:translate-x-1 transition-all shrink-0"
+                  />
                 </Link>
               ))}
             </div>
 
+            {/* Mobile link */}
             <div className="mt-6 md:hidden">
               <Button href="/onze-banen" variant="secondary" className="w-full justify-center">
-                Alle banen bekijken
-                <ArrowRight size={16} />
-              </Button>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ===== AGENDA ===== */}
-      {events.length > 0 && (
-        <section className="bg-[#1a1c1c] py-24 text-white">
-          <div className="max-w-7xl mx-auto px-6 md:px-8">
-            <div className="flex items-end justify-between mb-12">
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-0.5 bg-[#cc0000]" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                    Aankomende evenementen
-                  </span>
-                </div>
-                <h2
-                  className="font-black text-4xl md:text-5xl tracking-tighter"
-                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                >
-                  Agenda
-                </h2>
-              </div>
-              <Button href="/agenda" variant="ghost" className="hidden md:inline-flex !text-white hover:!text-[#cc0000]">
-                Volledige agenda
-                <ArrowRight size={16} />
-              </Button>
-            </div>
-
-            <div className="flex flex-col gap-px bg-white/10">
-              {events.map((event) => (
-                <div
-                  key={event.id}
-                  className="bg-[#1a1c1c] p-6 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-white/5 transition-colors group"
-                >
-                  <div className="sm:w-28 shrink-0">
-                    <Badge variant={categoryBadgeVariant[event.category]}>
-                      {categoryLabels[event.category]}
-                    </Badge>
-                  </div>
-                  <div className="flex-1">
-                    <h3
-                      className="font-black text-lg tracking-tight group-hover:text-[#cc0000] transition-colors"
-                      style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                    >
-                      {event.title}
-                    </h3>
-                    <div className="flex flex-wrap gap-4 mt-1 text-sm text-white/50">
-                      <span className="flex items-center gap-1">
-                        <Calendar size={12} />
-                        {formatDate(event.date)}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock size={12} />
-                        {event.startTime}{event.endTime ? ` – ${event.endTime}` : ''}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MapPin size={12} />
-                        {event.location}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="sm:w-24 text-right shrink-0">
-                    {event.price == null ? (
-                      <span className="text-xs font-bold text-white/30 uppercase tracking-widest">Leden</span>
-                    ) : event.price === 0 ? (
-                      <span className="text-sm font-bold text-green-400">Gratis</span>
-                    ) : (
-                      <span className="text-sm font-bold text-white">€ {event.price},—</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8 md:hidden">
-              <Button href="/agenda" className="w-full justify-center">
-                Volledige agenda
+                Meer over onze banen
                 <ArrowRight size={16} />
               </Button>
             </div>
@@ -340,11 +333,11 @@ export default async function HomePage() {
 
       {/* ===== NIEUWS ===== */}
       {news.length > 0 && (
-        <section className="bg-[#f9f9f9] py-24">
+        <section className="bg-white py-20 border-t border-[#e2e2e2]">
           <div className="max-w-7xl mx-auto px-6 md:px-8">
-            <div className="flex items-end justify-between mb-12">
+            <div className="flex items-end justify-between mb-10">
               <div>
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-3">
                   <div className="w-8 h-0.5 bg-[#cc0000]" />
                   <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
                     Laatste updates
@@ -357,16 +350,19 @@ export default async function HomePage() {
                   Nieuws
                 </h2>
               </div>
-              <Button href="/nieuws" variant="ghost" className="hidden md:inline-flex">
+              <Link
+                href="/nieuws"
+                className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-[#cc0000] hover:text-[#9e0000] transition-colors"
+              >
                 Alle berichten
                 <ArrowRight size={16} />
-              </Button>
+              </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#e2e2e2]">
               {news.map((article) => (
-                <article key={article.id} className="bg-white p-8 flex flex-col gap-4 border-l-4 border-[#cc0000]">
-                  <div className="flex items-center gap-2">
+                <article key={article.id} className="bg-white p-8 flex flex-col gap-3 border-l-4 border-[#cc0000]">
+                  <div className="flex items-center gap-2 flex-wrap">
                     {article.category && <Badge variant="primary">{article.category}</Badge>}
                     <time className="text-xs text-[#926e69]">
                       {new Date(article.publishedAt).toLocaleDateString('nl-NL', {
@@ -388,12 +384,12 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ===== CTA ===== */}
+      {/* ===== CTA — LID WORDEN ===== */}
       <section className="bg-[#cc0000] py-20 overflow-hidden relative">
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: 'repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)',
+            backgroundImage: 'repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%)',
             backgroundSize: '20px 20px',
           }}
         />
@@ -414,7 +410,11 @@ export default async function HomePage() {
               <span>Neem contact op</span>
               <ArrowRight size={18} />
             </Button>
-            <Button href="/over-ons" size="lg" className="!bg-white/10 !text-white hover:!bg-white/20 border border-white/30">
+            <Button
+              href="/over-ons"
+              size="lg"
+              className="!bg-white/10 !text-white hover:!bg-white/20 border border-white/30"
+            >
               Meer over de club
             </Button>
           </div>

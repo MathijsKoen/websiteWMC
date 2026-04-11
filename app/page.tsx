@@ -1,8 +1,10 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight, Train, MapPin, Clock, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/ScrollReveal'
+import { TiltCard } from '@/components/ui/TiltCard'
 import { getAllTracks, getUpcomingEvents, getLatestNews } from '@/lib/contentful/queries'
 import type { AgendaEvent } from '@/lib/contentful/types'
 
@@ -228,19 +230,29 @@ export default async function HomePage() {
 
       {/* ===== ONZE BANEN ===== */}
       {tracks.length > 0 && (
-        <section className="bg-[#f3f3f3] py-20">
-          <div className="max-w-7xl mx-auto px-6 md:px-8">
+        <section className="bg-[#1a1c1c] py-20 overflow-hidden relative">
+          {/* Subtiele achtergrond grid */}
+          <div
+            className="absolute inset-0 opacity-[0.04]"
+            style={{
+              backgroundImage:
+                'repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 0,transparent 50%),repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 0,transparent 50%)',
+              backgroundSize: '60px 60px',
+            }}
+          />
+
+          <div className="relative max-w-7xl mx-auto px-6 md:px-8">
             <ScrollReveal>
-              <div className="flex items-end justify-between mb-10">
+              <div className="flex items-end justify-between mb-12">
                 <div>
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-8 h-0.5 bg-[#cc0000]" />
                     <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                      {tracks.length} groepen
+                      {tracks.length} actieve groepen
                     </span>
                   </div>
                   <h2
-                    className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]"
+                    className="font-black text-4xl md:text-5xl tracking-tighter text-white"
                     style={{ fontFamily: 'Space Grotesk, sans-serif' }}
                   >
                     Onze Banen
@@ -248,66 +260,107 @@ export default async function HomePage() {
                 </div>
                 <Link
                   href="/onze-banen"
-                  className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-[#cc0000] hover:text-[#9e0000] transition-colors"
+                  className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-white/50 hover:text-white transition-colors"
                 >
-                  Meer info
+                  Alle banen
                   <ArrowRight size={16} />
                 </Link>
               </div>
             </ScrollReveal>
 
-            <StaggerContainer className="bg-white border border-[#e2e2e2] divide-y divide-[#e2e2e2]">
-              {tracks.map((track, i) => (
-                <StaggerItem key={track.slug} direction="none">
-                  <Link
-                    href={`/onze-banen/${track.slug}`}
-                    className="group flex items-center gap-4 md:gap-6 px-6 py-5 hover:bg-[#cc0000]/5 transition-colors"
-                  >
-                    <span
-                      className="text-[#e2e2e2] font-black text-xl w-6 shrink-0 select-none"
-                      style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                    >
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <span
-                        className="font-black text-lg text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors block truncate"
-                        style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+            {/* Kaarten grid */}
+            <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {tracks.map((track, i) => {
+                const imageUrl = track.coverImage?.fields?.file?.url
+                  ? `https:${track.coverImage.fields.file.url}?w=600&h=400&fit=fill&f=center`
+                  : null
+
+                return (
+                  <StaggerItem key={track.slug}>
+                    <TiltCard className="h-full" intensity={5}>
+                      <Link
+                        href={`/onze-banen/${track.slug}`}
+                        className="group relative flex flex-col overflow-hidden bg-white/5 border border-white/10 hover:border-[#cc0000]/60 transition-colors duration-300 h-full"
                       >
-                        {track.name}
-                      </span>
-                      <span className="text-xs text-[#926e69]">{track.groupName}</span>
-                    </div>
-                    <div className="hidden sm:flex items-center gap-2 shrink-0">
-                      <Badge>{track.scale}</Badge>
-                      <Badge>{track.system}</Badge>
-                    </div>
-                    {track.status && (
-                      <div className="hidden md:flex items-center gap-1.5 shrink-0 w-20">
-                        <span
-                          className={[
-                            'w-1.5 h-1.5 rounded-full shrink-0',
-                            track.status === 'Actief' ? 'bg-green-500' : 'bg-amber-400',
-                          ].join(' ')}
-                        />
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69]">
-                          {track.status}
-                        </span>
-                      </div>
-                    )}
-                    <ChevronRight
-                      size={18}
-                      className="text-[#e2e2e2] group-hover:text-[#cc0000] group-hover:translate-x-1 transition-all shrink-0"
-                    />
-                  </Link>
-                </StaggerItem>
-              ))}
+                        {/* Afbeelding of decoratief nummer */}
+                        <div className="relative h-44 overflow-hidden bg-[#111213]">
+                          {imageUrl ? (
+                            <Image
+                              src={imageUrl}
+                              alt={track.name}
+                              fill
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                              className="object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 flex items-end p-4">
+                              <span
+                                className="font-black text-[80px] leading-none text-white/5 select-none"
+                                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                              >
+                                {String(i + 1).padStart(2, '0')}
+                              </span>
+                            </div>
+                          )}
+                          {/* Rood accent streep */}
+                          <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-[#cc0000] group-hover:w-full transition-all duration-500" />
+                          {/* Schaal badge */}
+                          <div className="absolute top-3 left-3">
+                            <span className="bg-[#cc0000] text-white text-[9px] font-black uppercase tracking-widest px-2 py-1">
+                              {track.scale}
+                            </span>
+                          </div>
+                          {/* Status */}
+                          {track.status && (
+                            <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-black/40 px-2 py-1">
+                              <span className={['w-1.5 h-1.5 rounded-full', track.status === 'Actief' ? 'bg-green-400' : 'bg-amber-400'].join(' ')} />
+                              <span className="text-[9px] font-bold uppercase tracking-widest text-white/70">{track.status}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Info */}
+                        <div className="flex flex-col gap-2 p-5 flex-1">
+                          <h3
+                            className="font-black text-lg text-white group-hover:text-[#cc0000] transition-colors leading-tight"
+                            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                          >
+                            {track.name}
+                          </h3>
+                          <p className="text-xs text-white/40 font-medium">{track.groupName}</p>
+
+                          {track.shortDescription && (
+                            <p className="text-sm text-white/50 leading-relaxed flex-1 line-clamp-2 mt-1">
+                              {track.shortDescription}
+                            </p>
+                          )}
+
+                          <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
+                            <div className="flex gap-2">
+                              <Badge variant="outline">{track.system}</Badge>
+                              {track.moduleCount && (
+                                <span className="text-[10px] text-white/30 font-bold self-center">
+                                  {track.moduleCount} modules
+                                </span>
+                              )}
+                            </div>
+                            <ChevronRight
+                              size={16}
+                              className="text-white/20 group-hover:text-[#cc0000] group-hover:translate-x-1 transition-all"
+                            />
+                          </div>
+                        </div>
+                      </Link>
+                    </TiltCard>
+                  </StaggerItem>
+                )
+              })}
             </StaggerContainer>
 
-            <div className="mt-6 md:hidden">
-              <Button href="/onze-banen" variant="secondary" className="w-full justify-center">
-                Meer over onze banen
-                <ArrowRight size={16} />
+            <div className="mt-8 flex justify-center">
+              <Button href="/onze-banen" variant="outline" size="lg" className="!border-white/20 !text-white hover:!bg-white hover:!text-[#1a1c1c]">
+                Bekijk alle banen
+                <ArrowRight size={18} />
               </Button>
             </div>
           </div>

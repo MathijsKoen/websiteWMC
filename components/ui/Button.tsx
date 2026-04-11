@@ -1,5 +1,8 @@
+'use client'
+
 import { type ButtonHTMLAttributes, type AnchorHTMLAttributes } from 'react'
 import Link from 'next/link'
+import { MagneticWrapper } from './MagneticWrapper'
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline'
 type ButtonSize = 'sm' | 'md' | 'lg'
@@ -8,6 +11,7 @@ interface BaseProps {
   variant?: ButtonVariant
   size?: ButtonSize
   skewed?: boolean
+  magnetic?: boolean
 }
 
 interface ButtonProps extends BaseProps, ButtonHTMLAttributes<HTMLButtonElement> {
@@ -37,7 +41,7 @@ const sizeStyles: Record<ButtonSize, string> = {
   lg: 'px-8 py-4 text-lg',
 }
 
-export function Button({ variant = 'primary', size = 'md', skewed = false, className = '', ...props }: Props) {
+export function Button({ variant = 'primary', size = 'md', skewed = false, magnetic = true, className = '', ...props }: Props) {
   const baseStyles = `
     inline-flex items-center justify-center gap-2
     font-headline tracking-tight
@@ -62,19 +66,27 @@ export function Button({ variant = 'primary', size = 'md', skewed = false, class
     (props as ButtonProps).children ?? (props as LinkProps).children
   )
 
+  let element: React.ReactNode
+
   if ('href' in props && props.href !== undefined) {
-    const { href, variant: _v, size: _s, skewed: _sk, children: _c, ...rest } = props as LinkProps
-    return (
+    const { href, variant: _v, size: _s, skewed: _sk, magnetic: _m, children: _c, ...rest } = props as LinkProps
+    element = (
       <Link href={href} className={classes} {...rest}>
         {inner}
       </Link>
     )
+  } else {
+    const { variant: _v, size: _s, skewed: _sk, magnetic: _m, children: _c, ...rest } = props as ButtonProps
+    element = (
+      <button className={classes} {...rest}>
+        {inner}
+      </button>
+    )
   }
 
-  const { variant: _v, size: _s, skewed: _sk, children: _c, ...rest } = props as ButtonProps
-  return (
-    <button className={classes} {...rest}>
-      {inner}
-    </button>
-  )
+  if (magnetic) {
+    return <MagneticWrapper>{element}</MagneticWrapper>
+  }
+
+  return <>{element}</>
 }

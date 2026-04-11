@@ -15,7 +15,7 @@ export function BeursPopup() {
     const alreadyShown = sessionStorage.getItem(SESSION_KEY)
     if (!alreadyShown) {
       // Korte vertraging zodat de pagina eerst laadt
-      const t = setTimeout(() => setVisible(true), 1400)
+      const t = setTimeout(() => setVisible(true), 700)
       return () => clearTimeout(t)
     }
   }, [])

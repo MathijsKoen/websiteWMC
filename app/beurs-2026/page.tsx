@@ -5,6 +5,7 @@ import { MapPin, Clock, Calendar, ExternalLink, Train, ArrowRight, Users } from 
 import { getAllBeursLayouts } from '@/lib/contentful/queries'
 import { Button } from '@/components/ui/Button'
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/ScrollReveal'
+import { TiltCard } from '@/components/ui/TiltCard'
 import type { BeursLayout } from '@/lib/contentful/types'
 
 export const metadata: Metadata = {
@@ -245,7 +246,9 @@ export default async function Beurs2026Page() {
             <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {layouts.map((layout) => (
                 <StaggerItem key={layout.id}>
-                  <LayoutCard layout={layout} />
+                  <TiltCard className="h-full">
+                    <LayoutCard layout={layout} />
+                  </TiltCard>
                 </StaggerItem>
               ))}
             </StaggerContainer>

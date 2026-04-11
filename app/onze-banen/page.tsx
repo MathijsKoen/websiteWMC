@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/ScrollReveal'
+import { TiltCard } from '@/components/ui/TiltCard'
 import { getAllTracks } from '@/lib/contentful/queries'
 
 export const metadata: Metadata = {
@@ -58,9 +59,10 @@ export default async function OnzeBanenPage() {
             <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-px bg-[#e2e2e2]">
               {tracks.map((track) => (
                 <StaggerItem key={track.slug}>
+                <TiltCard className="h-full">
                 <Link
                   href={`/onze-banen/${track.slug}`}
-                  className="group bg-white p-8 flex flex-col gap-6 hover:bg-[#cc0000]/5 transition-colors duration-200 h-full"
+                  className="group bg-white p-8 flex flex-col gap-6 hover:bg-[#cc0000]/5 transition-colors duration-200 h-full block"
                 >
                   {/* Header */}
                   <div className="flex items-start justify-between gap-4">
@@ -131,6 +133,7 @@ export default async function OnzeBanenPage() {
                     </span>
                   </div>
                 </Link>
+                </TiltCard>
                 </StaggerItem>
               ))}
             </StaggerContainer>

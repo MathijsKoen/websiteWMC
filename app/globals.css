@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@theme {
+  /* =============================================
+     WMC DESIGN SYSTEM — Iron Rail
+     ============================================= */
+
+  /* Fonts — verbonden met Next.js font loader CSS vars */
+  --font-headline: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  --font-body: var(--font-inter), 'Inter', sans-serif;
+
+  /* Primary — Railway Red */
+  --color-primary: #cc0000;
+  --color-primary-dark: #9e0000;
+  --color-primary-light: #ff3333;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #ffdad6;
+  --color-on-primary-container: #9e0000;
+
+  /* Secondary — Signal Blue */
+  --color-secondary: #0058bb;
+  --color-secondary-dark: #004494;
+  --color-on-secondary: #ffffff;
+
+  /* Surfaces */
+  --color-surface: #f9f9f9;
+  --color-surface-lowest: #ffffff;
+  --color-surface-low: #f3f3f3;
+  --color-surface-container: #eeeeee;
+  --color-surface-high: #e8e8e8;
+  --color-surface-highest: #e2e2e2;
+  --color-surface-variant: #e2e2e2;
+
+  /* Text / On-Surface */
+  --color-on-surface: #1a1c1c;
+  --color-on-surface-variant: #5e3f3a;
+
+  /* Borders */
+  --color-outline: #926e69;
+  --color-outline-variant: #e8bdb6;
+
+  /* Tertiary / Grays */
+  --color-tertiary: #4d4c4c;
+  --color-tertiary-container: #656464;
+
+  /* Status */
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+
+  /* Inverse (Dark mode base) */
+  --color-inverse-surface: #2f3131;
+  --color-inverse-on-surface: #f1f1f1;
+
+  /* Border Radius — Sharp Precision Principle */
+  --radius-none: 0px;
+  --radius-full: 9999px;
+}
+
+/* =============================================
+   BASE STYLES
+   ============================================= */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-on-surface);
+  background-color: var(--color-surface);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-headline);
+}
+
+/* =============================================
+   UTILITY CLASSES — Design Accents
+   ============================================= */
+
+.skew-15 {
+  transform: skewX(-15deg);
+}
+
+.skew-15-reverse {
+  transform: skewX(15deg);
+}
+
+.clip-diagonal {
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
+}
+
+.clip-diagonal-bottom {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 88%);
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Selection color */
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}

@@ -1,0 +1,35 @@
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# production build
+/build
+
+# env files — NOOIT committen
+.env*.local
+.env
+
+# misc
+.DS_Store
+*.pem
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# claude code memory (lokaal)
+.claude/
+
+# stitchWMC design source (niet nodig in git)
+stitchWMC/
+
+# oude site backup (niet nodig in git)
+HuidigeSiteWMC/

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
-import { ArrowRight, Target, Users, Calendar, Building2 } from 'lucide-react'
+import { ArrowRight, Users, Calendar, Building2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { TimelineReveal } from '@/components/ui/TimelineReveal'
 
 export const metadata: Metadata = {
   title: 'Over ons',
@@ -82,26 +83,15 @@ export default function OverOnsPage() {
             </div>
 
             {/* Timeline */}
-            <div className="border-l-2 border-[#e2e2e2] pl-8 space-y-8">
-              {[
+            <TimelineReveal
+              items={[
                 { year: '1998', event: 'Oprichting van De WMC op 1 maart in Hoorn' },
                 { year: '2017', event: 'Start van de modulaire Ellendam-groep (H0-baan)' },
                 { year: '2020', event: 'Oprichting van de C-Track-groep met landelijk compatibele modules' },
                 { year: '2024', event: 'Contributie vastgesteld op €175,— per jaar' },
                 { year: '2026', event: 'WMC Beurs 2026 gepland' },
-              ].map((item) => (
-                <div key={item.year} className="relative">
-                  <div className="absolute -left-10 top-1 w-4 h-4 bg-[#cc0000]" />
-                  <span
-                    className="text-[#cc0000] font-black text-sm tracking-widest"
-                    style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                  >
-                    {item.year}
-                  </span>
-                  <p className="text-[#4d4c4c] text-sm mt-1">{item.event}</p>
-                </div>
-              ))}
-            </div>
+              ]}
+            />
           </div>
         </div>
       </section>

@@ -15,7 +15,7 @@ interface ScrollRevealProps {
 export function ScrollReveal({
   children,
   delay = 0,
-  duration = 0.55,
+  duration = 0.7,
   direction = 'up',
   className = '',
   amount = 0.15,
@@ -24,8 +24,8 @@ export function ScrollReveal({
     <motion.div
       initial={{
         opacity: 0,
-        y: direction === 'up' ? 32 : 0,
-        x: direction === 'left' ? -32 : direction === 'right' ? 32 : 0,
+        y: direction === 'up' ? 48 : 0,
+        x: direction === 'left' ? -48 : direction === 'right' ? 48 : 0,
       }}
       whileInView={{ opacity: 1, y: 0, x: 0 }}
       viewport={{ once: true, amount }}
@@ -48,8 +48,8 @@ interface StaggerContainerProps {
 export function StaggerContainer({
   children,
   className = '',
-  stagger = 0.08,
-  delayChildren = 0.1,
+  stagger = 0.13,
+  delayChildren = 0.15,
 }: StaggerContainerProps) {
   return (
     <motion.div
@@ -84,14 +84,14 @@ export function StaggerItem({
       variants={{
         hidden: {
           opacity: 0,
-          y: direction === 'up' ? 24 : 0,
-          x: direction === 'left' ? -24 : direction === 'right' ? 24 : 0,
+          y: direction === 'up' ? 36 : 0,
+          x: direction === 'left' ? -36 : direction === 'right' ? 36 : 0,
         },
         visible: {
           opacity: 1,
           y: 0,
           x: 0,
-          transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+          transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
         },
       }}
       className={className}

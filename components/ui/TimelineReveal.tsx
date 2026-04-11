@@ -28,12 +28,12 @@ export function TimelineReveal({ items }: TimelineRevealProps) {
           <motion.div
             key={item.year}
             className="relative"
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -32 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.5 }}
             transition={{
-              duration: 0.5,
-              delay: i * 0.12,
+              duration: 0.65,
+              delay: i * 0.18,
               ease: [0.22, 1, 0.36, 1],
             }}
           >
@@ -44,8 +44,8 @@ export function TimelineReveal({ items }: TimelineRevealProps) {
               whileInView={{ scale: 1 }}
               viewport={{ once: true, amount: 0.5 }}
               transition={{
-                duration: 0.35,
-                delay: i * 0.12 + 0.15,
+                duration: 0.4,
+                delay: i * 0.18 + 0.2,
                 ease: [0.34, 1.56, 0.64, 1],
               }}
             />

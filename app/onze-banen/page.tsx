@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
+import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/ScrollReveal'
 import { getAllTracks } from '@/lib/contentful/queries'
 
 export const metadata: Metadata = {
@@ -28,17 +29,19 @@ export default async function OnzeBanenPage() {
               {tracks.length} actieve groepen
             </span>
           </div>
-          <h1
-            className="font-black text-5xl md:text-6xl tracking-tighter mb-6"
-            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-          >
-            Onze Banen
-          </h1>
-          <p className="text-white/70 text-lg max-w-2xl leading-relaxed">
-            De WMC telt {tracks.length} actieve groepen, elk met hun eigen specialiteit. Van de
-            fijngevoelige N-schaal (1:160) tot de imposante 0-schaal (1:43,5) — voor elk
-            modelspoorenthusiast is er een plek.
-          </p>
+          <ScrollReveal>
+            <h1
+              className="font-black text-5xl md:text-6xl tracking-tighter mb-6"
+              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+            >
+              Onze Banen
+            </h1>
+            <p className="text-white/70 text-lg max-w-2xl leading-relaxed">
+              De WMC telt {tracks.length} actieve groepen, elk met hun eigen specialiteit. Van de
+              fijngevoelige N-schaal (1:160) tot de imposante 0-schaal (1:43,5) — voor elk
+              modelspoorenthusiast is er een plek.
+            </p>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -52,12 +55,12 @@ export default async function OnzeBanenPage() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-[#e2e2e2]">
+            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-px bg-[#e2e2e2]">
               {tracks.map((track) => (
+                <StaggerItem key={track.slug}>
                 <Link
-                  key={track.slug}
                   href={`/onze-banen/${track.slug}`}
-                  className="group bg-white p-8 flex flex-col gap-6 hover:bg-[#cc0000]/5 transition-colors duration-200"
+                  className="group bg-white p-8 flex flex-col gap-6 hover:bg-[#cc0000]/5 transition-colors duration-200 h-full"
                 >
                   {/* Header */}
                   <div className="flex items-start justify-between gap-4">
@@ -128,8 +131,9 @@ export default async function OnzeBanenPage() {
                     </span>
                   </div>
                 </Link>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           )}
         </div>
       </section>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Space_Grotesk, Inter } from 'next/font/google'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { BeursPopup } from '@/components/ui/BeursPopup'
 import { getAllTracks } from '@/lib/contentful/queries'
 import './globals.css'
 
@@ -60,6 +61,7 @@ export default async function RootLayout({
         <Header tracks={tracks.map((track) => ({ slug: track.slug, name: track.name }))} />
         <main className="flex-1 pt-20">{children}</main>
         <Footer />
+        <BeursPopup />
       </body>
     </html>
   )

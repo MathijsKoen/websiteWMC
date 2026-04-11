@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { ArrowRight, Train, MapPin, Clock, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/ScrollReveal'
 import { getAllTracks, getUpcomingEvents, getLatestNews } from '@/lib/contentful/queries'
 import type { AgendaEvent } from '@/lib/contentful/types'
 
@@ -57,39 +58,42 @@ export default async function HomePage() {
             backgroundSize: '40px 40px',
           }}
         />
-        {/* Diagonaal rood accent */}
         <div className="absolute top-0 right-0 w-1/3 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/4" />
         <div className="absolute bottom-0 left-1/4 w-1 h-3/4 bg-[#cc0000]" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 py-24">
           <div className="max-w-3xl">
-            {/* Headline */}
-            <h1
-              className="font-black text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-none mb-8"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            >
-              Westfriese
-              <br />
-              <span className="text-[#cc0000]">Modelspoor</span>
-              <br />
-              Club
-            </h1>
+            <ScrollReveal direction="up" duration={0.7}>
+              <h1
+                className="font-black text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-none mb-8"
+                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+              >
+                Westfriese
+                <br />
+                <span className="text-[#cc0000]">Modelspoor</span>
+                <br />
+                Club
+              </h1>
+            </ScrollReveal>
 
-            <p className="text-lg md:text-xl text-white/70 leading-relaxed max-w-xl mb-10">
-              Wij bieden onderdak aan modelspoorbouwers van alle schalen. Elke vrijdagavond
-              werken onze leden samen aan {tracks.length > 0 ? tracks.length : 'zes'} unieke banen in Noord-Scharwoude.
-            </p>
+            <ScrollReveal delay={0.15} duration={0.6}>
+              <p className="text-lg md:text-xl text-white/70 leading-relaxed max-w-xl mb-10">
+                Wij bieden onderdak aan modelspoorbouwers van alle schalen. Elke vrijdagavond
+                werken onze leden samen aan {tracks.length > 0 ? tracks.length : 'zes'} unieke banen in Noord-Scharwoude.
+              </p>
+            </ScrollReveal>
 
-            {/* CTA buttons */}
-            <div className="flex flex-wrap gap-4">
-              <Button href="/contact" size="lg" skewed>
-                <span>Wordt lid</span>
-                <ArrowRight size={18} />
-              </Button>
-              <Button href="/over-ons" variant="ghost" size="lg">
-                Over de club
-              </Button>
-            </div>
+            <ScrollReveal delay={0.25} duration={0.6}>
+              <div className="flex flex-wrap gap-4">
+                <Button href="/contact" size="lg" skewed>
+                  <span>Wordt lid</span>
+                  <ArrowRight size={18} />
+                </Button>
+                <Button href="/over-ons" variant="ghost" size="lg">
+                  Over de club
+                </Button>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -97,134 +101,122 @@ export default async function HomePage() {
       {/* ===== AGENDA ===== */}
       <section className="bg-white py-20 border-b border-[#e2e2e2]">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          {/* Header */}
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-8 h-0.5 bg-[#cc0000]" />
-                <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                  Aankomende evenementen
-                </span>
+          <ScrollReveal>
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-0.5 bg-[#cc0000]" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
+                    Aankomende evenementen
+                  </span>
+                </div>
+                <h2
+                  className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]"
+                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                >
+                  Agenda
+                </h2>
               </div>
-              <h2
-                className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]"
-                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+              <Link
+                href="/agenda"
+                className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-[#cc0000] hover:text-[#9e0000] transition-colors"
               >
-                Agenda
-              </h2>
+                Volledige agenda
+                <ArrowRight size={16} />
+              </Link>
             </div>
-            <Link
-              href="/agenda"
-              className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-[#cc0000] hover:text-[#9e0000] transition-colors"
-            >
-              Volledige agenda
-              <ArrowRight size={16} />
-            </Link>
-          </div>
+          </ScrollReveal>
 
-          {/* Event kaarten */}
           {events.length === 0 ? (
             <p className="text-[#926e69] text-sm">Geen aankomende evenementen.</p>
           ) : (
-            <div className="flex flex-col divide-y divide-[#e2e2e2] border border-[#e2e2e2]">
+            <StaggerContainer className="flex flex-col divide-y divide-[#e2e2e2] border border-[#e2e2e2]">
               {events.map((event) => {
                 const dateParts = parseDateParts(event.date)
                 const isPublic = event.isPublic
 
                 return (
-                  <div
-                    key={event.id}
-                    className="flex items-stretch group hover:bg-[#f9f9f9] transition-colors"
-                  >
-                    {/* Datum blok */}
-                    <div className={`${categoryAccent[event.category]} w-20 md:w-24 shrink-0 flex flex-col items-center justify-center py-6 px-2`}>
-                      {dateParts ? (
-                        <>
-                          <span
-                            className="text-white font-black text-3xl md:text-4xl leading-none"
-                            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                          >
-                            {dateParts.day}
-                          </span>
-                          <span className="text-white/80 text-[10px] font-bold uppercase tracking-widest mt-1">
-                            {dateParts.month}
-                          </span>
-                          <span className="text-white/50 text-[9px] font-bold mt-0.5">
-                            {dateParts.year}
-                          </span>
-                        </>
-                      ) : (
-                        <span className="text-white text-xs font-bold uppercase tracking-widest text-center leading-tight px-1">
-                          {event.date}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Inhoud */}
-                    <div className="flex-1 px-6 py-5 flex flex-col justify-center">
-                      <div className="flex flex-wrap items-center gap-2 mb-2">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69]">
-                          {categoryLabels[event.category]}
-                        </span>
-                        {!isPublic && (
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69] border border-[#e2e2e2] px-1.5 py-0.5">
-                            Leden
+                  <StaggerItem key={event.id} direction="none">
+                    <div className="flex items-stretch group hover:bg-[#f9f9f9] transition-colors">
+                      <div className={`${categoryAccent[event.category]} w-20 md:w-24 shrink-0 flex flex-col items-center justify-center py-6 px-2`}>
+                        {dateParts ? (
+                          <>
+                            <span
+                              className="text-white font-black text-3xl md:text-4xl leading-none"
+                              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                            >
+                              {dateParts.day}
+                            </span>
+                            <span className="text-white/80 text-[10px] font-bold uppercase tracking-widest mt-1">
+                              {dateParts.month}
+                            </span>
+                            <span className="text-white/50 text-[9px] font-bold mt-0.5">
+                              {dateParts.year}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-white text-xs font-bold uppercase tracking-widest text-center leading-tight px-1">
+                            {event.date}
                           </span>
                         )}
                       </div>
-                      <h3
-                        className="font-black text-lg md:text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors leading-tight"
-                        style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                      >
-                        {event.title}
-                      </h3>
-                      <div className="flex flex-wrap gap-4 mt-2 text-sm text-[#926e69]">
-                        <span className="flex items-center gap-1.5">
-                          <Clock size={13} />
-                          {event.startTime}{event.endTime ? ` – ${event.endTime}` : ''}
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                          <MapPin size={13} />
-                          {event.location}
-                        </span>
+
+                      <div className="flex-1 px-6 py-5 flex flex-col justify-center">
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69]">
+                            {categoryLabels[event.category]}
+                          </span>
+                          {!isPublic && (
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69] border border-[#e2e2e2] px-1.5 py-0.5">
+                              Leden
+                            </span>
+                          )}
+                        </div>
+                        <h3
+                          className="font-black text-lg md:text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors leading-tight"
+                          style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                        >
+                          {event.title}
+                        </h3>
+                        <div className="flex flex-wrap gap-4 mt-2 text-sm text-[#926e69]">
+                          <span className="flex items-center gap-1.5">
+                            <Clock size={13} />
+                            {event.startTime}{event.endTime ? ` – ${event.endTime}` : ''}
+                          </span>
+                          <span className="flex items-center gap-1.5">
+                            <MapPin size={13} />
+                            {event.location}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="hidden sm:flex items-center pr-6 shrink-0">
+                        {event.price == null ? (
+                          <span className="text-xs font-bold text-[#926e69] uppercase tracking-widest">Alleen leden</span>
+                        ) : event.price === 0 ? (
+                          <span className="font-black text-lg text-green-600" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                            Gratis
+                          </span>
+                        ) : (
+                          <span className="font-black text-xl text-[#1a1c1c]" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                            € {event.price},—
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="hidden md:flex items-center pr-6 shrink-0">
+                        <ChevronRight
+                          size={18}
+                          className="text-[#e2e2e2] group-hover:text-[#cc0000] group-hover:translate-x-1 transition-all"
+                        />
                       </div>
                     </div>
-
-                    {/* Prijs */}
-                    <div className="hidden sm:flex items-center pr-6 shrink-0">
-                      {event.price == null ? (
-                        <span className="text-xs font-bold text-[#926e69] uppercase tracking-widest">Alleen leden</span>
-                      ) : event.price === 0 ? (
-                        <span
-                          className="font-black text-lg text-green-600"
-                          style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                        >
-                          Gratis
-                        </span>
-                      ) : (
-                        <span
-                          className="font-black text-xl text-[#1a1c1c]"
-                          style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                        >
-                          € {event.price},—
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Pijl */}
-                    <div className="hidden md:flex items-center pr-6 shrink-0">
-                      <ChevronRight
-                        size={18}
-                        className="text-[#e2e2e2] group-hover:text-[#cc0000] group-hover:translate-x-1 transition-all"
-                      />
-                    </div>
-                  </div>
+                  </StaggerItem>
                 )
               })}
-            </div>
+            </StaggerContainer>
           )}
 
-          {/* Mobile link */}
           <div className="mt-6 md:hidden">
             <Button href="/agenda" variant="secondary" className="w-full justify-center">
               Volledige agenda
@@ -238,89 +230,80 @@ export default async function HomePage() {
       {tracks.length > 0 && (
         <section className="bg-[#f3f3f3] py-20">
           <div className="max-w-7xl mx-auto px-6 md:px-8">
-            {/* Header */}
-            <div className="flex items-end justify-between mb-10">
-              <div>
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-0.5 bg-[#cc0000]" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                    {tracks.length} groepen
-                  </span>
-                </div>
-                <h2
-                  className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]"
-                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                >
-                  Onze Banen
-                </h2>
-              </div>
-              <Link
-                href="/onze-banen"
-                className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-[#cc0000] hover:text-[#9e0000] transition-colors"
-              >
-                Meer info
-                <ArrowRight size={16} />
-              </Link>
-            </div>
-
-            {/* Compacte lijst */}
-            <div className="bg-white border border-[#e2e2e2] divide-y divide-[#e2e2e2]">
-              {tracks.map((track, i) => (
-                <Link
-                  key={track.slug}
-                  href={`/onze-banen/${track.slug}`}
-                  className="group flex items-center gap-4 md:gap-6 px-6 py-5 hover:bg-[#cc0000]/5 transition-colors"
-                >
-                  {/* Volgnummer */}
-                  <span
-                    className="text-[#e2e2e2] font-black text-xl w-6 shrink-0 select-none"
+            <ScrollReveal>
+              <div className="flex items-end justify-between mb-10">
+                <div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-0.5 bg-[#cc0000]" />
+                    <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
+                      {tracks.length} groepen
+                    </span>
+                  </div>
+                  <h2
+                    className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]"
                     style={{ fontFamily: 'Space Grotesk, sans-serif' }}
                   >
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
+                    Onze Banen
+                  </h2>
+                </div>
+                <Link
+                  href="/onze-banen"
+                  className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-[#cc0000] hover:text-[#9e0000] transition-colors"
+                >
+                  Meer info
+                  <ArrowRight size={16} />
+                </Link>
+              </div>
+            </ScrollReveal>
 
-                  {/* Naam */}
-                  <div className="flex-1 min-w-0">
+            <StaggerContainer className="bg-white border border-[#e2e2e2] divide-y divide-[#e2e2e2]">
+              {tracks.map((track, i) => (
+                <StaggerItem key={track.slug} direction="none">
+                  <Link
+                    href={`/onze-banen/${track.slug}`}
+                    className="group flex items-center gap-4 md:gap-6 px-6 py-5 hover:bg-[#cc0000]/5 transition-colors"
+                  >
                     <span
-                      className="font-black text-lg text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors block truncate"
+                      className="text-[#e2e2e2] font-black text-xl w-6 shrink-0 select-none"
                       style={{ fontFamily: 'Space Grotesk, sans-serif' }}
                     >
-                      {track.name}
+                      {String(i + 1).padStart(2, '0')}
                     </span>
-                    <span className="text-xs text-[#926e69]">{track.groupName}</span>
-                  </div>
-
-                  {/* Badges — verborgen op mobile */}
-                  <div className="hidden sm:flex items-center gap-2 shrink-0">
-                    <Badge>{track.scale}</Badge>
-                    <Badge>{track.system}</Badge>
-                  </div>
-
-                  {/* Status dot */}
-                  {track.status && (
-                    <div className="hidden md:flex items-center gap-1.5 shrink-0 w-20">
+                    <div className="flex-1 min-w-0">
                       <span
-                        className={[
-                          'w-1.5 h-1.5 rounded-full shrink-0',
-                          track.status === 'Actief' ? 'bg-green-500' : 'bg-amber-400',
-                        ].join(' ')}
-                      />
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69]">
-                        {track.status}
+                        className="font-black text-lg text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors block truncate"
+                        style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                      >
+                        {track.name}
                       </span>
+                      <span className="text-xs text-[#926e69]">{track.groupName}</span>
                     </div>
-                  )}
-
-                  {/* Pijl */}
-                  <ChevronRight
-                    size={18}
-                    className="text-[#e2e2e2] group-hover:text-[#cc0000] group-hover:translate-x-1 transition-all shrink-0"
-                  />
-                </Link>
+                    <div className="hidden sm:flex items-center gap-2 shrink-0">
+                      <Badge>{track.scale}</Badge>
+                      <Badge>{track.system}</Badge>
+                    </div>
+                    {track.status && (
+                      <div className="hidden md:flex items-center gap-1.5 shrink-0 w-20">
+                        <span
+                          className={[
+                            'w-1.5 h-1.5 rounded-full shrink-0',
+                            track.status === 'Actief' ? 'bg-green-500' : 'bg-amber-400',
+                          ].join(' ')}
+                        />
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69]">
+                          {track.status}
+                        </span>
+                      </div>
+                    )}
+                    <ChevronRight
+                      size={18}
+                      className="text-[#e2e2e2] group-hover:text-[#cc0000] group-hover:translate-x-1 transition-all shrink-0"
+                    />
+                  </Link>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
 
-            {/* Mobile link */}
             <div className="mt-6 md:hidden">
               <Button href="/onze-banen" variant="secondary" className="w-full justify-center">
                 Meer over onze banen
@@ -335,51 +318,55 @@ export default async function HomePage() {
       {news.length > 0 && (
         <section className="bg-white py-20 border-t border-[#e2e2e2]">
           <div className="max-w-7xl mx-auto px-6 md:px-8">
-            <div className="flex items-end justify-between mb-10">
-              <div>
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-0.5 bg-[#cc0000]" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                    Laatste updates
-                  </span>
-                </div>
-                <h2
-                  className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]"
-                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                >
-                  Nieuws
-                </h2>
-              </div>
-              <Link
-                href="/nieuws"
-                className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-[#cc0000] hover:text-[#9e0000] transition-colors"
-              >
-                Alle berichten
-                <ArrowRight size={16} />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#e2e2e2]">
-              {news.map((article) => (
-                <article key={article.id} className="bg-white p-8 flex flex-col gap-3 border-l-4 border-[#cc0000]">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {article.category && <Badge variant="primary">{article.category}</Badge>}
-                    <time className="text-xs text-[#926e69]">
-                      {new Date(article.publishedAt).toLocaleDateString('nl-NL', {
-                        day: 'numeric', month: 'short', year: 'numeric',
-                      })}
-                    </time>
+            <ScrollReveal>
+              <div className="flex items-end justify-between mb-10">
+                <div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-0.5 bg-[#cc0000]" />
+                    <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
+                      Laatste updates
+                    </span>
                   </div>
-                  <h3
-                    className="font-black text-xl tracking-tight text-[#1a1c1c]"
+                  <h2
+                    className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]"
                     style={{ fontFamily: 'Space Grotesk, sans-serif' }}
                   >
-                    {article.title}
-                  </h3>
-                  <p className="text-sm text-[#4d4c4c] leading-relaxed flex-1">{article.summary}</p>
-                </article>
+                    Nieuws
+                  </h2>
+                </div>
+                <Link
+                  href="/nieuws"
+                  className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-[#cc0000] hover:text-[#9e0000] transition-colors"
+                >
+                  Alle berichten
+                  <ArrowRight size={16} />
+                </Link>
+              </div>
+            </ScrollReveal>
+
+            <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#e2e2e2]">
+              {news.map((article) => (
+                <StaggerItem key={article.id}>
+                  <article className="bg-white p-8 flex flex-col gap-3 border-l-4 border-[#cc0000] h-full">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {article.category && <Badge variant="primary">{article.category}</Badge>}
+                      <time className="text-xs text-[#926e69]">
+                        {new Date(article.publishedAt).toLocaleDateString('nl-NL', {
+                          day: 'numeric', month: 'short', year: 'numeric',
+                        })}
+                      </time>
+                    </div>
+                    <h3
+                      className="font-black text-xl tracking-tight text-[#1a1c1c]"
+                      style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                    >
+                      {article.title}
+                    </h3>
+                    <p className="text-sm text-[#4d4c4c] leading-relaxed flex-1">{article.summary}</p>
+                  </article>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           </div>
         </section>
       )}
@@ -393,7 +380,7 @@ export default async function HomePage() {
             backgroundSize: '20px 20px',
           }}
         />
-        <div className="relative max-w-7xl mx-auto px-6 md:px-8 text-center text-white">
+        <ScrollReveal className="relative max-w-7xl mx-auto px-6 md:px-8 text-center text-white">
           <Train size={32} className="mx-auto mb-4" />
           <h2
             className="font-black text-4xl md:text-6xl tracking-tighter mb-6"
@@ -418,7 +405,7 @@ export default async function HomePage() {
               Meer over de club
             </Button>
           </div>
-        </div>
+        </ScrollReveal>
       </section>
     </>
   )

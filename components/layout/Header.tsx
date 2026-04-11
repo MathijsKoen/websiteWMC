@@ -59,7 +59,7 @@ export function Header({ tracks }: HeaderProps) {
           'px-4 py-2 text-sm font-bold transition-colors duration-150',
           isActive
             ? 'text-[#cc0000] border-b-2 border-[#cc0000]'
-            : 'text-[#4d4c4c] hover:text-[#1a1c1c]',
+            : 'text-[#4d4c4c] hover:text-[#cc0000]',
         ].join(' ')}
       >
         {label}
@@ -81,7 +81,7 @@ export function Header({ tracks }: HeaderProps) {
           'inline-flex items-center gap-1 px-4 py-2 text-sm font-bold transition-colors duration-150',
           isActive || isOpen
             ? 'text-[#cc0000] border-b-2 border-[#cc0000]'
-            : 'text-[#4d4c4c] hover:text-[#1a1c1c]',
+            : 'text-[#4d4c4c] hover:text-[#cc0000]',
         ].join(' ')}
         aria-expanded={isOpen}
       >
@@ -121,7 +121,7 @@ export function Header({ tracks }: HeaderProps) {
                     'px-4 py-2 text-sm font-bold transition-colors duration-150',
                     isActive
                       ? 'text-[#cc0000] border-b-2 border-[#cc0000]'
-                      : 'text-[#4d4c4c] hover:text-[#1a1c1c]',
+                      : 'text-[#4d4c4c] hover:text-[#cc0000]',
                   ].join(' ')}
                 >
                   {link.label}

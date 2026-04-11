@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { Calendar, Clock, MapPin, Euro } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowRight, Calendar, Clock, MapPin, Euro } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { getAllEvents } from '@/lib/contentful/queries'
 import type { AgendaEvent } from '@/lib/contentful/types'
@@ -88,14 +89,18 @@ export default async function AgendaPage() {
               {publicEvents.map((event) => {
                 const config = categoryConfig[event.category]
                 return (
-                  <div key={event.id} className={`bg-white ${config.accentClass} p-6 md:p-8`}>
+                  <Link
+                    key={event.id}
+                    href={`/agenda/${event.slug}`}
+                    className={`group bg-white ${config.accentClass} p-6 md:p-8 hover:bg-[#fafafa] transition-colors`}
+                  >
                     <div className="flex flex-col md:flex-row md:items-start gap-6">
                       <div className="md:w-28 shrink-0">
                         <Badge variant={config.variant}>{config.label}</Badge>
                       </div>
                       <div className="flex-1">
                         <h3
-                          className="font-black text-xl tracking-tight text-[#1a1c1c] mb-3"
+                          className="font-black text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors mb-3"
                           style={{ fontFamily: 'Space Grotesk, sans-serif' }}
                         >
                           {event.title}
@@ -116,8 +121,11 @@ export default async function AgendaPage() {
                           </span>
                         </div>
                         {event.description && (
-                          <p className="text-sm text-[#4d4c4c] leading-relaxed">{event.description}</p>
+                          <p className="text-sm text-[#4d4c4c] leading-relaxed line-clamp-2">{event.description}</p>
                         )}
+                        <span className="inline-flex items-center gap-1 mt-3 text-xs font-bold uppercase tracking-widest text-[#cc0000] group-hover:gap-2 transition-all">
+                          Meer info <ArrowRight size={12} />
+                        </span>
                       </div>
                       <div className="md:w-24 md:text-right shrink-0">
                         {event.price == null ? (
@@ -138,7 +146,7 @@ export default async function AgendaPage() {
                         )}
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 )
               })}
             </div>

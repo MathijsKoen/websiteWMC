@@ -139,7 +139,7 @@ export default async function HomePage() {
 
                 return (
                   <StaggerItem key={event.id} direction="none">
-                    <Link href="/agenda" className="flex items-stretch group hover:bg-[#f9f9f9] transition-colors">
+                    <Link href={`/agenda/${event.slug}`} className="flex items-stretch group hover:bg-[#f9f9f9] transition-colors">
                       <div className={`${categoryAccent[event.category]} w-20 md:w-24 shrink-0 flex flex-col items-center justify-center py-6 px-2`}>
                         {dateParts ? (
                           <>

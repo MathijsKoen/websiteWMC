@@ -213,6 +213,36 @@ export async function getAllEvents(): Promise<AgendaEvent[]> {
   }
 }
 
+export async function getEventBySlug(slug: string): Promise<AgendaEvent | null> {
+  try {
+    const entries = await getContentfulClient().getEntries<AgendaEventSkeleton>({
+      content_type: 'agendaEvent',
+      'fields.slug': slug,
+      limit: 1,
+    })
+
+    if (!entries.items.length) return null
+
+    const item = entries.items[0]
+    return {
+      id: item.sys.id,
+      title: item.fields.title as string,
+      slug: item.fields.slug as string,
+      date: item.fields.date as string,
+      endDate: item.fields.endDate as string | undefined,
+      startTime: item.fields.startTime as string,
+      endTime: item.fields.endTime as string | undefined,
+      location: item.fields.location as string,
+      description: item.fields.description as string | undefined,
+      category: item.fields.category as AgendaEvent['category'],
+      price: item.fields.price as number | undefined,
+      isPublic: (item.fields.isPublic as boolean) ?? true,
+    }
+  } catch {
+    return null
+  }
+}
+
 // =============================================
 // BANEN / TRACKS
 // =============================================

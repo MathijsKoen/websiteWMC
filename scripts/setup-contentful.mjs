@@ -190,6 +190,52 @@ const contentTypes = [
   },
 
   // =============================
+  // BEURS 2026 — UITGENODIGDE BAAN
+  // =============================
+  {
+    id: 'beursLayout',
+    name: 'Beurs 2026 — Uitgenodigde Baan',
+    description: 'Banen van andere verenigingen die zijn uitgenodigd voor de WMC Beurs 2026',
+    displayField: 'name',
+    fields: [
+      { id: 'name', name: 'Naam baan', type: 'Symbol', required: true },
+      {
+        id: 'slug',
+        name: 'Slug (URL)',
+        type: 'Symbol',
+        required: true,
+        validations: [{ unique: true }],
+      },
+      { id: 'club', name: 'Naam vereniging', type: 'Symbol', required: true },
+      { id: 'city', name: 'Stad / Regio', type: 'Symbol', required: true },
+      {
+        id: 'scale',
+        name: 'Schaal',
+        type: 'Symbol',
+        required: false,
+        validations: [{ in: ['N (1:160)', 'H0 (1:87)', '0 (1:43,5)', 'G (1:22,5)', 'Z (1:220)', 'overig'] }],
+      },
+      { id: 'description', name: 'Beschrijving', type: 'Text', required: false },
+      {
+        id: 'coverImage',
+        name: 'Hoofdafbeelding',
+        type: 'Link',
+        linkType: 'Asset',
+        required: false,
+        validations: [],
+      },
+      {
+        id: 'images',
+        name: 'Fotogalerij',
+        type: 'Array',
+        required: false,
+        items: { type: 'Link', linkType: 'Asset', validations: [] },
+      },
+      { id: 'website', name: 'Website vereniging', type: 'Symbol', required: false },
+    ],
+  },
+
+  // =============================
   // SPONSOR
   // =============================
   {

@@ -6,8 +6,10 @@ const footerLinks = {
   club: [
     { href: '/over-ons', label: 'Over ons' },
     { href: '/onze-banen', label: 'Onze Banen' },
+    { href: '/sponsoren', label: 'Sponsoren' },
     { href: '/agenda', label: 'Agenda' },
     { href: '/nieuws', label: 'Nieuws' },
+    { href: '/beurs-2026', label: 'Beurs 2026' },
   ],
   info: [
     { href: '/contact', label: 'Contact' },

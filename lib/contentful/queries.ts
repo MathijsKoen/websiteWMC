@@ -1,6 +1,6 @@
 import type { EntrySkeletonType, EntryFieldTypes } from 'contentful'
 import { getContentfulClient } from './client'
-import type { NewsArticle, AgendaEvent, TrackInfo, Sponsor } from './types'
+import type { NewsArticle, AgendaEvent, TrackInfo, Sponsor, BeursLayout } from './types'
 
 // =============================================
 // ENTRY SKELETON TYPES (Contentful SDK v11)
@@ -51,6 +51,21 @@ interface TrackSkeleton extends EntrySkeletonType {
     status?: EntryFieldTypes.Symbol
     foundedYear?: EntryFieldTypes.Integer
     moduleCount?: EntryFieldTypes.Integer
+  }
+}
+
+interface BeursLayoutSkeleton extends EntrySkeletonType {
+  contentTypeId: 'beursLayout'
+  fields: {
+    name: EntryFieldTypes.Symbol
+    slug: EntryFieldTypes.Symbol
+    club: EntryFieldTypes.Symbol
+    city: EntryFieldTypes.Symbol
+    scale?: EntryFieldTypes.Symbol
+    description?: EntryFieldTypes.Text
+    coverImage?: EntryFieldTypes.AssetLink
+    images?: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>
+    website?: EntryFieldTypes.Symbol
   }
 }
 
@@ -277,6 +292,34 @@ export async function getSponsors(): Promise<Sponsor[]> {
       logo: item.fields.logo as Sponsor['logo'],
       website: item.fields.website as string | undefined,
       tier: item.fields.tier as Sponsor['tier'],
+    }))
+  } catch {
+    return []
+  }
+}
+
+// =============================================
+// BEURS 2026 — UITGENODIGDE BANEN
+// =============================================
+
+export async function getAllBeursLayouts(): Promise<BeursLayout[]> {
+  try {
+    const entries = await getContentfulClient().getEntries<BeursLayoutSkeleton>({
+      content_type: 'beursLayout',
+      order: ['fields.name'],
+    })
+
+    return entries.items.map((item) => ({
+      id: item.sys.id,
+      name: item.fields.name as string,
+      slug: item.fields.slug as string,
+      club: item.fields.club as string,
+      city: item.fields.city as string,
+      scale: item.fields.scale as string | undefined,
+      description: item.fields.description as string | undefined,
+      coverImage: item.fields.coverImage as BeursLayout['coverImage'],
+      images: item.fields.images as BeursLayout['images'],
+      website: item.fields.website as string | undefined,
     }))
   } catch {
     return []

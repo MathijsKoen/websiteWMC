@@ -134,6 +134,23 @@ export interface ContentfulTrackEntry {
 }
 
 // =============================================
+// BEURS 2026 — UITGENODIGDE BANEN
+// =============================================
+
+export interface BeursLayout {
+  id: string
+  name: string
+  slug: string
+  club: string
+  city: string
+  scale?: string
+  description?: string
+  coverImage?: ContentfulImage
+  images?: ContentfulImage[]
+  website?: string
+}
+
+// =============================================
 // SPONSOR
 // =============================================
 

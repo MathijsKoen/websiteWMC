@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Space_Grotesk, Inter } from 'next/font/google'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { getAllTracks } from '@/lib/contentful/queries'
 import './globals.css'
 
 const spaceGrotesk = Space_Grotesk({
@@ -44,15 +45,19 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export const revalidate = 3600
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const tracks = await getAllTracks()
+
   return (
     <html lang="nl" className={`${spaceGrotesk.variable} ${inter.variable}`}>
       <body className="min-h-screen flex flex-col font-body antialiased">
-        <Header />
+        <Header tracks={tracks.map((track) => ({ slug: track.slug, name: track.name }))} />
         <main className="flex-1 pt-20">{children}</main>
         <Footer />
       </body>

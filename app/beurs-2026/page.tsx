@@ -12,19 +12,19 @@ import type { BeursLayout } from '@/lib/contentful/types'
 export const metadata: Metadata = {
   title: 'WMC Beurs 2026 — Modelspoor Tentoonstelling',
   description:
-    'Kom naar de WMC Modelspoor Beurs 2026 in Noord-Scharwoude. Bewonder spectaculaire banen van clubs uit heel Nederland. Gratis toegang voor kinderen.',
+    'Kom naar de WMC Modelspoor Beurs 2026 in Heerhugowaard. Bewonder spectaculaire banen van clubs uit heel Nederland. Gratis toegang voor kinderen.',
 }
 
 export const revalidate = 1
 
 // ─── Pas hier de beurs-details aan zodra ze bekend zijn ────────────────────
 const BEURS = {
-  date: 'Datum volgt',        // bijv. '14 & 15 maart 2026'
-  time: 'Tijden volgen',      // bijv. '10:00 – 17:00 uur'
-  location: 'Noord-Scharwoude',
-  venue: 'De Mossel 23e\n1723 HX Noord-Scharwoude',
-  admission: 'Volgt',         // bijv. '€ 5,— | kinderen gratis'
-  mapsUrl: 'https://maps.google.com/?q=De+Mossel+23e+Noord-Scharwoude',
+  date: '17 & 18 oktober 2026',        // bijv. '14 & 15 maart 2026'
+  time: 'Zaterdag: 10:00 – 16:00, zondag: 10:00 – 15:00',      // bijv. '10:00 – 17:00 uur'
+  location: 'Heerhugowaard',
+  venue: 'De Waardergolf\n1723 HX Heerhugowaard',
+  admission: '€ 6,— | kinderen gratis',         // bijv. '€ 5,— | kinderen gratis'
+  mapsUrl: 'https://maps.google.com/?q=De+Waardergolf+1723+HX+Heerhugowaard',
 }
 // ───────────────────────────────────────────────────────────────────────────
 

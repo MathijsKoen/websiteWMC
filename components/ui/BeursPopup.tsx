@@ -103,8 +103,8 @@ export function BeursPopup() {
 
                     <div className="flex flex-col gap-3 mb-8">
                       {[
-                        { icon: Calendar, text: 'Datum volgt — noteer het alvast!' },
-                        { icon: MapPin,   text: 'Noord-Scharwoude' },
+                        { icon: Calendar, text: '17 & 18 oktober 2026' },
+                        { icon: MapPin,   text: 'Heerhugowaard, sporthal "De Waardergolf" ' },
                         { icon: Train,    text: 'Banen van clubs uit heel Nederland' },
                       ].map(({ icon: Icon, text }) => (
                         <div key={text} className="flex items-center gap-3">

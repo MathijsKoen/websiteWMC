@@ -17,12 +17,14 @@ export default defineStackbitConfig({
     }),
   ],
 
-  // Welke content-modellen zijn "pagina's" (hebben een eigen URL)
   modelExtensions: [
+    // Pagina-modellen (hebben een eigen URL)
     { name: 'newsArticle',  type: 'page', urlPath: '/nieuws/{slug}' },
     { name: 'agendaEvent',  type: 'page', urlPath: '/agenda/{slug}' },
     { name: 'track',        type: 'page', urlPath: '/onze-banen/{slug}' },
     { name: 'beursLayout',  type: 'page', urlPath: '/beurs-2026/{slug}' },
+    // Data-modellen (geen eigen URL, globale instellingen)
+    { name: 'siteSettings', type: 'data' },
   ],
 
   // siteMap vertelt de editor welke pagina's bestaan en wat hun URL is

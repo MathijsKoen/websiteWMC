@@ -1,6 +1,8 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  // Voorkomt trailing-slash redirect loops in Netlify's preview proxy
+  trailingSlash: false,
   images: {
     remotePatterns: [
       {

@@ -18,6 +18,7 @@
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^16.2.1",
     "@contentful/rich-text-types": "^17.2.7",
+    "@stackbit/types": "^2.1.15",
     "contentful": "^11.12.0",
     "framer-motion": "^12.38.0",
     "lucide-react": "^0.475.0",
@@ -27,8 +28,6 @@
   },
   "devDependencies": {
     "@netlify/plugin-nextjs": "^5.15.9",
-    "@stackbit/cms-contentful": "^1.0.36",
-    "@stackbit/types": "^2.1.15",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",

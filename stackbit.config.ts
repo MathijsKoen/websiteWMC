@@ -1,93 +1,65 @@
 import { defineStackbitConfig, SiteMapEntry } from '@stackbit/types'
-import { ContentfulContentSource } from '@stackbit/cms-contentful'
 
 export default defineStackbitConfig({
   stackbitVersion: '~0.6.0',
   ssgName: 'nextjs',
-  nodeVersion: '18',
+  nodeVersion: '20',
 
-  contentSources: [
-    new ContentfulContentSource({
-      spaceId: process.env['CONTENTFUL_SPACE_ID']!,
-      environment: process.env['CONTENTFUL_ENVIRONMENT'] ?? 'master',
-      previewToken: process.env['CONTENTFUL_PREVIEW_TOKEN']!,
-      accessToken: process.env['CONTENTFUL_MANAGEMENT_TOKEN']!,
-    }),
-  ],
-
-  // Welke modellen vertegenwoordigen pagina's (met een eigen URL)
+  // Welke content-modellen zijn "pagina's" (hebben een eigen URL)
   modelExtensions: [
-    // Nieuws artikelen: /nieuws/[slug]
-    {
-      name: 'newsArticle',
-      type: 'page',
-      urlPath: '/nieuws/{slug}',
-    },
-    // Agenda evenementen: /agenda/[slug]
-    {
-      name: 'agendaEvent',
-      type: 'page',
-      urlPath: '/agenda/{slug}',
-    },
-    // Banen / tracks: /onze-banen/[slug]
-    {
-      name: 'track',
-      type: 'page',
-      urlPath: '/onze-banen/{slug}',
-    },
-    // Beurs 2026 banen: /beurs-2026/[slug]
-    {
-      name: 'beursLayout',
-      type: 'page',
-      urlPath: '/beurs-2026/{slug}',
-    },
+    { name: 'newsArticle',  type: 'page', urlPath: '/nieuws/{slug}' },
+    { name: 'agendaEvent',  type: 'page', urlPath: '/agenda/{slug}' },
+    { name: 'track',        type: 'page', urlPath: '/onze-banen/{slug}' },
+    { name: 'beursLayout',  type: 'page', urlPath: '/beurs-2026/{slug}' },
   ],
 
-  // Volledige siteMap voor de visuele editor
-  siteMap: ({ documents, models }) => {
-    const pageModelNames = models
-      .filter((m) => m.type === 'page')
-      .map((m) => m.name)
+  // siteMap vertelt de editor welke pagina's bestaan en wat hun URL is
+  siteMap: ({ documents, models }): SiteMapEntry[] => {
+    const pageModelNames = new Set(
+      models.filter((m) => m.type === 'page').map((m) => m.name)
+    )
 
-    const entries: (SiteMapEntry | null)[] = documents
-      .filter((doc) => pageModelNames.includes(doc.modelName))
-      .map((document) => {
-        const slug = (document.fields?.['slug'] as { value?: string } | undefined)?.value
+    return documents
+      .filter((doc) => pageModelNames.has(doc.modelName))
+      .flatMap((document) => {
+        const slugField = document.fields?.['slug']
+        const slug =
+          slugField && typeof slugField === 'object' && 'value' in slugField
+            ? String(slugField.value)
+            : document.id
 
         switch (document.modelName) {
           case 'newsArticle':
-            return {
+            return [{
               stableId: document.id,
-              urlPath: `/nieuws/${slug ?? document.id}`,
+              urlPath: `/nieuws/${slug}`,
               document,
               isHomePage: false,
-            }
+            }]
           case 'agendaEvent':
-            return {
+            return [{
               stableId: document.id,
-              urlPath: `/agenda/${slug ?? document.id}`,
+              urlPath: `/agenda/${slug}`,
               document,
               isHomePage: false,
-            }
+            }]
           case 'track':
-            return {
+            return [{
               stableId: document.id,
-              urlPath: `/onze-banen/${slug ?? document.id}`,
+              urlPath: `/onze-banen/${slug}`,
               document,
               isHomePage: false,
-            }
+            }]
           case 'beursLayout':
-            return {
+            return [{
               stableId: document.id,
-              urlPath: `/beurs-2026/${slug ?? document.id}`,
+              urlPath: `/beurs-2026/${slug}`,
               document,
               isHomePage: false,
-            }
+            }]
           default:
-            return null
+            return []
         }
       })
-
-    return entries.filter(Boolean) as SiteMapEntry[]
   },
 })

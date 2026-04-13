@@ -1,9 +1,19 @@
 import { defineStackbitConfig, SiteMapEntry } from '@stackbit/types'
+import { ContentfulContentSource } from '@stackbit/cms-contentful'
 
 export default defineStackbitConfig({
   stackbitVersion: '~0.6.0',
   ssgName: 'nextjs',
   nodeVersion: '20',
+
+  contentSources: [
+    new ContentfulContentSource({
+      spaceId: process.env['CONTENTFUL_SPACE_ID']!,
+      environment: process.env['CONTENTFUL_ENVIRONMENT'] ?? 'master',
+      previewToken: process.env['CONTENTFUL_PREVIEW_TOKEN']!,
+      accessToken: process.env['CONTENTFUL_MANAGEMENT_TOKEN']!,
+    }),
+  ],
 
   // Welke content-modellen zijn "pagina's" (hebben een eigen URL)
   modelExtensions: [

@@ -9,12 +9,6 @@ package = "@netlify/plugin-nextjs"
   NEXT_TELEMETRY_DISABLED = "1"
   NODE_VERSION = "20"
 
-# Netlify Visual Editor: dev-server configuratie
-[dev]
-  command = "npm run dev"
-  port = 3000
-  targetPort = 3000
-  framework = "#custom"
 
 [[headers]]
   for = "/*"

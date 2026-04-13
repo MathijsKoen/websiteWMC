@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { getAllEvents, getEventBySlug } from '@/lib/contentful/queries'
 import type { AgendaEvent } from '@/lib/contentful/types'
+import { sbObject, sbField } from '@/lib/stackbit'
 
 export const revalidate = 1
 
@@ -78,30 +79,31 @@ export default async function AgendaDetailPage({ params }: Props) {
       {/* Hero */}
       <section className="bg-[#1a1c1c] text-white py-20 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/4 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/4" />
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10" {...sbObject(event.id)}>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-0.5 bg-[#cc0000]" />
-            <Badge variant={config.variant}>{config.label}</Badge>
+            <span {...sbField(event.id, 'category')}><Badge variant={config.variant}>{config.label}</Badge></span>
           </div>
           <h1
             className="font-black text-4xl md:text-5xl tracking-tighter max-w-3xl mb-6"
             style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+            {...sbField(event.id, 'title')}
           >
             {event.title}
           </h1>
           <div className="flex flex-wrap gap-6 text-white/70 text-sm">
-            <span className="flex items-center gap-2">
+            <span className="flex items-center gap-2" {...sbField(event.id, 'date')}>
               <Calendar size={16} className="text-[#cc0000]" />
               {formatDate(event.date)}
               {event.endDate && event.endDate !== event.date && (
                 <> – {formatDate(event.endDate)}</>
               )}
             </span>
-            <span className="flex items-center gap-2">
+            <span className="flex items-center gap-2" {...sbField(event.id, 'startTime')}>
               <Clock size={16} className="text-[#cc0000]" />
               {event.startTime}{event.endTime ? ` – ${event.endTime}` : ''}
             </span>
-            <span className="flex items-center gap-2">
+            <span className="flex items-center gap-2" {...sbField(event.id, 'location')}>
               <MapPin size={16} className="text-[#cc0000]" />
               {event.location}
             </span>
@@ -114,7 +116,7 @@ export default async function AgendaDetailPage({ params }: Props) {
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
             {/* Description */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2" {...sbField(event.id, 'description')}>
               {event.description ? (
                 <p className="text-[#4d4c4c] leading-relaxed text-lg">{event.description}</p>
               ) : (

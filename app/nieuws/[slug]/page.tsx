@@ -9,6 +9,7 @@ import { RichText } from '@/components/ui/RichText'
 import { getAllNews, getNewsBySlug } from '@/lib/contentful/queries'
 import type { Document } from '@contentful/rich-text-types'
 import type { ContentfulImage } from '@/lib/contentful/types'
+import { sbObject, sbField } from '@/lib/stackbit'
 
 export const revalidate = 1
 
@@ -69,7 +70,7 @@ export default async function NieuwsDetailPage({ params }: Props) {
           </div>
         )}
         <div className="absolute top-0 right-0 w-1/4 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/4" />
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 py-20">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 py-20" {...sbObject(article.id)}>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-0.5 bg-[#cc0000]" />
             <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
@@ -77,10 +78,15 @@ export default async function NieuwsDetailPage({ params }: Props) {
             </span>
           </div>
           <div className="flex flex-wrap items-center gap-3 mb-4">
-            {article.category && <Badge variant="primary">{article.category}</Badge>}
+            {article.category && (
+              <span {...sbField(article.id, 'category')}>
+                <Badge variant="primary">{article.category}</Badge>
+              </span>
+            )}
             <time
               dateTime={article.publishedAt}
               className="text-xs text-white/50 flex items-center gap-1"
+              {...sbField(article.id, 'publishedAt')}
             >
               <Calendar size={12} />
               {new Date(article.publishedAt).toLocaleDateString('nl-NL', {
@@ -93,6 +99,7 @@ export default async function NieuwsDetailPage({ params }: Props) {
           <h1
             className="font-black text-4xl md:text-5xl tracking-tighter max-w-3xl"
             style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+            {...sbField(article.id, 'title')}
           >
             {article.title}
           </h1>
@@ -104,7 +111,7 @@ export default async function NieuwsDetailPage({ params }: Props) {
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
             {/* Main body */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2" {...sbField(article.id, 'body')}>
               {article.body ? (
                 <RichText document={article.body as unknown as Document} />
               ) : (
@@ -121,7 +128,7 @@ export default async function NieuwsDetailPage({ params }: Props) {
                 >
                   Samenvatting
                 </h3>
-                <p className="text-sm text-[#4d4c4c] leading-relaxed">{article.summary}</p>
+                <p className="text-sm text-[#4d4c4c] leading-relaxed" {...sbField(article.id, 'summary')}>{article.summary}</p>
               </div>
 
               <div className="bg-[#f3f3f3] p-6 space-y-3">

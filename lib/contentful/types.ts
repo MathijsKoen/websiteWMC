@@ -151,6 +151,33 @@ export interface BeursLayout {
 }
 
 // =============================================
+// SITE SETTINGS
+// =============================================
+
+export interface TimelineItem {
+  year: string
+  event: string
+}
+
+export interface SiteSettings {
+  id: string
+  email: string
+  adres: string
+  postcode: string
+  stad: string
+  provincie: string
+  openingsDag: string
+  openingsTijd: string
+  contributie: number
+  contributieJaar: number
+  lidWordenStappen: string[]
+  overOnsIntro: string
+  geschiedenisAlineas: string[]
+  doelstellingen: string[]
+  tijdlijn: TimelineItem[]
+}
+
+// =============================================
 // SPONSOR
 // =============================================
 

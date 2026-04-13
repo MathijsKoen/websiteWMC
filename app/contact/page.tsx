@@ -1,5 +1,8 @@
 import type { Metadata } from 'next'
 import { Mail, MapPin, Clock, ExternalLink } from 'lucide-react'
+import { getSiteSettings } from '@/lib/contentful/queries'
+
+export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Contact',
@@ -7,7 +10,9 @@ export const metadata: Metadata = {
     'Neem contact op met De Westfriese Modelspoor Club. Stuur een e-mail of kom langs op onze vrijdagavond in Noord-Scharwoude.',
 }
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const s = await getSiteSettings()
+
   return (
     <>
       {/* Hero */}
@@ -28,7 +33,7 @@ export default function ContactPage() {
           </h1>
           <p className="text-white/70 text-lg max-w-2xl leading-relaxed">
             Heb je vragen over de club, het lidmaatschap of wil je een keer langs komen?
-            Stuur ons een bericht of kom gewoon een vrijdagavond langs.
+            Stuur ons een bericht of kom gewoon een {s.openingsDag.toLowerCase()} langs.
           </p>
         </div>
       </section>
@@ -62,10 +67,10 @@ export default function ContactPage() {
                     </span>
                   </div>
                   <a
-                    href="mailto:info@dewmc.nl"
+                    href={`mailto:${s.email}`}
                     className="text-[#cc0000] font-bold hover:text-[#9e0000] transition-colors flex items-center gap-1"
                   >
-                    info@dewmc.nl
+                    {s.email}
                     <ExternalLink size={14} />
                   </a>
                   <p className="text-xs text-[#926e69] mt-1">
@@ -87,9 +92,9 @@ export default function ContactPage() {
                     </span>
                   </div>
                   <address className="not-italic text-[#4d4c4c] font-bold">
-                    De Mossel 23e<br />
-                    1723 HX Noord-Scharwoude<br />
-                    Noord-Holland
+                    {s.adres}<br />
+                    {s.postcode} {s.stad}<br />
+                    {s.provincie}
                   </address>
                 </div>
 
@@ -107,8 +112,8 @@ export default function ContactPage() {
                     </span>
                   </div>
                   <p className="text-[#4d4c4c]">
-                    <strong>Vrijdagavond</strong><br />
-                    19:30 – 22:00 uur
+                    <strong>{s.openingsDag}</strong><br />
+                    {s.openingsTijd}
                   </p>
                   <p className="text-xs text-[#926e69] mt-2">
                     Kom gerust langs — een rondleiding is altijd mogelijk!
@@ -134,12 +139,7 @@ export default function ContactPage() {
                   Hoe werkt het?
                 </h3>
                 <ol className="space-y-4">
-                  {[
-                    'Stuur een e-mail naar info@dewmc.nl',
-                    'Ontvang een uitnodiging voor een rondleiding',
-                    'Kom een vrijdagavond langs om kennis te maken',
-                    'Sluit je aan bij een van onze zes groepen',
-                  ].map((step, i) => (
+                  {s.lidWordenStappen.map((stap, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <span
                         className="w-6 h-6 bg-white/20 text-white text-xs font-black flex items-center justify-center shrink-0"
@@ -147,7 +147,7 @@ export default function ContactPage() {
                       >
                         {i + 1}
                       </span>
-                      <span className="text-white/90 text-sm leading-relaxed">{step}</span>
+                      <span className="text-white/90 text-sm leading-relaxed">{stap}</span>
                     </li>
                   ))}
                 </ol>
@@ -159,13 +159,13 @@ export default function ContactPage() {
                   className="font-black text-sm uppercase tracking-widest text-[#1a1c1c] mb-4"
                   style={{ fontFamily: 'Space Grotesk, sans-serif' }}
                 >
-                  Contributie 2025
+                  Contributie {s.contributieJaar}
                 </h3>
                 <div
                   className="text-4xl font-black text-[#cc0000] tracking-tighter"
                   style={{ fontFamily: 'Space Grotesk, sans-serif' }}
                 >
-                  € 175,—
+                  € {s.contributie},—
                 </div>
                 <p className="text-xs text-[#926e69] mt-2">
                   Jaarlijkse bijdrage. Inclusief toegang tot alle banen en activiteiten.

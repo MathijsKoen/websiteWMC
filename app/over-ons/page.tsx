@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import { ArrowRight, Users, Calendar, Building2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { TimelineReveal } from '@/components/ui/TimelineReveal'
+import { getSiteSettings } from '@/lib/contentful/queries'
+
+export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Over ons',
@@ -9,16 +12,9 @@ export const metadata: Metadata = {
     'Leer meer over De Westfriese Modelspoor Club (WMC), opgericht in 1998 in Hoorn. Onze doelstellingen, clubgebouw en lidmaatschap.',
 }
 
-const doelstellingen = [
-  'Het bieden van onderdak aan modelspoorhobbyisten',
-  'Het verhogen van kennis en vaardigheden van de leden',
-  'Het in samenwerkingsverband bouwen van modules',
-  'Het stimuleren van samenwerking door gezamenlijke projecten',
-  'Het organiseren van beurzen en demonstreren van modules',
-  'Het stimuleren van eigen inbreng en werkzaamheden van leden',
-]
+export default async function OverOnsPage() {
+  const s = await getSiteSettings()
 
-export default function OverOnsPage() {
   return (
     <>
       {/* Page Hero */}
@@ -38,8 +34,7 @@ export default function OverOnsPage() {
             Over de WMC
           </h1>
           <p className="text-white/70 text-lg max-w-2xl leading-relaxed">
-            De Westfriese Modelspoor Club is een actieve vereniging van modelspoorenthousiasten
-            in West-Friesland. Wij zijn ingeschreven bij de Kamer van Koophandel.
+            {s.overOnsIntro}
           </p>
         </div>
       </section>
@@ -63,35 +58,14 @@ export default function OverOnsPage() {
                 <br />in modeltreinen
               </h2>
               <div className="space-y-4 text-[#4d4c4c] leading-relaxed">
-                <p>
-                  De Westfriese Modelspoor Club (De WMC) is op <strong>1 maart 1998</strong> opgericht
-                  in Hoorn, Noord-Holland. Vanaf het begin was de club een plek waar
-                  modelspoorenthousiasten hun passie konden delen en hun vaardigheden konden
-                  ontwikkelen.
-                </p>
-                <p>
-                  Door de jaren heen is de club uitgegroeid tot een bloeiende vereniging met
-                  zes actieve groepen, elk gespecialiseerd in een eigen schaal en stijl. Van
-                  de fijne N-schaal tot de imposante 0-schaal, de WMC biedt voor elk wat wils.
-                </p>
-                <p>
-                  Elke vrijdagavond komen de leden samen in ons clubgebouw in Noord-Scharwoude
-                  om te bouwen, te rijden en kennis te delen. De club is ingeschreven bij de
-                  Kamer van Koophandel.
-                </p>
+                {s.geschiedenisAlineas.map((alinea, i) => (
+                  <p key={i}>{alinea}</p>
+                ))}
               </div>
             </div>
 
             {/* Timeline */}
-            <TimelineReveal
-              items={[
-                { year: '1998', event: 'Oprichting van De WMC op 1 maart in Hoorn' },
-                { year: '2017', event: 'Start van de modulaire Ellendam-groep (H0-baan)' },
-                { year: '2020', event: 'Oprichting van de C-Track-groep met landelijk compatibele modules' },
-                { year: '2024', event: 'Contributie vastgesteld op €175,— per jaar' },
-                { year: '2026', event: 'WMC Beurs 2026 gepland' },
-              ]}
-            />
+            <TimelineReveal items={s.tijdlijn} />
           </div>
         </div>
       </section>
@@ -113,7 +87,7 @@ export default function OverOnsPage() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-[#e2e2e2]">
-            {doelstellingen.map((doel, i) => (
+            {s.doelstellingen.map((doel, i) => (
               <div key={i} className="bg-white p-6 flex items-start gap-4">
                 <div className="w-8 h-8 bg-[#cc0000] text-white flex items-center justify-center font-black text-sm shrink-0"
                   style={{ fontFamily: 'Space Grotesk, sans-serif' }}
@@ -138,11 +112,11 @@ export default function OverOnsPage() {
                 content: (
                   <>
                     <p className="text-[#4d4c4c] text-sm leading-relaxed">
-                      Ons clubgebouw staat in Noord-Scharwoude:
+                      Ons clubgebouw staat in {s.stad}:
                     </p>
                     <address className="not-italic text-sm text-[#1a1c1c] font-bold mt-2">
-                      De Mossel 23e<br />
-                      1723 HX Noord-Scharwoude
+                      {s.adres}<br />
+                      {s.postcode} {s.stad}
                     </address>
                   </>
                 ),
@@ -156,8 +130,8 @@ export default function OverOnsPage() {
                       We zijn wekelijks open op:
                     </p>
                     <p className="text-sm text-[#1a1c1c] font-bold mt-2">
-                      Vrijdagavond<br />
-                      19:30 – 22:00 uur
+                      {s.openingsDag}<br />
+                      {s.openingsTijd}
                     </p>
                   </>
                 ),
@@ -168,12 +142,12 @@ export default function OverOnsPage() {
                 content: (
                   <>
                     <p className="text-[#4d4c4c] text-sm leading-relaxed">
-                      Jaarlijkse contributie 2025:
+                      Jaarlijkse contributie {s.contributieJaar}:
                     </p>
                     <p className="text-2xl font-black text-[#cc0000] mt-2"
                       style={{ fontFamily: 'Space Grotesk, sans-serif' }}
                     >
-                      € 175,—
+                      € {s.contributie},—
                     </p>
                     <p className="text-xs text-[#926e69] mt-1">Inclusief rondleiding</p>
                   </>
@@ -209,7 +183,7 @@ export default function OverOnsPage() {
             Interesse om lid te worden?
           </h2>
           <p className="text-[#4d4c4c] mb-8 max-w-lg mx-auto">
-            Stuur ons een e-mail of kom een vrijdagavond langs voor een gratis rondleiding
+            Stuur ons een e-mail of kom een {s.openingsDag.toLowerCase()} langs voor een gratis rondleiding
             door het clubgebouw.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
@@ -217,8 +191,8 @@ export default function OverOnsPage() {
               <span>Contact opnemen</span>
               <ArrowRight size={18} />
             </Button>
-            <Button href="mailto:info@dewmc.nl" variant="secondary" size="lg">
-              info@dewmc.nl
+            <Button href={`mailto:${s.email}`} variant="secondary" size="lg">
+              {s.email}
             </Button>
           </div>
         </div>

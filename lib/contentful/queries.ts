@@ -1,6 +1,6 @@
 import type { EntrySkeletonType, EntryFieldTypes } from 'contentful'
 import { getContentfulClient } from './client'
-import type { NewsArticle, AgendaEvent, TrackInfo, Sponsor, BeursLayout } from './types'
+import type { NewsArticle, AgendaEvent, TrackInfo, Sponsor, BeursLayout, SiteSettings, TimelineItem } from './types'
 
 // =============================================
 // ENTRY SKELETON TYPES (Contentful SDK v11)
@@ -76,6 +76,26 @@ interface SponsorSkeleton extends EntrySkeletonType {
     logo: EntryFieldTypes.AssetLink
     website?: EntryFieldTypes.Symbol
     tier?: EntryFieldTypes.Symbol
+  }
+}
+
+interface SiteSettingsSkeleton extends EntrySkeletonType {
+  contentTypeId: 'siteSettings'
+  fields: {
+    email: EntryFieldTypes.Symbol
+    adres: EntryFieldTypes.Symbol
+    postcode: EntryFieldTypes.Symbol
+    stad: EntryFieldTypes.Symbol
+    provincie: EntryFieldTypes.Symbol
+    openingsDag: EntryFieldTypes.Symbol
+    openingsTijd: EntryFieldTypes.Symbol
+    contributie: EntryFieldTypes.Integer
+    contributieJaar: EntryFieldTypes.Integer
+    lidWordenStappen: EntryFieldTypes.Array<EntryFieldTypes.Symbol>
+    overOnsIntro: EntryFieldTypes.Text
+    geschiedenisAlineas: EntryFieldTypes.Array<EntryFieldTypes.Symbol>
+    doelstellingen: EntryFieldTypes.Array<EntryFieldTypes.Symbol>
+    tijdlijn: EntryFieldTypes.Object
   }
 }
 
@@ -325,6 +345,83 @@ export async function getSponsors(): Promise<Sponsor[]> {
     }))
   } catch {
     return []
+  }
+}
+
+// =============================================
+// SITE SETTINGS
+// =============================================
+
+// Fallback waarden als Contentful nog niet geconfigureerd is
+const SITE_SETTINGS_FALLBACK: SiteSettings = {
+  id: 'fallback',
+  email: 'info@dewmc.nl',
+  adres: 'De Mossel 23e',
+  postcode: '1723 HX',
+  stad: 'Noord-Scharwoude',
+  provincie: 'Noord-Holland',
+  openingsDag: 'Vrijdagavond',
+  openingsTijd: '19:30 – 22:00 uur',
+  contributie: 175,
+  contributieJaar: 2025,
+  lidWordenStappen: [
+    'Stuur een e-mail naar info@dewmc.nl',
+    'Ontvang een uitnodiging voor een rondleiding',
+    'Kom een vrijdagavond langs om kennis te maken',
+    'Sluit je aan bij een van onze zes groepen',
+  ],
+  overOnsIntro: 'De Westfriese Modelspoor Club is een actieve vereniging van modelspoorenthousiasten in West-Friesland. Wij zijn ingeschreven bij de Kamer van Koophandel.',
+  geschiedenisAlineas: [
+    'De Westfriese Modelspoor Club (De WMC) is op 1 maart 1998 opgericht in Hoorn, Noord-Holland. Vanaf het begin was de club een plek waar modelspoorenthousiasten hun passie konden delen en hun vaardigheden konden ontwikkelen.',
+    'Door de jaren heen is de club uitgegroeid tot een bloeiende vereniging met zes actieve groepen, elk gespecialiseerd in een eigen schaal en stijl. Van de fijne N-schaal tot de imposante 0-schaal, de WMC biedt voor elk wat wils.',
+    'Elke vrijdagavond komen de leden samen in ons clubgebouw in Noord-Scharwoude om te bouwen, te rijden en kennis te delen. De club is ingeschreven bij de Kamer van Koophandel.',
+  ],
+  doelstellingen: [
+    'Het bieden van onderdak aan modelspoorhobbyisten',
+    'Het verhogen van kennis en vaardigheden van de leden',
+    'Het in samenwerkingsverband bouwen van modules',
+    'Het stimuleren van samenwerking door gezamenlijke projecten',
+    'Het organiseren van beurzen en demonstreren van modules',
+    'Het stimuleren van eigen inbreng en werkzaamheden van leden',
+  ],
+  tijdlijn: [
+    { year: '1998', event: 'Oprichting van De WMC op 1 maart in Hoorn' },
+    { year: '2017', event: 'Start van de modulaire Ellendam-groep (H0-baan)' },
+    { year: '2020', event: 'Oprichting van de C-Track-groep met landelijk compatibele modules' },
+    { year: '2024', event: 'Contributie vastgesteld op €175,— per jaar' },
+    { year: '2026', event: 'WMC Beurs 2026 gepland' },
+  ],
+}
+
+export async function getSiteSettings(): Promise<SiteSettings> {
+  try {
+    const entries = await getContentfulClient().getEntries<SiteSettingsSkeleton>({
+      content_type: 'siteSettings',
+      limit: 1,
+    })
+
+    if (!entries.items.length) return SITE_SETTINGS_FALLBACK
+
+    const item = entries.items[0]
+    return {
+      id: item.sys.id,
+      email: (item.fields.email as string) ?? SITE_SETTINGS_FALLBACK.email,
+      adres: (item.fields.adres as string) ?? SITE_SETTINGS_FALLBACK.adres,
+      postcode: (item.fields.postcode as string) ?? SITE_SETTINGS_FALLBACK.postcode,
+      stad: (item.fields.stad as string) ?? SITE_SETTINGS_FALLBACK.stad,
+      provincie: (item.fields.provincie as string) ?? SITE_SETTINGS_FALLBACK.provincie,
+      openingsDag: (item.fields.openingsDag as string) ?? SITE_SETTINGS_FALLBACK.openingsDag,
+      openingsTijd: (item.fields.openingsTijd as string) ?? SITE_SETTINGS_FALLBACK.openingsTijd,
+      contributie: (item.fields.contributie as number) ?? SITE_SETTINGS_FALLBACK.contributie,
+      contributieJaar: (item.fields.contributieJaar as number) ?? SITE_SETTINGS_FALLBACK.contributieJaar,
+      lidWordenStappen: (item.fields.lidWordenStappen as string[]) ?? SITE_SETTINGS_FALLBACK.lidWordenStappen,
+      overOnsIntro: (item.fields.overOnsIntro as string) ?? SITE_SETTINGS_FALLBACK.overOnsIntro,
+      geschiedenisAlineas: (item.fields.geschiedenisAlineas as string[]) ?? SITE_SETTINGS_FALLBACK.geschiedenisAlineas,
+      doelstellingen: (item.fields.doelstellingen as string[]) ?? SITE_SETTINGS_FALLBACK.doelstellingen,
+      tijdlijn: (item.fields.tijdlijn as unknown as TimelineItem[]) ?? SITE_SETTINGS_FALLBACK.tijdlijn,
+    }
+  } catch {
+    return SITE_SETTINGS_FALLBACK
   }
 }
 

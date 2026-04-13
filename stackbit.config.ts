@@ -6,6 +6,8 @@ export default defineStackbitConfig({
   ssgName: 'nextjs',
   nodeVersion: '20',
 
+  devCommand: 'node_modules/.bin/next dev --port {PORT}',
+
   contentSources: [
     new ContentfulContentSource({
       spaceId: process.env['CONTENTFUL_SPACE_ID']!,

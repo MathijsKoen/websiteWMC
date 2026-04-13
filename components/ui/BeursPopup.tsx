@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Train, ArrowRight, MapPin, Calendar } from 'lucide-react'
+import { X, Train, ArrowRight, MapPin, Calendar, FileText } from 'lucide-react'
 
 const SESSION_KEY = 'wmc_beurs2026_popup_shown'
 
@@ -122,12 +122,16 @@ export function BeursPopup() {
                     Meer informatie
                     <ArrowRight size={16} />
                   </Link>
-                  <button
+                  <a
+                    href="/PRINT_VOOR_WMC_Flyer_100_.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={dismiss}
-                    className="flex-1 text-sm font-bold text-white/40 hover:text-white/70 transition-colors py-3.5 border border-white/10 hover:border-white/20"
+                    className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-bold text-white/60 hover:text-white transition-colors py-3.5 border border-white/10 hover:border-white/20"
                   >
-                    Sluiten
-                  </button>
+                    <FileText size={15} />
+                    Bekijk folder
+                  </a>
                 </div>
               </div>
             </div>

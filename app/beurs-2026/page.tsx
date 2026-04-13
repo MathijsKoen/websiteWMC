@@ -6,6 +6,7 @@ import { getAllBeursLayouts } from '@/lib/contentful/queries'
 import { Button } from '@/components/ui/Button'
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/ScrollReveal'
 import { TiltCard } from '@/components/ui/TiltCard'
+import { FolderSection } from '@/components/ui/FolderViewer'
 import type { BeursLayout } from '@/lib/contentful/types'
 
 export const metadata: Metadata = {
@@ -321,6 +322,9 @@ export default async function Beurs2026Page() {
           </div>
         </div>
       </section>
+
+      {/* ===== FOLDER ===== */}
+      <FolderSection />
 
       {/* ===== ROUTE ===== */}
       <section id="route" className="bg-[#1a1c1c] py-20 relative overflow-hidden">

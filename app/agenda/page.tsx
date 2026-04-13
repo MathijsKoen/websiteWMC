@@ -5,6 +5,35 @@ import { Badge } from '@/components/ui/Badge'
 import { getAllEvents } from '@/lib/contentful/queries'
 import type { AgendaEvent } from '@/lib/contentful/types'
 
+/** Berekent de eerstvolgende datum voor een terugkerend evenement. */
+function nextOccurrence(baseDate: Date, interval: AgendaEvent['recurrenceInterval']): Date {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  if (baseDate >= today) return baseDate
+
+  const d = new Date(baseDate)
+  if (interval === 'weekly') {
+    const diff = Math.ceil((today.getTime() - d.getTime()) / (7 * 86400000))
+    d.setDate(d.getDate() + diff * 7)
+  } else if (interval === 'biweekly') {
+    const diff = Math.ceil((today.getTime() - d.getTime()) / (14 * 86400000))
+    d.setDate(d.getDate() + diff * 14)
+  } else if (interval === 'monthly') {
+    while (d < today) d.setMonth(d.getMonth() + 1)
+  }
+  return d
+}
+
+/** Geeft de te tonen datum terug (next occurrence voor recurring, anders origineel). */
+function displayDate(event: AgendaEvent): Date {
+  const base = new Date(event.date)
+  if (event.isRecurring && event.recurrenceInterval) {
+    return nextOccurrence(base, event.recurrenceInterval)
+  }
+  return base
+}
+
 export const metadata: Metadata = {
   title: 'Agenda',
   description:
@@ -40,8 +69,16 @@ function formatDate(dateStr: string): string {
 export default async function AgendaPage() {
   const allEvents = await getAllEvents()
 
-  const publicEvents = allEvents.filter((e) => e.isPublic)
-  const memberEvents = allEvents.filter((e) => !e.isPublic)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  // Toekomstige events: éénmalige events na vandaag + terugkerende events altijd
+  const upcomingEvents = allEvents
+    .filter((e) => e.isRecurring || new Date(e.date) >= today)
+    .sort((a, b) => displayDate(a).getTime() - displayDate(b).getTime())
+
+  const publicEvents = upcomingEvents.filter((e) => e.isPublic)
+  const memberEvents = upcomingEvents.filter((e) => !e.isPublic)
 
   return (
     <>
@@ -108,7 +145,12 @@ export default async function AgendaPage() {
                         <div className="flex flex-wrap gap-4 text-sm text-[#4d4c4c] mb-4">
                           <span className="flex items-center gap-1.5">
                             <Calendar size={14} className="text-[#cc0000]" />
-                            {formatDate(event.date)}
+                            {formatDate(displayDate(event).toISOString())}
+                            {event.isRecurring && (
+                              <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69] ml-1">
+                                terugkerend
+                              </span>
+                            )}
                           </span>
                           <span className="flex items-center gap-1.5">
                             <Clock size={14} className="text-[#cc0000]" />
@@ -183,7 +225,12 @@ export default async function AgendaPage() {
                     <div className="flex flex-wrap gap-4 mt-1 text-sm text-white/50">
                       <span className="flex items-center gap-1">
                         <Calendar size={12} />
-                        {formatDate(event.date)}
+                        {formatDate(displayDate(event).toISOString())}
+                        {event.isRecurring && (
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69] ml-1">
+                            terugkerend
+                          </span>
+                        )}
                       </span>
                       <span className="flex items-center gap-1">
                         <Clock size={12} />

@@ -60,6 +60,8 @@ export interface ContentfulNewsEntry {
 
 export type EventCategory = 'beurs' | 'opendag' | 'clubavond' | 'overig'
 
+export type RecurrenceInterval = 'weekly' | 'biweekly' | 'monthly'
+
 export interface AgendaEvent {
   id: string
   title: string
@@ -73,6 +75,8 @@ export interface AgendaEvent {
   category: EventCategory
   price?: number
   isPublic: boolean
+  isRecurring?: boolean
+  recurrenceInterval?: RecurrenceInterval
 }
 
 export interface ContentfulEventEntry {

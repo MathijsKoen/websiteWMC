@@ -1,6 +1,6 @@
 import type { EntrySkeletonType, EntryFieldTypes } from 'contentful'
 import { getContentfulClient } from './client'
-import type { NewsArticle, AgendaEvent, TrackInfo, Sponsor, BeursLayout, SiteSettings, TimelineItem } from './types'
+import type { NewsArticle, AgendaEvent, TrackInfo, Sponsor, BeursLayout, SiteSettings, TimelineItem, RecurrenceInterval } from './types'
 
 // =============================================
 // ENTRY SKELETON TYPES (Contentful SDK v11)
@@ -33,6 +33,8 @@ interface AgendaEventSkeleton extends EntrySkeletonType {
     category: EntryFieldTypes.Symbol
     price?: EntryFieldTypes.Number
     isPublic: EntryFieldTypes.Boolean
+    isRecurring?: EntryFieldTypes.Boolean
+    recurrenceInterval?: EntryFieldTypes.Symbol
   }
 }
 
@@ -201,6 +203,8 @@ export async function getUpcomingEvents(limit = 10): Promise<AgendaEvent[]> {
       category: item.fields.category as AgendaEvent['category'],
       price: item.fields.price as number | undefined,
       isPublic: (item.fields.isPublic as boolean) ?? true,
+      isRecurring: (item.fields.isRecurring as boolean) ?? false,
+      recurrenceInterval: item.fields.recurrenceInterval as RecurrenceInterval | undefined,
     }))
   } catch {
     return []
@@ -227,6 +231,8 @@ export async function getAllEvents(): Promise<AgendaEvent[]> {
       category: item.fields.category as AgendaEvent['category'],
       price: item.fields.price as number | undefined,
       isPublic: (item.fields.isPublic as boolean) ?? true,
+      isRecurring: (item.fields.isRecurring as boolean) ?? false,
+      recurrenceInterval: item.fields.recurrenceInterval as RecurrenceInterval | undefined,
     }))
   } catch {
     return []

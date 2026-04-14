@@ -28,7 +28,8 @@ const categoryAccent: Record<EventCategory, string> = {
 
 function parseDateParts(dateStr: string): { day: string; month: string; year: string } | null {
   try {
-    const d = new Date(dateStr)
+    const [year, month, day] = dateStr.substring(0, 10).split('-').map(Number)
+    const d = new Date(year, month - 1, day)
     if (isNaN(d.getTime())) return null
     return {
       day: d.toLocaleDateString('nl-NL', { day: 'numeric' }),

@@ -40,9 +40,14 @@ export default async function TrackDetailPage({ params }: Props) {
   const specs = [
     { label: 'Schaal', value: track.scale },
     { label: 'Systeem', value: track.system },
-    ...(track.status ? [{ label: 'Status', value: track.status }] : []),
-    ...(track.foundedYear ? [{ label: 'Opgericht', value: String(track.foundedYear) }] : []),
-    ...(track.moduleCount ? [{ label: 'Modules', value: `${track.moduleCount} stuks` }] : []),
+    ...(track.status        ? [{ label: 'Status',         value: track.status }] : []),
+    ...(track.foundedYear   ? [{ label: 'Opgericht',      value: String(track.foundedYear) }] : []),
+    ...(track.moduleCount   ? [{ label: 'Modules',        value: `${track.moduleCount} stuks` }] : []),
+    ...(track.railLengte    ? [{ label: 'Raillengte',     value: track.railLengte }] : []),
+    ...(track.tijdperk      ? [{ label: 'Tijdperk',       value: track.tijdperk }] : []),
+    ...(track.merk          ? [{ label: 'Merk',           value: track.merk }] : []),
+    ...(track.landcontinent ? [{ label: 'Land/Continent', value: track.landcontinent }] : []),
+    ...(track.aantalLeden   ? [{ label: 'Leden',          value: `${track.aantalLeden} personen` }] : []),
   ]
 
   return (

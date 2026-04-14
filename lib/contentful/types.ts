@@ -117,6 +117,11 @@ export interface TrackInfo {
   status?: string
   foundedYear?: number
   moduleCount?: number
+  railLengte?: string
+  tijdperk?: string
+  merk?: string
+  landcontinent?: string
+  aantalLeden?: number
 }
 
 export interface ContentfulTrackEntry {

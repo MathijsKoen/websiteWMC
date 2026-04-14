@@ -53,6 +53,11 @@ interface TrackSkeleton extends EntrySkeletonType {
     status?: EntryFieldTypes.Symbol
     foundedYear?: EntryFieldTypes.Integer
     moduleCount?: EntryFieldTypes.Integer
+    railLengte?: EntryFieldTypes.Symbol
+    tijdperk?: EntryFieldTypes.Symbol
+    merk?: EntryFieldTypes.Symbol
+    landcontinent?: EntryFieldTypes.Symbol
+    aantalLeden?: EntryFieldTypes.Integer
   }
 }
 
@@ -294,6 +299,11 @@ export async function getAllTracks(): Promise<TrackInfo[]> {
       status: item.fields.status as string | undefined,
       foundedYear: item.fields.foundedYear as number | undefined,
       moduleCount: item.fields.moduleCount as number | undefined,
+      railLengte: item.fields.railLengte as string | undefined,
+      tijdperk: item.fields.tijdperk as string | undefined,
+      merk: item.fields.merk as string | undefined,
+      landcontinent: item.fields.landcontinent as string | undefined,
+      aantalLeden: item.fields.aantalLeden as number | undefined,
     }))
   } catch {
     return []

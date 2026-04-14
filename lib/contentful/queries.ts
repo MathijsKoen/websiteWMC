@@ -316,6 +316,7 @@ export async function getTrackBySlug(slug: string): Promise<TrackInfo | null> {
       content_type: 'track',
       'fields.slug': slug,
       limit: 1,
+      include: 10, // linked assets in rich text meesturen
     })
 
     if (!entries.items.length) return null

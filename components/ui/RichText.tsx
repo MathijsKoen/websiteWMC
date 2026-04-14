@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import { BLOCKS, INLINES, type Document, type Block, type Inline } from '@contentful/rich-text-types'
 import type { Options } from '@contentful/rich-text-react-renderer'
@@ -47,6 +48,27 @@ const options: Options = {
       </blockquote>
     ),
     [BLOCKS.HR]: () => <hr className="border-[#e2e2e2] my-6" />,
+    [BLOCKS.EMBEDDED_ASSET]: (node: Block | Inline) => {
+      const file = (node.data?.target as { fields?: { file?: { url?: string; details?: { image?: { width: number; height: number } }; contentType?: string }; title?: string; description?: string } })?.fields
+      const url = file?.file?.url
+      if (!url || !file?.file?.contentType?.startsWith('image/')) return null
+      const width = file.file.details?.image?.width ?? 800
+      const height = file.file.details?.image?.height ?? 600
+      return (
+        <figure className="my-6">
+          <Image
+            src={`https:${url}?w=1200&fm=webp&q=80`}
+            alt={file.description ?? file.title ?? ''}
+            width={width}
+            height={height}
+            className="w-full h-auto"
+          />
+          {file.description && (
+            <figcaption className="mt-2 text-xs text-[#926e69] text-center">{file.description}</figcaption>
+          )}
+        </figure>
+      )
+    },
     [INLINES.HYPERLINK]: (node: Block | Inline, children: ReactNode) => {
       const uri = (node.data as { uri: string }).uri
       return (

@@ -5,6 +5,15 @@ import { Badge } from '@/components/ui/Badge'
 import { getAllEvents } from '@/lib/contentful/queries'
 import type { AgendaEvent } from '@/lib/contentful/types'
 
+/**
+ * Parst "YYYY-MM-DD" als lokale datum (niet UTC).
+ * new Date("2026-10-17") = UTC midnight = dag eerder in NL zomertijd.
+ */
+function parseLocalDate(dateStr: string): Date {
+  const [year, month, day] = dateStr.substring(0, 10).split('-').map(Number)
+  return new Date(year, month - 1, day)
+}
+
 /** Berekent de eerstvolgende datum voor een terugkerend evenement. */
 function nextOccurrence(baseDate: Date, interval: AgendaEvent['recurrenceInterval']): Date {
   const today = new Date()
@@ -27,7 +36,7 @@ function nextOccurrence(baseDate: Date, interval: AgendaEvent['recurrenceInterva
 
 /** Geeft de te tonen datum terug (next occurrence voor recurring, anders origineel). */
 function displayDate(event: AgendaEvent): Date {
-  const base = new Date(event.date)
+  const base = parseLocalDate(event.date)
   if (event.isRecurring && event.recurrenceInterval) {
     return nextOccurrence(base, event.recurrenceInterval)
   }
@@ -51,19 +60,13 @@ const categoryConfig: Record<EventCategory, { label: string; variant: 'primary' 
   overig: { label: 'Overig', variant: 'outline', accentClass: 'border-l-4 border-[#926e69]' },
 }
 
-function formatDate(dateStr: string): string {
-  try {
-    const d = new Date(dateStr)
-    if (isNaN(d.getTime())) return dateStr
-    return d.toLocaleDateString('nl-NL', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    })
-  } catch {
-    return dateStr
-  }
+function formatDate(d: Date): string {
+  return d.toLocaleDateString('nl-NL', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
 }
 
 export default async function AgendaPage() {
@@ -145,7 +148,7 @@ export default async function AgendaPage() {
                         <div className="flex flex-wrap gap-4 text-sm text-[#4d4c4c] mb-4">
                           <span className="flex items-center gap-1.5">
                             <Calendar size={14} className="text-[#cc0000]" />
-                            {formatDate(displayDate(event).toISOString())}
+                            {formatDate(displayDate(event))}
                             {event.isRecurring && (
                               <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69] ml-1">
                                 terugkerend
@@ -225,7 +228,7 @@ export default async function AgendaPage() {
                     <div className="flex flex-wrap gap-4 mt-1 text-sm text-white/50">
                       <span className="flex items-center gap-1">
                         <Calendar size={12} />
-                        {formatDate(displayDate(event).toISOString())}
+                        {formatDate(displayDate(event))}
                         {event.isRecurring && (
                           <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69] ml-1">
                             terugkerend

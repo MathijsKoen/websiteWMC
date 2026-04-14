@@ -19,19 +19,18 @@ const categoryConfig: Record<EventCategory, { label: string; variant: 'primary' 
   overig: { label: 'Overig', variant: 'outline', accentClass: 'border-l-4 border-[#926e69]' },
 }
 
+function parseLocalDate(dateStr: string): Date {
+  const [year, month, day] = dateStr.substring(0, 10).split('-').map(Number)
+  return new Date(year, month - 1, day)
+}
+
 function formatDate(dateStr: string): string {
-  try {
-    const d = new Date(dateStr)
-    if (isNaN(d.getTime())) return dateStr
-    return d.toLocaleDateString('nl-NL', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    })
-  } catch {
-    return dateStr
-  }
+  return parseLocalDate(dateStr).toLocaleDateString('nl-NL', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
 }
 
 interface Props {

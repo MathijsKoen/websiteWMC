@@ -335,6 +335,11 @@ export async function getTrackBySlug(slug: string): Promise<TrackInfo | null> {
       status: item.fields.status as string | undefined,
       foundedYear: item.fields.foundedYear as number | undefined,
       moduleCount: item.fields.moduleCount as number | undefined,
+      railLengte: item.fields.railLengte as string | undefined,
+      tijdperk: item.fields.tijdperk as string | undefined,
+      merk: item.fields.merk as string | undefined,
+      landcontinent: item.fields.landcontinent as string | undefined,
+      aantalLeden: item.fields.aantalLeden as number | undefined,
     }
   } catch {
     return null

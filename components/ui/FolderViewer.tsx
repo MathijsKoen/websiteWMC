@@ -11,7 +11,7 @@ interface FolderViewerProps {
 
 export function FolderSection() {
   const [open, setOpen] = useState(false)
-  const [side, setSide] = useState<'voor' | 'achter'>('voor')
+  const [side, setSide] = useState<'voor' | 'achter' | 'diorama'>('voor')
 
   return (
     <>
@@ -107,7 +107,7 @@ export function FolderSection() {
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 shrink-0">
                   <div className="flex gap-1">
-                    {(['voor', 'achter'] as const).map((s) => (
+                    {(['voor', 'achter', 'diorama'] as const).map((s) => (
                       <button
                         key={s}
                         onClick={() => setSide(s)}
@@ -118,15 +118,19 @@ export function FolderSection() {
                         }`}
                         style={{ fontFamily: 'Space Grotesk, sans-serif' }}
                       >
-                        {s === 'voor' ? 'Voorkant' : 'Achterkant'}
+                        {s === 'voor' ? 'Voorkant' : s === 'achter' ? 'Achterkant' : 'Diorama reglement'}
                       </button>
                     ))}
                   </div>
                   <div className="flex items-center gap-3">
                     <a
-                      href={side === 'voor'
-                        ? '/PRINT_VOOR_WMC_Flyer_100_.pdf'
-                        : '/PRINT_ACHTER_WMC_Flyer_100_.pdf'}
+                      href={
+                        side === 'voor'
+                          ? '/PRINT_VOOR_WMC_Flyer_100_.pdf'
+                          : side === 'achter'
+                          ? '/PRINT_ACHTER_WMC_Flyer_100_.pdf'
+                          : '/Diorama reglement.pdf'
+                      }
                       download
                       className="flex items-center gap-1.5 text-xs font-bold text-white/50 hover:text-white transition-colors"
                     >
@@ -150,11 +154,17 @@ export function FolderSection() {
                     src={
                       side === 'voor'
                         ? '/PRINT_VOOR_WMC_Flyer_100_.pdf#toolbar=0&navpanes=0'
-                        : '/PRINT_ACHTER_WMC_Flyer_100_.pdf#toolbar=0&navpanes=0'
+                        : side === 'achter'
+                        ? '/PRINT_ACHTER_WMC_Flyer_100_.pdf#toolbar=0&navpanes=0'
+                        : '/Diorama reglement.pdf#toolbar=0&navpanes=0'
                     }
                     className="w-full h-full border-0"
                     style={{ minHeight: '60vh' }}
-                    title={`WMC Beurs 2026 folder ${side}kant`}
+                    title={
+                      side === 'diorama'
+                        ? 'Diorama reglement'
+                        : `WMC Beurs 2026 folder ${side}kant`
+                    }
                   />
                 </div>
               </div>

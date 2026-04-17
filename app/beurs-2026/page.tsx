@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     'Kom naar de WMC Modelspoor Beurs 2026 in Heerhugowaard. Bewonder spectaculaire banen van clubs uit heel Nederland. Gratis toegang voor kinderen.',
 }
 
-export const revalidate = 1
+export const revalidate = 60
 
 // ─── Pas hier de beurs-details aan zodra ze bekend zijn ────────────────────
 const BEURS = {
@@ -23,7 +23,7 @@ const BEURS = {
   time: 'Zaterdag: 10:00 – 16:00, zondag: 10:00 – 15:00',      // bijv. '10:00 – 17:00 uur'
   location: 'Heerhugowaard',
   venue: 'De Waardergolf\n1723 HX Heerhugowaard',
-  admission: '€ 6,— | kinderen gratis',         // bijv. '€ 5,— | kinderen gratis'
+  admission: '€ 6 ,— | kinderen gratis',         // bijv. '€ 5,— | kinderen gratis'
   mapsUrl: 'https://maps.google.com/?q=De+Waardergolf+1723+HX+Heerhugowaard',
 }
 // ───────────────────────────────────────────────────────────────────────────

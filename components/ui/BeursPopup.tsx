@@ -20,6 +20,16 @@ export function BeursPopup() {
     }
   }, [])
 
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') dismiss()
+    }
+    if (visible) {
+      document.addEventListener('keydown', handleKeyDown)
+      return () => document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [visible])
+
   function dismiss() {
     sessionStorage.setItem(SESSION_KEY, '1')
     setVisible(false)

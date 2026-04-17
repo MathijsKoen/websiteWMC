@@ -1,4 +1,5 @@
 import type { EntrySkeletonType, EntryFieldTypes } from 'contentful'
+import { unstable_cache } from 'next/cache'
 import { getContentfulClient } from './client'
 import type { NewsArticle, AgendaEvent, TrackInfo, Sponsor, BeursLayout, SiteSettings, TimelineItem, RecurrenceInterval } from './types'
 
@@ -107,268 +108,321 @@ interface SiteSettingsSkeleton extends EntrySkeletonType {
 }
 
 // =============================================
+// CACHE-TIJDEN (seconden)
+//
+// unstable_cache wikkelt Contentful SDK-calls (Axios, geen native fetch)
+// in de Next.js Data Cache. Zonder dit slaat Next.js geen enkele SDK-call
+// op — elke render maakt een verse HTTP-request naar Contentful.
+//
+// Hoe het werkt:
+//  - revalidate: 300 → maximaal één Contentful-call per 5 minuten,
+//    ongeacht hoeveel gebruikers de pagina laden of hoe vaak ISR triggert
+//  - tags: ['tracks'] → toekomstige on-demand revalidatie via
+//    revalidateTag('tracks') in een webhook-route
+// =============================================
+
+const TTL_CONTENT = 300    // 5 min — nieuws, agenda, banen
+const TTL_STATIC  = 3600   // 1 uur — sponsoren, instellingen, beurs-layouts
+
+// =============================================
 // NIEUWS
 // =============================================
 
-export async function getLatestNews(limit = 3): Promise<NewsArticle[]> {
-  try {
-    const entries = await getContentfulClient().getEntries<NewsArticleSkeleton>({
-      content_type: 'newsArticle',
-      order: ['-fields.publishedAt'],
-      limit,
-    })
+export const getLatestNews = unstable_cache(
+  async (limit: number = 3): Promise<NewsArticle[]> => {
+    try {
+      const entries = await getContentfulClient().getEntries<NewsArticleSkeleton>({
+        content_type: 'newsArticle',
+        order: ['-fields.publishedAt'],
+        limit,
+      })
 
-    return entries.items.map((item) => ({
-      id: item.sys.id,
-      title: item.fields.title as string,
-      slug: item.fields.slug as string,
-      summary: item.fields.summary as string,
-      body: item.fields.body as NewsArticle['body'],
-      coverImage: item.fields.coverImage as NewsArticle['coverImage'],
-      publishedAt: (item.fields.publishedAt as string) ?? item.sys.createdAt,
-      category: item.fields.category as string | undefined,
-    }))
-  } catch {
-    return []
-  }
-}
-
-export async function getAllNews(): Promise<NewsArticle[]> {
-  try {
-    const entries = await getContentfulClient().getEntries<NewsArticleSkeleton>({
-      content_type: 'newsArticle',
-      order: ['-fields.publishedAt'],
-    })
-
-    return entries.items.map((item) => ({
-      id: item.sys.id,
-      title: item.fields.title as string,
-      slug: item.fields.slug as string,
-      summary: item.fields.summary as string,
-      body: item.fields.body as NewsArticle['body'],
-      coverImage: item.fields.coverImage as NewsArticle['coverImage'],
-      publishedAt: (item.fields.publishedAt as string) ?? item.sys.createdAt,
-      category: item.fields.category as string | undefined,
-    }))
-  } catch {
-    return []
-  }
-}
-
-export async function getNewsBySlug(slug: string): Promise<NewsArticle | null> {
-  try {
-    const entries = await getContentfulClient().getEntries<NewsArticleSkeleton>({
-      content_type: 'newsArticle',
-      'fields.slug': slug,
-      limit: 1,
-    })
-
-    if (!entries.items.length) return null
-
-    const item = entries.items[0]
-    return {
-      id: item.sys.id,
-      title: item.fields.title as string,
-      slug: item.fields.slug as string,
-      summary: item.fields.summary as string,
-      body: item.fields.body as NewsArticle['body'],
-      coverImage: item.fields.coverImage as NewsArticle['coverImage'],
-      publishedAt: (item.fields.publishedAt as string) ?? item.sys.createdAt,
-      category: item.fields.category as string | undefined,
+      return entries.items.map((item) => ({
+        id: item.sys.id,
+        title: item.fields.title as string,
+        slug: item.fields.slug as string,
+        summary: item.fields.summary as string,
+        body: item.fields.body as NewsArticle['body'],
+        coverImage: item.fields.coverImage as NewsArticle['coverImage'],
+        publishedAt: (item.fields.publishedAt as string) ?? item.sys.createdAt,
+        category: item.fields.category as string | undefined,
+      }))
+    } catch {
+      return []
     }
-  } catch {
-    return null
-  }
-}
+  },
+  ['contentful-latest-news'],
+  { revalidate: TTL_CONTENT, tags: ['news', 'contentful'] }
+)
+
+export const getAllNews = unstable_cache(
+  async (): Promise<NewsArticle[]> => {
+    try {
+      const entries = await getContentfulClient().getEntries<NewsArticleSkeleton>({
+        content_type: 'newsArticle',
+        order: ['-fields.publishedAt'],
+      })
+
+      return entries.items.map((item) => ({
+        id: item.sys.id,
+        title: item.fields.title as string,
+        slug: item.fields.slug as string,
+        summary: item.fields.summary as string,
+        body: item.fields.body as NewsArticle['body'],
+        coverImage: item.fields.coverImage as NewsArticle['coverImage'],
+        publishedAt: (item.fields.publishedAt as string) ?? item.sys.createdAt,
+        category: item.fields.category as string | undefined,
+      }))
+    } catch {
+      return []
+    }
+  },
+  ['contentful-all-news'],
+  { revalidate: TTL_CONTENT, tags: ['news', 'contentful'] }
+)
+
+export const getNewsBySlug = unstable_cache(
+  async (slug: string): Promise<NewsArticle | null> => {
+    try {
+      const entries = await getContentfulClient().getEntries<NewsArticleSkeleton>({
+        content_type: 'newsArticle',
+        'fields.slug': slug,
+        limit: 1,
+      })
+
+      if (!entries.items.length) return null
+
+      const item = entries.items[0]
+      return {
+        id: item.sys.id,
+        title: item.fields.title as string,
+        slug: item.fields.slug as string,
+        summary: item.fields.summary as string,
+        body: item.fields.body as NewsArticle['body'],
+        coverImage: item.fields.coverImage as NewsArticle['coverImage'],
+        publishedAt: (item.fields.publishedAt as string) ?? item.sys.createdAt,
+        category: item.fields.category as string | undefined,
+      }
+    } catch {
+      return null
+    }
+  },
+  ['contentful-news-by-slug'],
+  { revalidate: TTL_CONTENT, tags: ['news', 'contentful'] }
+)
 
 // =============================================
 // AGENDA
 // =============================================
 
-export async function getUpcomingEvents(limit = 10): Promise<AgendaEvent[]> {
-  try {
-    const now = new Date().toISOString() as `${number}-${number}-${number}T${number}:${number}:${number}Z`
-    const entries = await getContentfulClient().getEntries<AgendaEventSkeleton>({
-      content_type: 'agendaEvent',
-      'fields.date[gte]': now,
-      order: ['fields.date'],
-      limit,
-    })
+export const getUpcomingEvents = unstable_cache(
+  async (limit: number = 10): Promise<AgendaEvent[]> => {
+    try {
+      const now = new Date().toISOString() as `${number}-${number}-${number}T${number}:${number}:${number}Z`
+      const entries = await getContentfulClient().getEntries<AgendaEventSkeleton>({
+        content_type: 'agendaEvent',
+        'fields.date[gte]': now,
+        order: ['fields.date'],
+        limit,
+      })
 
-    return entries.items.map((item) => ({
-      id: item.sys.id,
-      title: item.fields.title as string,
-      slug: item.fields.slug as string,
-      date: item.fields.date as string,
-      endDate: item.fields.endDate as string | undefined,
-      startTime: item.fields.startTime as string,
-      endTime: item.fields.endTime as string | undefined,
-      location: item.fields.location as string,
-      description: item.fields.description as string | undefined,
-      category: item.fields.category as AgendaEvent['category'],
-      price: item.fields.price as number | undefined,
-      isPublic: (item.fields.isPublic as boolean) ?? true,
-      isRecurring: (item.fields.isRecurring as boolean) ?? false,
-      recurrenceInterval: item.fields.recurrenceInterval as RecurrenceInterval | undefined,
-    }))
-  } catch {
-    return []
-  }
-}
-
-export async function getAllEvents(): Promise<AgendaEvent[]> {
-  try {
-    const entries = await getContentfulClient().getEntries<AgendaEventSkeleton>({
-      content_type: 'agendaEvent',
-      order: ['fields.date'],
-    })
-
-    return entries.items.map((item) => ({
-      id: item.sys.id,
-      title: item.fields.title as string,
-      slug: item.fields.slug as string,
-      date: item.fields.date as string,
-      endDate: item.fields.endDate as string | undefined,
-      startTime: item.fields.startTime as string,
-      endTime: item.fields.endTime as string | undefined,
-      location: item.fields.location as string,
-      description: item.fields.description as string | undefined,
-      category: item.fields.category as AgendaEvent['category'],
-      price: item.fields.price as number | undefined,
-      isPublic: (item.fields.isPublic as boolean) ?? true,
-      isRecurring: (item.fields.isRecurring as boolean) ?? false,
-      recurrenceInterval: item.fields.recurrenceInterval as RecurrenceInterval | undefined,
-    }))
-  } catch {
-    return []
-  }
-}
-
-export async function getEventBySlug(slug: string): Promise<AgendaEvent | null> {
-  try {
-    const entries = await getContentfulClient().getEntries<AgendaEventSkeleton>({
-      content_type: 'agendaEvent',
-      'fields.slug': slug,
-      limit: 1,
-    })
-
-    if (!entries.items.length) return null
-
-    const item = entries.items[0]
-    return {
-      id: item.sys.id,
-      title: item.fields.title as string,
-      slug: item.fields.slug as string,
-      date: item.fields.date as string,
-      endDate: item.fields.endDate as string | undefined,
-      startTime: item.fields.startTime as string,
-      endTime: item.fields.endTime as string | undefined,
-      location: item.fields.location as string,
-      description: item.fields.description as string | undefined,
-      category: item.fields.category as AgendaEvent['category'],
-      price: item.fields.price as number | undefined,
-      isPublic: (item.fields.isPublic as boolean) ?? true,
+      return entries.items.map((item) => ({
+        id: item.sys.id,
+        title: item.fields.title as string,
+        slug: item.fields.slug as string,
+        date: item.fields.date as string,
+        endDate: item.fields.endDate as string | undefined,
+        startTime: item.fields.startTime as string,
+        endTime: item.fields.endTime as string | undefined,
+        location: item.fields.location as string,
+        description: item.fields.description as string | undefined,
+        category: item.fields.category as AgendaEvent['category'],
+        price: item.fields.price as number | undefined,
+        isPublic: (item.fields.isPublic as boolean) ?? true,
+        isRecurring: (item.fields.isRecurring as boolean) ?? false,
+        recurrenceInterval: item.fields.recurrenceInterval as RecurrenceInterval | undefined,
+      }))
+    } catch {
+      return []
     }
-  } catch {
-    return null
-  }
-}
+  },
+  ['contentful-upcoming-events'],
+  { revalidate: TTL_CONTENT, tags: ['events', 'contentful'] }
+)
+
+export const getAllEvents = unstable_cache(
+  async (): Promise<AgendaEvent[]> => {
+    try {
+      const entries = await getContentfulClient().getEntries<AgendaEventSkeleton>({
+        content_type: 'agendaEvent',
+        order: ['fields.date'],
+      })
+
+      return entries.items.map((item) => ({
+        id: item.sys.id,
+        title: item.fields.title as string,
+        slug: item.fields.slug as string,
+        date: item.fields.date as string,
+        endDate: item.fields.endDate as string | undefined,
+        startTime: item.fields.startTime as string,
+        endTime: item.fields.endTime as string | undefined,
+        location: item.fields.location as string,
+        description: item.fields.description as string | undefined,
+        category: item.fields.category as AgendaEvent['category'],
+        price: item.fields.price as number | undefined,
+        isPublic: (item.fields.isPublic as boolean) ?? true,
+        isRecurring: (item.fields.isRecurring as boolean) ?? false,
+        recurrenceInterval: item.fields.recurrenceInterval as RecurrenceInterval | undefined,
+      }))
+    } catch {
+      return []
+    }
+  },
+  ['contentful-all-events'],
+  { revalidate: TTL_CONTENT, tags: ['events', 'contentful'] }
+)
+
+export const getEventBySlug = unstable_cache(
+  async (slug: string): Promise<AgendaEvent | null> => {
+    try {
+      const entries = await getContentfulClient().getEntries<AgendaEventSkeleton>({
+        content_type: 'agendaEvent',
+        'fields.slug': slug,
+        limit: 1,
+      })
+
+      if (!entries.items.length) return null
+
+      const item = entries.items[0]
+      return {
+        id: item.sys.id,
+        title: item.fields.title as string,
+        slug: item.fields.slug as string,
+        date: item.fields.date as string,
+        endDate: item.fields.endDate as string | undefined,
+        startTime: item.fields.startTime as string,
+        endTime: item.fields.endTime as string | undefined,
+        location: item.fields.location as string,
+        description: item.fields.description as string | undefined,
+        category: item.fields.category as AgendaEvent['category'],
+        price: item.fields.price as number | undefined,
+        isPublic: (item.fields.isPublic as boolean) ?? true,
+      }
+    } catch {
+      return null
+    }
+  },
+  ['contentful-event-by-slug'],
+  { revalidate: TTL_CONTENT, tags: ['events', 'contentful'] }
+)
 
 // =============================================
 // BANEN / TRACKS
 // =============================================
 
-export async function getAllTracks(): Promise<TrackInfo[]> {
-  try {
-    const entries = await getContentfulClient().getEntries<TrackSkeleton>({
-      content_type: 'track',
-      order: ['fields.name'],
-    })
+export const getAllTracks = unstable_cache(
+  async (): Promise<TrackInfo[]> => {
+    try {
+      const entries = await getContentfulClient().getEntries<TrackSkeleton>({
+        content_type: 'track',
+        order: ['fields.name'],
+      })
 
-    return entries.items.map((item) => ({
-      id: item.sys.id,
-      name: item.fields.name as string,
-      slug: item.fields.slug as string,
-      groupName: item.fields.groupName as string,
-      scale: item.fields.scale as TrackInfo['scale'],
-      system: item.fields.system as TrackInfo['system'],
-      description: item.fields.description as TrackInfo['description'],
-      shortDescription: item.fields.shortDescription as string,
-      coverImage: item.fields.coverImage as TrackInfo['coverImage'],
-      images: item.fields.images as TrackInfo['images'],
-      status: item.fields.status as string | undefined,
-      foundedYear: item.fields.foundedYear as number | undefined,
-      moduleCount: item.fields.moduleCount as number | undefined,
-      railLengte: item.fields.railLengte as string | undefined,
-      tijdperk: item.fields.tijdperk as string | undefined,
-      merk: item.fields.merk as string | undefined,
-      landcontinent: item.fields.landcontinent as string | undefined,
-      aantalLeden: item.fields.aantalLeden as number | undefined,
-    }))
-  } catch {
-    return []
-  }
-}
-
-export async function getTrackBySlug(slug: string): Promise<TrackInfo | null> {
-  try {
-    const entries = await getContentfulClient().getEntries<TrackSkeleton>({
-      content_type: 'track',
-      'fields.slug': slug,
-      limit: 1,
-      include: 10, // linked assets in rich text meesturen
-    })
-
-    if (!entries.items.length) return null
-
-    const item = entries.items[0]
-    return {
-      id: item.sys.id,
-      name: item.fields.name as string,
-      slug: item.fields.slug as string,
-      groupName: item.fields.groupName as string,
-      scale: item.fields.scale as TrackInfo['scale'],
-      system: item.fields.system as TrackInfo['system'],
-      description: item.fields.description as TrackInfo['description'],
-      shortDescription: item.fields.shortDescription as string,
-      coverImage: item.fields.coverImage as TrackInfo['coverImage'],
-      images: item.fields.images as TrackInfo['images'],
-      status: item.fields.status as string | undefined,
-      foundedYear: item.fields.foundedYear as number | undefined,
-      moduleCount: item.fields.moduleCount as number | undefined,
-      railLengte: item.fields.railLengte as string | undefined,
-      tijdperk: item.fields.tijdperk as string | undefined,
-      merk: item.fields.merk as string | undefined,
-      landcontinent: item.fields.landcontinent as string | undefined,
-      aantalLeden: item.fields.aantalLeden as number | undefined,
+      return entries.items.map((item) => ({
+        id: item.sys.id,
+        name: item.fields.name as string,
+        slug: item.fields.slug as string,
+        groupName: item.fields.groupName as string,
+        scale: item.fields.scale as TrackInfo['scale'],
+        system: item.fields.system as TrackInfo['system'],
+        description: item.fields.description as TrackInfo['description'],
+        shortDescription: item.fields.shortDescription as string,
+        coverImage: item.fields.coverImage as TrackInfo['coverImage'],
+        images: item.fields.images as TrackInfo['images'],
+        status: item.fields.status as string | undefined,
+        foundedYear: item.fields.foundedYear as number | undefined,
+        moduleCount: item.fields.moduleCount as number | undefined,
+        railLengte: item.fields.railLengte as string | undefined,
+        tijdperk: item.fields.tijdperk as string | undefined,
+        merk: item.fields.merk as string | undefined,
+        landcontinent: item.fields.landcontinent as string | undefined,
+        aantalLeden: item.fields.aantalLeden as number | undefined,
+      }))
+    } catch {
+      return []
     }
-  } catch {
-    return null
-  }
-}
+  },
+  ['contentful-all-tracks'],
+  { revalidate: TTL_CONTENT, tags: ['tracks', 'contentful'] }
+)
+
+export const getTrackBySlug = unstable_cache(
+  async (slug: string): Promise<TrackInfo | null> => {
+    try {
+      const entries = await getContentfulClient().getEntries<TrackSkeleton>({
+        content_type: 'track',
+        'fields.slug': slug,
+        limit: 1,
+        include: 10, // linked assets in rich text meesturen
+      })
+
+      if (!entries.items.length) return null
+
+      const item = entries.items[0]
+      return {
+        id: item.sys.id,
+        name: item.fields.name as string,
+        slug: item.fields.slug as string,
+        groupName: item.fields.groupName as string,
+        scale: item.fields.scale as TrackInfo['scale'],
+        system: item.fields.system as TrackInfo['system'],
+        description: item.fields.description as TrackInfo['description'],
+        shortDescription: item.fields.shortDescription as string,
+        coverImage: item.fields.coverImage as TrackInfo['coverImage'],
+        images: item.fields.images as TrackInfo['images'],
+        status: item.fields.status as string | undefined,
+        foundedYear: item.fields.foundedYear as number | undefined,
+        moduleCount: item.fields.moduleCount as number | undefined,
+        railLengte: item.fields.railLengte as string | undefined,
+        tijdperk: item.fields.tijdperk as string | undefined,
+        merk: item.fields.merk as string | undefined,
+        landcontinent: item.fields.landcontinent as string | undefined,
+        aantalLeden: item.fields.aantalLeden as number | undefined,
+      }
+    } catch {
+      return null
+    }
+  },
+  ['contentful-track-by-slug'],
+  { revalidate: TTL_CONTENT, tags: ['tracks', 'contentful'] }
+)
 
 // =============================================
 // SPONSORS
 // =============================================
 
-export async function getSponsors(): Promise<Sponsor[]> {
-  try {
-    const entries = await getContentfulClient().getEntries<SponsorSkeleton>({
-      content_type: 'sponsor',
-      order: ['fields.name'],
-    })
+export const getSponsors = unstable_cache(
+  async (): Promise<Sponsor[]> => {
+    try {
+      const entries = await getContentfulClient().getEntries<SponsorSkeleton>({
+        content_type: 'sponsor',
+        order: ['fields.name'],
+      })
 
-    return entries.items.map((item) => ({
-      id: item.sys.id,
-      name: item.fields.name as string,
-      logo: item.fields.logo as Sponsor['logo'],
-      website: item.fields.website as string | undefined,
-      tier: item.fields.tier as Sponsor['tier'],
-    }))
-  } catch {
-    return []
-  }
-}
+      return entries.items.map((item) => ({
+        id: item.sys.id,
+        name: item.fields.name as string,
+        logo: item.fields.logo as Sponsor['logo'],
+        website: item.fields.website as string | undefined,
+        tier: item.fields.tier as Sponsor['tier'],
+      }))
+    } catch {
+      return []
+    }
+  },
+  ['contentful-sponsors'],
+  { revalidate: TTL_STATIC, tags: ['sponsors', 'contentful'] }
+)
 
 // =============================================
 // SITE SETTINGS
@@ -415,62 +469,70 @@ const SITE_SETTINGS_FALLBACK: SiteSettings = {
   ],
 }
 
-export async function getSiteSettings(): Promise<SiteSettings> {
-  try {
-    const entries = await getContentfulClient().getEntries<SiteSettingsSkeleton>({
-      content_type: 'siteSettings',
-      limit: 1,
-    })
+export const getSiteSettings = unstable_cache(
+  async (): Promise<SiteSettings> => {
+    try {
+      const entries = await getContentfulClient().getEntries<SiteSettingsSkeleton>({
+        content_type: 'siteSettings',
+        limit: 1,
+      })
 
-    if (!entries.items.length) return SITE_SETTINGS_FALLBACK
+      if (!entries.items.length) return SITE_SETTINGS_FALLBACK
 
-    const item = entries.items[0]
-    return {
-      id: item.sys.id,
-      email: (item.fields.email as string) ?? SITE_SETTINGS_FALLBACK.email,
-      adres: (item.fields.adres as string) ?? SITE_SETTINGS_FALLBACK.adres,
-      postcode: (item.fields.postcode as string) ?? SITE_SETTINGS_FALLBACK.postcode,
-      stad: (item.fields.stad as string) ?? SITE_SETTINGS_FALLBACK.stad,
-      provincie: (item.fields.provincie as string) ?? SITE_SETTINGS_FALLBACK.provincie,
-      openingsDag: (item.fields.openingsDag as string) ?? SITE_SETTINGS_FALLBACK.openingsDag,
-      openingsTijd: (item.fields.openingsTijd as string) ?? SITE_SETTINGS_FALLBACK.openingsTijd,
-      contributie: (item.fields.contributie as number) ?? SITE_SETTINGS_FALLBACK.contributie,
-      contributieJaar: (item.fields.contributieJaar as number) ?? SITE_SETTINGS_FALLBACK.contributieJaar,
-      lidWordenStappen: (item.fields.lidWordenStappen as string[]) ?? SITE_SETTINGS_FALLBACK.lidWordenStappen,
-      overOnsIntro: (item.fields.overOnsIntro as string) ?? SITE_SETTINGS_FALLBACK.overOnsIntro,
-      geschiedenisAlineas: (item.fields.geschiedenisAlineas as string[]) ?? SITE_SETTINGS_FALLBACK.geschiedenisAlineas,
-      doelstellingen: (item.fields.doelstellingen as string[]) ?? SITE_SETTINGS_FALLBACK.doelstellingen,
-      tijdlijn: (item.fields.tijdlijn as unknown as TimelineItem[]) ?? SITE_SETTINGS_FALLBACK.tijdlijn,
+      const item = entries.items[0]
+      return {
+        id: item.sys.id,
+        email: (item.fields.email as string) ?? SITE_SETTINGS_FALLBACK.email,
+        adres: (item.fields.adres as string) ?? SITE_SETTINGS_FALLBACK.adres,
+        postcode: (item.fields.postcode as string) ?? SITE_SETTINGS_FALLBACK.postcode,
+        stad: (item.fields.stad as string) ?? SITE_SETTINGS_FALLBACK.stad,
+        provincie: (item.fields.provincie as string) ?? SITE_SETTINGS_FALLBACK.provincie,
+        openingsDag: (item.fields.openingsDag as string) ?? SITE_SETTINGS_FALLBACK.openingsDag,
+        openingsTijd: (item.fields.openingsTijd as string) ?? SITE_SETTINGS_FALLBACK.openingsTijd,
+        contributie: (item.fields.contributie as number) ?? SITE_SETTINGS_FALLBACK.contributie,
+        contributieJaar: (item.fields.contributieJaar as number) ?? SITE_SETTINGS_FALLBACK.contributieJaar,
+        lidWordenStappen: (item.fields.lidWordenStappen as string[]) ?? SITE_SETTINGS_FALLBACK.lidWordenStappen,
+        overOnsIntro: (item.fields.overOnsIntro as string) ?? SITE_SETTINGS_FALLBACK.overOnsIntro,
+        geschiedenisAlineas: (item.fields.geschiedenisAlineas as string[]) ?? SITE_SETTINGS_FALLBACK.geschiedenisAlineas,
+        doelstellingen: (item.fields.doelstellingen as string[]) ?? SITE_SETTINGS_FALLBACK.doelstellingen,
+        tijdlijn: (item.fields.tijdlijn as unknown as TimelineItem[]) ?? SITE_SETTINGS_FALLBACK.tijdlijn,
+      }
+    } catch {
+      return SITE_SETTINGS_FALLBACK
     }
-  } catch {
-    return SITE_SETTINGS_FALLBACK
-  }
-}
+  },
+  ['contentful-site-settings'],
+  { revalidate: TTL_STATIC, tags: ['site-settings', 'contentful'] }
+)
 
 // =============================================
 // BEURS 2026 — UITGENODIGDE BANEN
 // =============================================
 
-export async function getAllBeursLayouts(): Promise<BeursLayout[]> {
-  try {
-    const entries = await getContentfulClient().getEntries<BeursLayoutSkeleton>({
-      content_type: 'beursLayout',
-      order: ['fields.name'],
-    })
+export const getAllBeursLayouts = unstable_cache(
+  async (): Promise<BeursLayout[]> => {
+    try {
+      const entries = await getContentfulClient().getEntries<BeursLayoutSkeleton>({
+        content_type: 'beursLayout',
+        order: ['fields.name'],
+      })
 
-    return entries.items.map((item) => ({
-      id: item.sys.id,
-      name: item.fields.name as string,
-      slug: item.fields.slug as string,
-      club: item.fields.club as string,
-      city: item.fields.city as string,
-      scale: item.fields.scale as string | undefined,
-      description: item.fields.description as string | undefined,
-      coverImage: item.fields.coverImage as BeursLayout['coverImage'],
-      images: item.fields.images as BeursLayout['images'],
-      website: item.fields.website as string | undefined,
-    }))
-  } catch {
-    return []
-  }
-}
+      return entries.items.map((item) => ({
+        id: item.sys.id,
+        name: item.fields.name as string,
+        slug: item.fields.slug as string,
+        club: item.fields.club as string,
+        city: item.fields.city as string,
+        scale: item.fields.scale as string | undefined,
+        description: item.fields.description as string | undefined,
+        coverImage: item.fields.coverImage as BeursLayout['coverImage'],
+        images: item.fields.images as BeursLayout['images'],
+        website: item.fields.website as string | undefined,
+      }))
+    } catch {
+      return []
+    }
+  },
+  ['contentful-beurs-layouts'],
+  { revalidate: TTL_STATIC, tags: ['beurs', 'contentful'] }
+)

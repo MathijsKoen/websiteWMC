@@ -9,10 +9,15 @@ package = "@netlify/plugin-nextjs"
   NEXT_TELEMETRY_DISABLED = "1"
   NODE_VERSION = "20"
 
+# Dev-configuratie voor `netlify dev`.
+# Stackbit beheert de Next.js instantie zelf via `npx stackbit dev` (poort 8090).
+# Gebruik `netlify dev` alleen voor edge functions / redirects testen zonder Stackbit.
 [dev]
   command = "npm run dev"
   targetPort = 3000
+  port = 8888
   framework = "#custom"
+  autoLaunch = false
 
 [[headers]]
   for = "/*"

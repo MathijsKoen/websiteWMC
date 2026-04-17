@@ -11,7 +11,7 @@ import type { Document } from '@contentful/rich-text-types'
 import type { ContentfulImage } from '@/lib/contentful/types'
 import { sbObject, sbField } from '@/lib/stackbit'
 
-export const revalidate = 1
+export const revalidate = 60
 
 interface Props {
   params: Promise<{ slug: string }>

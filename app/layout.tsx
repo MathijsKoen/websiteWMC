@@ -39,6 +39,11 @@ export const metadata: Metadata = {
     title: 'De WMC — Westfriese Modelspoor Club',
     description:
       'Actieve modelspoorvereniging opgericht in 1998. Leden werken elke vrijdagavond aan N-banen, H0-banen en 0-schaal modellen in Noord-Scharwoude.',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'De WMC — Westfriese Modelspoor Club' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/og-image.png'],
   },
   robots: {
     index: true,
@@ -46,7 +51,7 @@ export const metadata: Metadata = {
   },
 }
 
-export const revalidate = 1
+export const revalidate = 60
 
 export default async function RootLayout({
   children,
@@ -55,13 +60,45 @@ export default async function RootLayout({
 }) {
   const tracks = await getAllTracks()
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SportsClub',
+    name: 'De Westfriese Modelspoor Club',
+    alternateName: 'De WMC',
+    url: 'https://dewmc.nl',
+    email: 'info@dewmc.nl',
+    foundingDate: '1998',
+    description:
+      'De Westfriese Modelspoor Club (WMC) is opgericht in 1998 in Hoorn. Actieve modelspoorvereniging met leden die werken aan N-banen, H0-banen en 0-schaal modellen.',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'De Mossel 23e',
+      postalCode: '1723 HX',
+      addressLocality: 'Noord-Scharwoude',
+      addressRegion: 'Noord-Holland',
+      addressCountry: 'NL',
+    },
+    logo: 'https://dewmc.nl/logo-wmc.png',
+  }
+
   return (
     <html lang="nl" className={`${spaceGrotesk.variable} ${inter.variable}`}>
       <body className="min-h-screen flex flex-col font-body antialiased">
+        {/* Skip-to-main voor toetsenbordgebruikers */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:bg-white focus:text-[#cc0000] focus:font-bold focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:outline-none"
+        >
+          Ga naar inhoud
+        </a>
         <Header tracks={tracks.map((track) => ({ slug: track.slug, name: track.name }))} />
-        <main className="flex-1 pt-20">{children}</main>
+        <main id="main-content" className="flex-1 pt-20">{children}</main>
         <Footer />
         <BeursPopup />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </body>
     </html>
   )

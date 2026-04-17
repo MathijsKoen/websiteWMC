@@ -9,8 +9,9 @@ import { RichText } from '@/components/ui/RichText'
 import { getAllTracks, getTrackBySlug } from '@/lib/contentful/queries'
 import type { Document } from '@contentful/rich-text-types'
 import type { ContentfulImage } from '@/lib/contentful/types'
+import { sbObject, sbField } from '@/lib/stackbit'
 
-export const revalidate = 1
+export const revalidate = 60
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -81,7 +82,7 @@ export default async function TrackDetailPage({ params }: Props) {
           </div>
         )}
         <div className="absolute top-0 right-0 w-1/4 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/4" />
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 py-20">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 py-20" {...sbObject(track.id)}>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-0.5 bg-[#cc0000]" />
             <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
@@ -91,10 +92,11 @@ export default async function TrackDetailPage({ params }: Props) {
           <h1
             className="font-black text-5xl md:text-6xl tracking-tighter mb-3"
             style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+            {...sbField(track.id, 'name')}
           >
             {track.name}
           </h1>
-          <p className="text-white/50 text-lg mb-6">{track.groupName}</p>
+          <p className="text-white/50 text-lg mb-6" {...sbField(track.id, 'groupName')}>{track.groupName}</p>
           <div className="flex flex-wrap items-center gap-4">
             <Badge variant="primary">{track.scale}</Badge>
             <Badge>{track.system}</Badge>
@@ -120,7 +122,7 @@ export default async function TrackDetailPage({ params }: Props) {
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
             {/* Main rich text */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2" {...sbField(track.id, 'description')}>
               {track.description ? (
                 <RichText document={track.description as unknown as Document} />
               ) : (
@@ -158,7 +160,7 @@ export default async function TrackDetailPage({ params }: Props) {
                 >
                   In het kort
                 </h3>
-                <p className="text-sm text-[#4d4c4c] leading-relaxed">{track.shortDescription}</p>
+                <p className="text-sm text-[#4d4c4c] leading-relaxed" {...sbField(track.id, 'shortDescription')}>{track.shortDescription}</p>
               </div>
             </div>
           </div>

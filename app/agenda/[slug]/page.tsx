@@ -8,7 +8,7 @@ import { getAllEvents, getEventBySlug } from '@/lib/contentful/queries'
 import type { AgendaEvent } from '@/lib/contentful/types'
 import { sbObject, sbField } from '@/lib/stackbit'
 
-export const revalidate = 1
+export const revalidate = 60
 
 type EventCategory = AgendaEvent['category']
 

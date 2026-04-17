@@ -31,6 +31,7 @@ export function TiltCard({ children, className = '', intensity = 8 }: TiltCardPr
   const glareY = useTransform(ySpring, [-0.5, 0.5], ['0%', '100%'])
 
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const rect = ref.current?.getBoundingClientRect()
     if (!rect) return
     x.set((e.clientX - rect.left) / rect.width - 0.5)

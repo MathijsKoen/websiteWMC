@@ -6,6 +6,11 @@ export default defineStackbitConfig({
   ssgName: 'nextjs',
   nodeVersion: '20',
 
+  // De URL die de visual editor in de iframe laadt.
+  // DEPLOY_URL wordt automatisch door Netlify ingesteld per preview deploy.
+  // Lokaal valt het terug op de productie-URL.
+  previewUrl: process.env['DEPLOY_URL'] ?? 'https://dewmc.nl',
+
   devCommand: 'node_modules/.bin/next dev --port {PORT}',
 
   contentSources: [
@@ -27,13 +32,28 @@ export default defineStackbitConfig({
     { name: 'siteSettings', type: 'data' },
   ],
 
-  // siteMap vertelt de editor welke pagina's bestaan en wat hun URL is
+  // siteMap vertelt de editor welke pagina's bestaan en wat hun URL is.
+  // Statische pagina's worden handmatig opgegeven; dynamische Contentful-pagina's
+  // worden gegenereerd op basis van de documents-lijst.
   siteMap: ({ documents, models }): SiteMapEntry[] => {
+    // Statische pagina's zonder Contentful-document
+    const staticPages: SiteMapEntry[] = [
+      { stableId: 'home',       urlPath: '/',            label: 'Home',       isHomePage: true },
+      { stableId: 'over-ons',   urlPath: '/over-ons',    label: 'Over ons',   isHomePage: false },
+      { stableId: 'onze-banen', urlPath: '/onze-banen',  label: 'Onze Banen', isHomePage: false },
+      { stableId: 'nieuws',     urlPath: '/nieuws',       label: 'Nieuws',     isHomePage: false },
+      { stableId: 'agenda',     urlPath: '/agenda',       label: 'Agenda',     isHomePage: false },
+      { stableId: 'contact',    urlPath: '/contact',      label: 'Contact',    isHomePage: false },
+      { stableId: 'sponsoren',  urlPath: '/sponsoren',    label: 'Sponsoren',  isHomePage: false },
+      { stableId: 'beurs-2026', urlPath: '/beurs-2026',   label: 'Beurs 2026', isHomePage: false },
+    ]
+
+    // Dynamische Contentful-pagina's
     const pageModelNames = new Set(
       models.filter((m) => m.type === 'page').map((m) => m.name)
     )
 
-    return documents
+    const contentPages = documents
       .filter((doc) => pageModelNames.has(doc.modelName))
       .flatMap((document) => {
         const slugField = document.fields?.['slug']
@@ -75,5 +95,7 @@ export default defineStackbitConfig({
             return []
         }
       })
+
+    return [...staticPages, ...contentPages]
   },
 })

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /leden
+
+Sitemap: https://dewmc.nl/sitemap.xml

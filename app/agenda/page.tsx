@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     'Blijf op de hoogte van de aankomende beurzen, open dagen en wekelijkse clubavonden van De Westfriese Modelspoor Club.',
 }
 
-export const revalidate = 1
+export const revalidate = 60
 
 type EventCategory = AgendaEvent['category']
 

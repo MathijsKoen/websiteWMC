@@ -22,6 +22,8 @@ export function CustomCursor() {
   useEffect(() => {
     // Alleen op pointer-apparaten (desktop), niet op touch
     if (!window.matchMedia('(pointer: fine)').matches) return
+    // Respecteer gebruikersvoorkeur voor bewegingsreductie
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const move = (e: MouseEvent) => {
       rawX.set(e.clientX)
@@ -56,7 +58,10 @@ export function CustomCursor() {
     }
   }, [rawX, rawY, visible])
 
-  if (typeof window !== 'undefined' && !window.matchMedia('(pointer: fine)').matches) {
+  if (typeof window !== 'undefined' && (
+    !window.matchMedia('(pointer: fine)').matches ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )) {
     return null
   }
 

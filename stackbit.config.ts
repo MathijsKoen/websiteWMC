@@ -6,11 +6,6 @@ export default defineStackbitConfig({
   ssgName: 'nextjs',
   nodeVersion: '20',
 
-  // De URL die de visual editor in de iframe laadt.
-  // DEPLOY_URL wordt automatisch door Netlify ingesteld per preview deploy.
-  // Lokaal valt het terug op de productie-URL.
-  previewUrl: process.env['DEPLOY_URL'] ?? 'https://dewmc.nl',
-
   devCommand: 'node_modules/.bin/next dev --port {PORT}',
 
   contentSources: [

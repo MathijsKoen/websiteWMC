@@ -138,9 +138,7 @@ export default async function Beurs2026Page() {
 
             <ScrollReveal delay={0.15}>
               <p className="text-lg md:text-xl text-white/70 leading-relaxed max-w-xl mb-10">
-                Kom bewonderen hoe modelspoorbouwers van clubs uit heel Nederland hun
-                prachtige banen tot leven brengen. Een unieke kans om al het moois
-                onder één dak te zien.
+                Beleef hoe modelspoorbouwers uit Nederland, België, Duitsland en Frankrijk hun meesterwerken tot leven wekken. Doe mee aan de Booknook-wedstrijd, laat je inspireren door diverse modelbouw-demonstraties of steek zelf de handen uit de mouwen. Ook voor de jonge bezoekers is er volop plezier met knutselactiviteiten, zelf treinen besturen en een springkussen!
               </p>
             </ScrollReveal>
 

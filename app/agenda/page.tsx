@@ -58,6 +58,7 @@ const categoryConfig: Record<EventCategory, { label: string; variant: 'primary' 
   opendag: { label: 'Open Dag', variant: 'secondary', accentClass: 'border-l-4 border-[#0058bb]' },
   clubavond: { label: 'Clubavond', variant: 'default', accentClass: 'border-l-4 border-[#e2e2e2]' },
   overig: { label: 'Overig', variant: 'outline', accentClass: 'border-l-4 border-[#926e69]' },
+  evenement: { label: 'Evenement', variant: 'secondary', accentClass: 'border-l-4 border-[#16a34a]' },
 }
 
 function formatDate(d: Date): string {
@@ -174,7 +175,7 @@ export default async function AgendaPage() {
                       </div>
                       <div className="md:w-24 md:text-right shrink-0">
                         {event.price == null ? (
-                          <span className="text-xs font-bold text-[#926e69] uppercase tracking-widest">Gratis</span>
+                          <span className="text-xs font-bold text-[#926e69] uppercase tracking-widest">zie website</span>
                         ) : event.price === 0 ? (
                           <span className="font-black text-lg text-green-600"
                             style={{ fontFamily: 'Space Grotesk, sans-serif' }}

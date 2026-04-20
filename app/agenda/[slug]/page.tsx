@@ -17,6 +17,7 @@ const categoryConfig: Record<EventCategory, { label: string; variant: 'primary' 
   opendag: { label: 'Open Dag', variant: 'secondary', accentClass: 'border-l-4 border-[#0058bb]' },
   clubavond: { label: 'Clubavond', variant: 'default', accentClass: 'border-l-4 border-[#e2e2e2]' },
   overig: { label: 'Overig', variant: 'outline', accentClass: 'border-l-4 border-[#926e69]' },
+  evenement: { label: 'Evenement', variant: 'secondary', accentClass: 'border-l-4 border-[#16a34a]' },
 }
 
 function parseLocalDate(dateStr: string): Date {
@@ -166,9 +167,9 @@ export default async function AgendaDetailPage({ params }: Props) {
                     </span>
                   </div>
                   <div className="flex justify-between items-center gap-4">
-                    <span className="text-xs font-bold uppercase tracking-widest text-[#926e69]">Entree</span>
+                    <span className="text-xs font-bold uppercase tracking-widest text-[#926e69]">Toegangsprijs</span>
                     {event.price == null ? (
-                      <span className="text-sm font-bold text-[#926e69]">—</span>
+                      <span className="text-sm font-bold text-[#926e69]">zie website</span>
                     ) : event.price === 0 ? (
                       <span className="font-black text-green-600" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>Gratis</span>
                     ) : (

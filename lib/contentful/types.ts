@@ -58,7 +58,7 @@ export interface ContentfulNewsEntry {
 // AGENDA / EVENTS
 // =============================================
 
-export type EventCategory = 'beurs' | 'opendag' | 'clubavond' | 'overig'
+export type EventCategory = 'beurs' | 'opendag' | 'clubavond' | 'overig' | 'evenement'
 
 export type RecurrenceInterval = 'weekly' | 'biweekly' | 'monthly'
 

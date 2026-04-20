@@ -17,6 +17,7 @@ const categoryLabels: Record<EventCategory, string> = {
   clubavond: 'Clubavond',
   opendag: 'Open Dag',
   overig: 'Overig',
+  evenement: 'Evenement',
 }
 
 const categoryAccent: Record<EventCategory, string> = {
@@ -24,6 +25,7 @@ const categoryAccent: Record<EventCategory, string> = {
   clubavond: 'bg-[#4d4c4c]',
   opendag: 'bg-[#0058bb]',
   overig: 'bg-[#926e69]',
+  evenement: 'bg-[#16a34a]',
 }
 
 function parseDateParts(dateStr: string): { day: string; month: string; year: string } | null {
@@ -52,6 +54,17 @@ export default async function HomePage() {
     <>
       {/* ===== HERO ===== */}
       <section className="relative bg-[#1a1c1c] text-white overflow-hidden min-h-[85vh] flex items-center">
+        {/* Locomotief achtergrond */}
+        <div className="absolute inset-y-0 right-0 w-2/3 md:w-1/2 pointer-events-none select-none">
+          <Image
+            src="/Logo_locomotief.png"
+            alt=""
+            fill
+            className="object-contain object-right opacity-[0.12]"
+            priority
+            sizes="(max-width: 768px) 67vw, 50vw"
+          />
+        </div>
         {/* Grid achtergrond */}
         <div
           className="absolute inset-0 opacity-5"

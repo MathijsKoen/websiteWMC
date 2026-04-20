@@ -53,63 +53,70 @@ export default async function HomePage() {
   return (
     <>
       {/* ===== HERO ===== */}
-      <section className="relative bg-[#1a1c1c] text-white overflow-hidden min-h-[85vh] flex items-center">
-        {/* Locomotief achtergrond */}
-        <div className="absolute inset-y-0 right-0 w-2/3 md:w-1/2 pointer-events-none select-none">
-          <Image
-            src="/Logo_locomotief.png"
-            alt=""
-            fill
-            className="object-contain object-right opacity-[0.12]"
-            priority
-            sizes="(max-width: 768px) 67vw, 50vw"
-          />
-        </div>
-        {/* Grid achtergrond */}
+      <section className="relative bg-white text-[#1a1c1c] overflow-hidden min-h-[85vh] flex items-center border-b border-[#e2e2e2]">
+        {/* Rood vlak rechts met clipPath — alleen tablet en groter */}
+        {/* clipPath: diagonaal snijdt van 15% bovenaan naar 0% onderaan, tekst zit altijd links */}
         <div
-          className="absolute inset-0 opacity-5"
+          className="hidden md:block absolute top-0 right-0 h-full w-1/2 bg-[#cc0000] pointer-events-none"
+          style={{ clipPath: 'polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%)' }}
+        />
+        <div
+          className="hidden md:block absolute top-0 right-0 h-full w-1/2 opacity-[0.08] pointer-events-none"
           style={{
+            clipPath: 'polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%)',
             backgroundImage:
               'repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 0,transparent 50%),repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 0,transparent 50%)',
             backgroundSize: '40px 40px',
           }}
         />
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/4" />
-        <div className="absolute bottom-0 left-1/4 w-1 h-3/4 bg-[#cc0000]" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 py-24">
-          <div className="max-w-3xl">
-            <ScrollReveal direction="up" duration={0.7}>
-              <h1
-                className="font-black text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-none mb-8"
-                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-              >
-                Westfriese
-                <br />
-                <span className="text-[#cc0000]">Modelspoor</span>
-                <br />
-                Club
-              </h1>
-            </ScrollReveal>
+        {/* Mobiel: dunne rode bovenbalk i.p.v. het vlak */}
+        <div className="md:hidden absolute top-0 inset-x-0 h-1 bg-[#cc0000]" />
+        {/* Verticale rode lijn links */}
+        <div className="absolute bottom-0 left-0 w-1 h-3/4 bg-[#cc0000]" />
 
-            <ScrollReveal delay={0.15} duration={0.6}>
-              <p className="text-lg md:text-xl text-white/70 leading-relaxed max-w-xl mb-10">
-                Wij bieden onderdak aan modelspoorbouwers van alle schalen. Elke vrijdagavond
-                werken onze leden samen aan {tracks.length > 0 ? tracks.length : 'zes'} unieke banen in Noord-Scharwoude.
-              </p>
-            </ScrollReveal>
+        {/* 2-kolomsgrid: tekst strikt in linker helft, nooit over het rode vlak */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-8 py-24">
+          <div className="grid grid-cols-1 md:grid-cols-2">
+            <div>
+              <ScrollReveal direction="up" duration={0.7}>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-8 h-0.5 bg-[#cc0000]" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
+                    Noord-Scharwoude
+                  </span>
+                </div>
+                <h1
+                  className="font-black text-5xl md:text-6xl lg:text-7xl tracking-tighter leading-none mb-8"
+                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                >
+                  Westfriese
+                  <br />
+                  <span className="text-[#cc0000]">Modelspoor</span>
+                  <br />
+                  Club
+                </h1>
+              </ScrollReveal>
 
-            <ScrollReveal delay={0.25} duration={0.6}>
-              <div className="flex flex-wrap gap-4">
-                <Button href="/contact" size="lg" skewed>
-                  <span>Wordt lid</span>
-                  <ArrowRight size={18} />
-                </Button>
-                <Button href="/over-ons" variant="ghost" size="lg">
-                  Over de club
-                </Button>
-              </div>
-            </ScrollReveal>
+              <ScrollReveal delay={0.15} duration={0.6}>
+                <p className="text-lg text-[#4d4c4c] leading-relaxed mb-10 md:pr-8">
+                  Wij bieden onderdak aan modelspoorbouwers van alle schalen. Elke vrijdagavond
+                  werken onze leden samen aan {tracks.length > 0 ? tracks.length : 'zes'} unieke banen in Noord-Scharwoude.
+                </p>
+              </ScrollReveal>
+
+              <ScrollReveal delay={0.25} duration={0.6}>
+                <div className="flex flex-wrap gap-4">
+                  <Button href="/contact" size="lg" skewed>
+                    <span>Wordt lid</span>
+                    <ArrowRight size={18} />
+                  </Button>
+                  <Button href="/over-ons" variant="secondary" size="lg">
+                    Over de club
+                  </Button>
+                </div>
+              </ScrollReveal>
+            </div>
           </div>
         </div>
       </section>

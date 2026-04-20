@@ -4,6 +4,7 @@ import { ArrowRight, Train, MapPin, Clock, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/ScrollReveal'
+import { HeroReveal } from '@/components/ui/HeroReveal'
 import { TiltCard } from '@/components/ui/TiltCard'
 import { getAllTracks, getUpcomingEvents, getLatestNews } from '@/lib/contentful/queries'
 import type { AgendaEvent } from '@/lib/contentful/types'
@@ -53,7 +54,7 @@ export default async function HomePage() {
   return (
     <>
       {/* ===== HERO ===== */}
-      <section className="relative bg-white text-[#1a1c1c] overflow-hidden min-h-[85vh] flex items-center border-b border-[#e2e2e2]">
+      <section className="relative bg-white text-[#1a1c1c] overflow-hidden min-h-[85vh] flex items-center">
         {/* Rood vlak rechts met clipPath — alleen tablet en groter */}
         {/* clipPath: diagonaal snijdt van 15% bovenaan naar 0% onderaan, tekst zit altijd links */}
         <div
@@ -75,50 +76,8 @@ export default async function HomePage() {
         {/* Verticale rode lijn links */}
         <div className="absolute bottom-0 left-0 w-1 h-3/4 bg-[#cc0000]" />
 
-        {/* 2-kolomsgrid: tekst strikt in linker helft, nooit over het rode vlak */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-8 py-24">
-          <div className="grid grid-cols-1 md:grid-cols-2">
-            <div>
-              <ScrollReveal direction="up" duration={0.7}>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-0.5 bg-[#cc0000]" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                    Noord-Scharwoude
-                  </span>
-                </div>
-                <h1
-                  className="font-black text-5xl md:text-6xl lg:text-7xl tracking-tighter leading-none mb-8"
-                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                >
-                  Westfriese
-                  <br />
-                  <span className="text-[#cc0000]">Modelspoor</span>
-                  <br />
-                  Club
-                </h1>
-              </ScrollReveal>
-
-              <ScrollReveal delay={0.15} duration={0.6}>
-                <p className="text-lg text-[#4d4c4c] leading-relaxed mb-10 md:pr-8">
-                  Wij bieden onderdak aan modelspoorbouwers van alle schalen. Elke vrijdagavond
-                  werken onze leden samen aan {tracks.length > 0 ? tracks.length : 'zes'} unieke banen in Noord-Scharwoude.
-                </p>
-              </ScrollReveal>
-
-              <ScrollReveal delay={0.25} duration={0.6}>
-                <div className="flex flex-wrap gap-4">
-                  <Button href="/contact" size="lg" skewed>
-                    <span>Wordt lid</span>
-                    <ArrowRight size={18} />
-                  </Button>
-                  <Button href="/over-ons" variant="secondary" size="lg">
-                    Over de club
-                  </Button>
-                </div>
-              </ScrollReveal>
-            </div>
-          </div>
-        </div>
+        {/* Client component: laad-animatie per regel + scroll-parallax + scroll-hint */}
+        <HeroReveal tracksCount={tracks.length} />
       </section>
 
       {/* ===== AGENDA ===== */}

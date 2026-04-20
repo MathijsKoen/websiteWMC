@@ -3,6 +3,28 @@
 import { motion } from 'framer-motion'
 import type { ReactNode } from 'react'
 
+// Scroll-indicator: bewegende lijn die naar beneden 'vloeit'
+export function ScrollHint({ className = '' }: { className?: string }) {
+  return (
+    <motion.div
+      className={`flex flex-col items-center gap-2 ${className}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 1.4, duration: 0.8 }}
+    >
+      <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#926e69]">scroll</span>
+      <div className="relative h-12 w-px overflow-hidden bg-[#e2e2e2]">
+        <motion.div
+          className="absolute inset-x-0 bg-[#cc0000]"
+          style={{ height: '55%' }}
+          animate={{ top: ['-55%', '100%'] }}
+          transition={{ duration: 1.3, repeat: Infinity, ease: 'linear' }}
+        />
+      </div>
+    </motion.div>
+  )
+}
+
 interface ScrollRevealProps {
   children: ReactNode
   delay?: number

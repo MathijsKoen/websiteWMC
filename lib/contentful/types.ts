@@ -73,7 +73,7 @@ export interface AgendaEvent {
   location: string
   description?: string
   category: EventCategory
-  price?: number
+  price?: string
   isPublic: boolean
   isRecurring?: boolean
   recurrenceInterval?: RecurrenceInterval

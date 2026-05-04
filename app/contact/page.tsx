@@ -168,6 +168,9 @@ export default async function ContactPage() {
                   € {s.contributie},—
                 </div>
                 <p className="text-xs text-[#926e69] mt-2">
+                  Jeugdleden: € 75,—
+                </p>
+                <p className="text-xs text-[#926e69] mt-1">
                   Jaarlijkse bijdrage. Inclusief toegang tot alle banen en activiteiten.
                 </p>
               </div>

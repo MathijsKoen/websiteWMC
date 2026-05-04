@@ -39,9 +39,12 @@ export function Footer() {
             </Link>
 
             <p className="text-[#e8e8e8]/70 text-sm leading-relaxed max-w-sm mb-6">
-              Opgericht op 1 maart 1998 in Hoorn. Wij bieden onderdak aan
-              modelspoorhobbyisten van alle schalen en schermen onze modules op
-              beurzen door heel Nederland.
+              Opgericht op 1 maart 1998 in Hoorn. De WMC heeft zijn clubgebouw in Noord-Scharwoude
+              aan de Mossel 23e, waar we op de vrijdagavond clubavond hebben van 19.30 uur tot 22.00 uur.
+              Hier zijn de clubleden bezig om de banen die we hebben in diverse schalen, te onderhouden
+              en eventueel te vernieuwen. Ook kunnen we op deze avond belangstellenden ontvangen en laten
+              zien waar we mee bezig zijn op trein gebied. Ook aspirant leden zijn op die avond van
+              harte welkom.
             </p>
 
             {/* Contact info */}

@@ -107,15 +107,14 @@ export function BeursPopup() {
                     </h2>
 
                     <p className="text-white/60 text-sm leading-relaxed mb-7 max-w-xs">
-                      De WMC organiseert een modelspoor tentoonstelling met uitgenodigde banen
-                      van clubs door heel Nederland. Noteer het alvast in je agenda!
+                      De WMC organiseert een modelspoor en modelbouw evenement. Noteer het alvast in je agenda!
                     </p>
 
                     <div className="flex flex-col gap-3 mb-8">
                       {[
                         { icon: Calendar, text: '17 & 18 oktober 2026' },
                         { icon: MapPin,   text: 'Heerhugowaard, sporthal "De Waardergolf" ' },
-                        { icon: Train,    text: 'Banen van clubs uit heel Nederland' },
+                        { icon: Train,    text: 'Banen uit Nederland, Belgie, Duitsland en Frankrijk' },
                       ].map(({ icon: Icon, text }) => (
                         <div key={text} className="flex items-center gap-3">
                           <div className="w-8 h-8 bg-[#cc0000]/20 flex items-center justify-center shrink-0">

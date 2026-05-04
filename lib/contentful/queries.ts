@@ -32,7 +32,7 @@ interface AgendaEventSkeleton extends EntrySkeletonType {
     location: EntryFieldTypes.Symbol
     description?: EntryFieldTypes.Text
     category: EntryFieldTypes.Symbol
-    price?: EntryFieldTypes.Number
+    price?: EntryFieldTypes.Symbol
     isPublic: EntryFieldTypes.Boolean
     isRecurring?: EntryFieldTypes.Boolean
     recurrenceInterval?: EntryFieldTypes.Symbol
@@ -237,7 +237,7 @@ export const getUpcomingEvents = unstable_cache(
         location: item.fields.location as string,
         description: item.fields.description as string | undefined,
         category: item.fields.category as AgendaEvent['category'],
-        price: item.fields.price as number | undefined,
+        price: item.fields.price as string | undefined,
         isPublic: (item.fields.isPublic as boolean) ?? true,
         isRecurring: (item.fields.isRecurring as boolean) ?? false,
         recurrenceInterval: item.fields.recurrenceInterval as RecurrenceInterval | undefined,
@@ -269,7 +269,7 @@ export const getAllEvents = unstable_cache(
         location: item.fields.location as string,
         description: item.fields.description as string | undefined,
         category: item.fields.category as AgendaEvent['category'],
-        price: item.fields.price as number | undefined,
+        price: item.fields.price as string | undefined,
         isPublic: (item.fields.isPublic as boolean) ?? true,
         isRecurring: (item.fields.isRecurring as boolean) ?? false,
         recurrenceInterval: item.fields.recurrenceInterval as RecurrenceInterval | undefined,
@@ -305,7 +305,7 @@ export const getEventBySlug = unstable_cache(
         location: item.fields.location as string,
         description: item.fields.description as string | undefined,
         category: item.fields.category as AgendaEvent['category'],
-        price: item.fields.price as number | undefined,
+        price: item.fields.price as string | undefined,
         isPublic: (item.fields.isPublic as boolean) ?? true,
       }
     } catch {

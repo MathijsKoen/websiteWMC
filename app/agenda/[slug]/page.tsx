@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, Calendar, Clock, MapPin, Euro } from 'lucide-react'
+import { ArrowLeft, Calendar, Clock, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { getAllEvents, getEventBySlug } from '@/lib/contentful/queries'
@@ -168,14 +168,11 @@ export default async function AgendaDetailPage({ params }: Props) {
                   </div>
                   <div className="flex justify-between items-center gap-4">
                     <span className="text-xs font-bold uppercase tracking-widest text-[#926e69]">Toegangsprijs</span>
-                    {event.price == null ? (
+                    {event.price == null || event.price === '' ? (
                       <span className="text-sm font-bold text-[#926e69]">zie website</span>
-                    ) : event.price === 0 ? (
-                      <span className="font-black text-green-600" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>Gratis</span>
                     ) : (
-                      <span className="flex items-center gap-1 font-black text-[#1a1c1c]" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-                        <Euro size={14} className="text-[#cc0000]" />
-                        {event.price},—
+                      <span className="font-black text-[#1a1c1c]" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                        {event.price}
                       </span>
                     )}
                   </div>

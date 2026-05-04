@@ -22,9 +22,9 @@ const BEURS = {
   date: '17 & 18 oktober 2026',        // bijv. '14 & 15 maart 2026'
   time: 'Zaterdag: 10:00 – 16:00, zondag: 10:00 – 15:00',      // bijv. '10:00 – 17:00 uur'
   location: 'Heerhugowaard',
-  venue: 'De Waardergolf\n1723 HX Heerhugowaard',
-  admission: '€ 6 ,— | kinderen gratis',         // bijv. '€ 5,— | kinderen gratis'
-  mapsUrl: 'https://maps.google.com/?q=De+Waardergolf+1723+HX+Heerhugowaard',
+  venue: 'De Waardergolf\nBeukenlaan 1B\n1723 HX Heerhugowaard',
+  admission: '€ 6 ,— | kinderen t/m 12jr gratis onder begeleiding',
+  mapsUrl: 'https://maps.google.com/?q=Beukenlaan+1B+1723+HX+Heerhugowaard',
 }
 // ───────────────────────────────────────────────────────────────────────────
 
@@ -213,7 +213,7 @@ export default async function Beurs2026Page() {
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-0.5 bg-[#cc0000]" />
               <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                {layouts.length > 0 ? `${layouts.length} deelnemende clubs` : 'Deelnemende clubs'}
+                Uitgenodigde clubs
               </span>
             </div>
             <h2
@@ -223,8 +223,7 @@ export default async function Beurs2026Page() {
               Uitgenodigde Banen
             </h2>
             <p className="text-[#4d4c4c] text-lg max-w-2xl leading-relaxed">
-              Clubs van door heel Nederland brengen hun mooiste banen mee. Hieronder
-              vind je een voorproefje van wat je kunt verwachten.
+              Hieronder vind je een voorproefje van wat je kunt verwachten.
             </p>
           </ScrollReveal>
 
@@ -274,13 +273,13 @@ export default async function Beurs2026Page() {
               </h2>
               <div className="flex flex-col gap-4 text-[#4d4c4c] text-base leading-relaxed">
                 <p>
-                  De Westfriese Modelspoor Club organiseert een grote modelspoor tentoonstelling
-                  waarbij clubs uit heel Nederland hun mooiste banen presenteren.
+                  De Westfriese Modelspoor Club organiseert een grote modelspoor en modelbouw evenement,
+                  waarbij exposanten uit Nederland, Belgie, Duitsland en Frankrijk hun banen presenteren.
                 </p>
                 <p>
-                  Of je nu een fervent modelspoorfan bent of gewoon benieuwd bent naar
-                  dit bijzondere hobby — de beurs is toegankelijk voor iedereen. Kom
-                  kijken, vragen stellen en je laten inspireren.
+                  Of je nu een fervent modelspoor of modelbouw fan bent, of gewoon benieuwd bent naar
+                  deze bijzondere hobby - de beurs is toegankelijk voor iedereen. Kom kijken, stel vragen
+                  en laat je inspireren.
                 </p>
                 <p>
                   Naast de tentoonstelling is er ook de mogelijkheid om in contact te
@@ -374,11 +373,10 @@ export default async function Beurs2026Page() {
             <StaggerItem>
               <div className="bg-white/5 border border-white/10 p-8">
                 <h3 className="font-black text-xl text-white mb-3" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-                  Per auto
+                  Per OV
                 </h3>
                 <p className="text-white/70 text-sm leading-relaxed mb-4">
-                  Noord-Scharwoude is goed bereikbaar via de A7 (afslag Heerhugowaard)
-                  en de N241. Er is voldoende parkeergelegenheid in de omgeving.
+                  Vanaf station Alkmaar met buslijn 160. Deze bus stopt voor de sporthal/zwembad.
                 </p>
                 <h3 className="font-black text-xl text-white mb-3" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
                   Vragen?

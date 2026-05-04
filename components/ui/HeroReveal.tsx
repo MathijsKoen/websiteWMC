@@ -60,15 +60,16 @@ export function HeroReveal({ tracksCount }: HeroRevealProps) {
             </div>
 
             {/* Beschrijving */}
-            <motion.p
-              className="text-lg text-[#4d4c4c] leading-relaxed mb-10 md:pr-8"
+            <motion.div
+              className="text-base text-[#4d4c4c] leading-relaxed mb-10 md:pr-8 flex flex-col gap-3"
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.46, ease }}
             >
-              Wij bieden onderdak aan modelspoorbouwers van alle schalen. Elke vrijdagavond
-              werken onze leden samen aan {tracksCount > 0 ? tracksCount : 'zes'} unieke banen in Noord-Scharwoude.
-            </motion.p>
+              <p>De WMC heeft zijn clubgebouw in Noord-Scharwoude aan de Mossel 23e, waar we op de vrijdagavond clubavond hebben van 19.30 uur tot 22.00 uur.</p>
+              <p>Hier zijn de clubleden bezig om de banen die we hebben in diverse schalen, te onderhouden en eventueel te vernieuwen. Ook kunnen we op deze avond belangstellenden ontvangen en laten zien waar we mee bezig zijn op trein gebied.</p>
+              <p>Ook aspirant leden zijn op die avond van harte welkom.</p>
+            </motion.div>
 
             {/* Knoppen */}
             <motion.div

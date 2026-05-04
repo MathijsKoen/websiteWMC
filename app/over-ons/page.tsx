@@ -149,6 +149,7 @@ export default async function OverOnsPage() {
                     >
                       € {s.contributie},—
                     </p>
+                    <p className="text-xs text-[#926e69] mt-1">Jeugdleden: € 75,—</p>
                     <p className="text-xs text-[#926e69] mt-1">Inclusief rondleiding</p>
                   </>
                 ),

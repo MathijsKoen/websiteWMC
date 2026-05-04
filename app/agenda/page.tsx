@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowRight, Calendar, Clock, MapPin, Euro } from 'lucide-react'
+import { ArrowRight, Calendar, Clock, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { getAllEvents } from '@/lib/contentful/queries'
 import type { AgendaEvent } from '@/lib/contentful/types'
@@ -174,21 +174,12 @@ export default async function AgendaPage() {
                         </span>
                       </div>
                       <div className="md:w-24 md:text-right shrink-0">
-                        {event.price == null ? (
+                        {event.price == null || event.price === '' ? (
                           <span className="text-xs font-bold text-[#926e69] uppercase tracking-widest">zie website</span>
-                        ) : event.price === 0 ? (
-                          <span className="font-black text-lg text-green-600"
-                            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                          >Gratis</span>
                         ) : (
-                          <div className="flex items-center md:justify-end gap-1">
-                            <Euro size={16} className="text-[#cc0000]" />
-                            <span className="font-black text-xl text-[#1a1c1c]"
-                              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                            >
-                              {event.price},—
-                            </span>
-                          </div>
+                          <span className="font-black text-lg text-[#1a1c1c]"
+                            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                          >{event.price}</span>
                         )}
                       </div>
                     </div>

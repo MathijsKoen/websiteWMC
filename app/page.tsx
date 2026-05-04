@@ -173,15 +173,11 @@ export default async function HomePage() {
                       </div>
 
                       <div className="hidden sm:flex items-center pr-6 shrink-0">
-                        {event.price == null ? (
+                        {event.price == null || event.price === '' ? (
                           <span className="text-xs font-bold text-[#926e69] uppercase tracking-widest">Alleen leden</span>
-                        ) : event.price === 0 ? (
-                          <span className="font-black text-lg text-green-600" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-                            Gratis
-                          </span>
                         ) : (
                           <span className="font-black text-xl text-[#1a1c1c]" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-                            € {event.price},—
+                            {event.price}
                           </span>
                         )}
                       </div>

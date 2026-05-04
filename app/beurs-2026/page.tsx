@@ -73,7 +73,7 @@ function LayoutCard({ layout }: { layout: BeursLayout }) {
           <MapPin size={12} className="shrink-0" />
           <span>{layout.city}</span>
         </div>
-
+        
         {layout.description && (
           <p className="text-sm text-[#4d4c4c] leading-relaxed flex-1 mt-1">
             {layout.description}

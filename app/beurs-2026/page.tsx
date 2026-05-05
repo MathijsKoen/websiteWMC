@@ -175,7 +175,7 @@ export default async function Beurs2026Page() {
             <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {layouts.map((layout) => (
                 <StaggerItem key={layout.id}>
-                  <TiltCard className="h-full">
+                  <TiltCard className="h-full" intensity={3}>
                     <LayoutCard layout={layout} />
                   </TiltCard>
                 </StaggerItem>

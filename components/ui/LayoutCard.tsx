@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import { MapPin, Train, ExternalLink, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -110,9 +111,9 @@ export function LayoutCard({ layout }: { layout: BeursLayout }) {
         </div>
       </article>
 
-      {/* ── Popup ─────────────────────────────────────────── */}
+      {/* ── Popup via portal (omzeilt CSS transform van TiltCard) ──── */}
       <AnimatePresence>
-        {open && (
+        {open && createPortal(
           <>
             {/* Backdrop */}
             <motion.div
@@ -121,20 +122,20 @@ export function LayoutCard({ layout }: { layout: BeursLayout }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/60 z-50 cursor-pointer"
+              className="fixed inset-0 bg-black/60 z-[100] cursor-pointer"
               onClick={() => setOpen(false)}
             />
 
             {/* Paneel */}
             <motion.div
               key="panel"
-              initial={{ opacity: 0, scale: 0.95, y: 16 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 16 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+              className="fixed inset-0 z-[101] flex items-center justify-center p-6 pointer-events-none"
             >
-              <div className="bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto pointer-events-auto shadow-2xl flex flex-col">
+              <div className="bg-white w-full max-w-2xl max-h-[85vh] overflow-y-auto pointer-events-auto shadow-2xl flex flex-col">
                 {/* Afbeelding */}
                 {imageUrl && (
                   <div className="relative w-full aspect-[16/9] bg-[#f3f3f3] shrink-0">
@@ -201,7 +202,8 @@ export function LayoutCard({ layout }: { layout: BeursLayout }) {
                 </div>
               </div>
             </motion.div>
-          </>
+          </>,
+          document.body
         )}
       </AnimatePresence>
     </>

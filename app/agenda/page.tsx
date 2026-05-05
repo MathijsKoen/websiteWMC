@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight, Calendar, Clock, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { getAllEvents } from '@/lib/contentful/queries'
+import { stripInlineMarkdownLinks } from '@/lib/inlineMarkdown'
 import type { AgendaEvent } from '@/lib/contentful/types'
 
 /**
@@ -167,7 +168,9 @@ export default async function AgendaPage() {
                           </span>
                         </div>
                         {event.description && (
-                          <p className="text-sm text-[#4d4c4c] leading-relaxed line-clamp-2">{event.description}</p>
+                          <p className="text-sm text-[#4d4c4c] leading-relaxed line-clamp-2">
+                            {stripInlineMarkdownLinks(event.description)}
+                          </p>
                         )}
                         <span className="inline-flex items-center gap-1 mt-3 text-xs font-bold uppercase tracking-widest text-[#cc0000] group-hover:gap-2 transition-all">
                           Meer info <ArrowRight size={12} />

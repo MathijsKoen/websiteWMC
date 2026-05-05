@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar, Clock, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { getAllEvents, getEventBySlug } from '@/lib/contentful/queries'
+import { renderInlineMarkdownLinks } from '@/lib/inlineMarkdown'
 import type { AgendaEvent } from '@/lib/contentful/types'
 import { sbObject, sbField } from '@/lib/stackbit'
 
@@ -118,7 +119,12 @@ export default async function AgendaDetailPage({ params }: Props) {
             {/* Description */}
             <div className="lg:col-span-2" {...sbField(event.id, 'description')}>
               {event.description ? (
-                <p className="text-[#4d4c4c] leading-relaxed text-lg">{event.description}</p>
+                <p className="text-[#4d4c4c] leading-relaxed text-lg">
+                  {renderInlineMarkdownLinks(
+                    event.description,
+                    'text-[#cc0000] font-bold hover:text-[#9e0000] underline underline-offset-2 transition-colors'
+                  )}
+                </p>
               ) : (
                 <p className="text-[#926e69] text-sm font-bold uppercase tracking-widest">
                   Geen verdere beschrijving beschikbaar.

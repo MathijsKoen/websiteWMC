@@ -197,3 +197,35 @@ export interface Sponsor {
   website?: string
   tier?: 'gold' | 'silver' | 'bronze'
 }
+
+// =============================================
+// LEDENPORTAAL — MEDEDELINGEN
+// =============================================
+
+export type AnnouncementPriority = 'hoog' | 'normaal' | 'laag'
+
+export interface MemberAnnouncement {
+  id: string
+  title: string
+  content: string
+  publishedAt: string
+  priority?: AnnouncementPriority
+  isActive: boolean
+}
+
+// =============================================
+// LEDENPORTAAL — DOCUMENTEN
+// =============================================
+
+export type DocumentCategory = 'jaarverslag' | 'notulen' | 'financieel' | 'overig'
+
+export interface MemberDocument {
+  id: string
+  title: string
+  description?: string
+  file: ContentfulImage
+  category: DocumentCategory
+  uploadedAt: string
+  isActive: boolean
+}
+

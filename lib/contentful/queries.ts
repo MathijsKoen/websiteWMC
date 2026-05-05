@@ -1,7 +1,7 @@
 import type { EntrySkeletonType, EntryFieldTypes } from 'contentful'
 import { unstable_cache } from 'next/cache'
 import { getContentfulClient } from './client'
-import type { NewsArticle, AgendaEvent, TrackInfo, Sponsor, BeursLayout, SiteSettings, TimelineItem, RecurrenceInterval } from './types'
+import type { NewsArticle, AgendaEvent, TrackInfo, Sponsor, BeursLayout, SiteSettings, TimelineItem, RecurrenceInterval, MemberAnnouncement, MemberDocument } from './types'
 
 // =============================================
 // ENTRY SKELETON TYPES (Contentful SDK v11)
@@ -104,6 +104,29 @@ interface SiteSettingsSkeleton extends EntrySkeletonType {
     geschiedenisAlineas: EntryFieldTypes.Array<EntryFieldTypes.Symbol>
     doelstellingen: EntryFieldTypes.Array<EntryFieldTypes.Symbol>
     tijdlijn: EntryFieldTypes.Object
+  }
+}
+
+interface MemberAnnouncementSkeleton extends EntrySkeletonType {
+  contentTypeId: 'memberAnnouncement'
+  fields: {
+    title: EntryFieldTypes.Symbol
+    content: EntryFieldTypes.Text
+    publishedAt: EntryFieldTypes.Date
+    priority?: EntryFieldTypes.Symbol
+    isActive: EntryFieldTypes.Boolean
+  }
+}
+
+interface MemberDocumentSkeleton extends EntrySkeletonType {
+  contentTypeId: 'memberDocument'
+  fields: {
+    title: EntryFieldTypes.Symbol
+    description?: EntryFieldTypes.Text
+    file: EntryFieldTypes.AssetLink
+    category: EntryFieldTypes.Symbol
+    uploadedAt: EntryFieldTypes.Date
+    isActive: EntryFieldTypes.Boolean
   }
 }
 
@@ -535,4 +558,74 @@ export const getAllBeursLayouts = unstable_cache(
   },
   ['contentful-beurs-layouts'],
   { revalidate: TTL_STATIC, tags: ['beurs', 'contentful'] }
+)
+
+// =============================================
+// LEDENPORTAAL — MEDEDELINGEN
+// =============================================
+
+export const getMemberAnnouncements = unstable_cache(
+  async (): Promise<MemberAnnouncement[]> => {
+    try {
+      const entries = await getContentfulClient().getEntries<MemberAnnouncementSkeleton>({
+        content_type: 'memberAnnouncement',
+        'fields.isActive': true,
+        order: ['-fields.publishedAt'],
+      })
+
+      return entries.items.map((item) => ({
+        id: item.sys.id,
+        title: item.fields.title as string,
+        content: item.fields.content as string,
+        publishedAt: item.fields.publishedAt as string,
+        priority: (item.fields.priority as MemberAnnouncement['priority']) ?? 'normaal',
+        isActive: item.fields.isActive as boolean,
+      }))
+    } catch {
+      return []
+    }
+  },
+  ['contentful-member-announcements'],
+  { revalidate: 300, tags: ['announcements', 'contentful'] }
+)
+
+// =============================================
+// LEDENPORTAAL — DOCUMENTEN
+// =============================================
+
+export const getMemberDocuments = unstable_cache(
+  async (category?: string): Promise<MemberDocument[]> => {
+    try {
+      const query: {
+        content_type: 'memberDocument'
+        'fields.isActive': true
+        'fields.category'?: string
+        order: ['-fields.uploadedAt']
+      } = {
+        content_type: 'memberDocument',
+        'fields.isActive': true,
+        order: ['-fields.uploadedAt'],
+      }
+
+      if (category) {
+        query['fields.category'] = category
+      }
+
+      const entries = await getContentfulClient().getEntries<MemberDocumentSkeleton>(query)
+
+      return entries.items.map((item) => ({
+        id: item.sys.id,
+        title: item.fields.title as string,
+        description: item.fields.description as string | undefined,
+        file: item.fields.file as MemberDocument['file'],
+        category: item.fields.category as MemberDocument['category'],
+        uploadedAt: item.fields.uploadedAt as string,
+        isActive: item.fields.isActive as boolean,
+      }))
+    } catch {
+      return []
+    }
+  },
+  ['contentful-member-documents'],
+  { revalidate: 300, tags: ['documents', 'contentful'] }
 )

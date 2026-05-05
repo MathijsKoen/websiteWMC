@@ -263,6 +263,60 @@ const contentTypes = [
       },
     ],
   },
+
+  // =============================
+  // LEDENPORTAAL — MEDEDELING
+  // =============================
+  {
+    id: 'memberAnnouncement',
+    name: 'Ledenportaal — Mededeling',
+    description: 'Mededelingen en berichten voor leden in het ledenportaal',
+    displayField: 'title',
+    fields: [
+      { id: 'title', name: 'Titel', type: 'Symbol', required: true },
+      { id: 'content', name: 'Inhoud', type: 'Text', required: true },
+      { id: 'publishedAt', name: 'Publicatiedatum', type: 'Date', required: true },
+      {
+        id: 'priority',
+        name: 'Prioriteit',
+        type: 'Symbol',
+        required: false,
+        validations: [{ in: ['hoog', 'normaal', 'laag'] }],
+      },
+      { id: 'isActive', name: 'Zichtbaar', type: 'Boolean', required: true },
+    ],
+  },
+
+  // =============================
+  // LEDENPORTAAL — DOCUMENT
+  // =============================
+  {
+    id: 'memberDocument',
+    name: 'Ledenportaal — Document',
+    description: 'Documenten zoals jaarverslagen en andere ledenbestanden',
+    displayField: 'title',
+    fields: [
+      { id: 'title', name: 'Titel', type: 'Symbol', required: true },
+      { id: 'description', name: 'Beschrijving', type: 'Text', required: false },
+      {
+        id: 'file',
+        name: 'Document (PDF/Word/etc)',
+        type: 'Link',
+        linkType: 'Asset',
+        required: true,
+        validations: [],
+      },
+      {
+        id: 'category',
+        name: 'Categorie',
+        type: 'Symbol',
+        required: true,
+        validations: [{ in: ['jaarverslag', 'notulen', 'financieel', 'overig'] }],
+      },
+      { id: 'uploadedAt', name: 'Uploadatum', type: 'Date', required: true },
+      { id: 'isActive', name: 'Zichtbaar', type: 'Boolean', required: true },
+    ],
+  },
 ]
 
 // --- Helper: velden formatteren ---

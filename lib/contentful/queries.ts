@@ -145,7 +145,8 @@ interface MemberDocumentSkeleton extends EntrySkeletonType {
 // =============================================
 
 const TTL_CONTENT = 300    // 5 min — nieuws, agenda, banen
-const TTL_STATIC  = 3600   // 1 uur — sponsoren, instellingen, beurs-layouts
+const TTL_SPONSORS = 60    // 1 min — sponsoren snel zichtbaar na publish
+const TTL_STATIC  = 3600   // 1 uur — instellingen en beurs-layouts
 
 // =============================================
 // NIEUWS
@@ -444,7 +445,7 @@ export const getSponsors = unstable_cache(
     }
   },
   ['contentful-sponsors'],
-  { revalidate: TTL_STATIC, tags: ['sponsors', 'contentful'] }
+  { revalidate: TTL_SPONSORS, tags: ['sponsors', 'contentful'] }
 )
 
 // =============================================

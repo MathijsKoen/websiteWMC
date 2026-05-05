@@ -211,4 +211,3 @@ export function LayoutCard({ layout }: { layout: BeursLayout }) {
     </>
   )
 }
-}

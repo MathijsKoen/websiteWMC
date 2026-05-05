@@ -21,7 +21,7 @@ const tierLabels: Record<SponsorGroup, string> = {
   gold: 'Hoofdsponsors',
   silver: 'Partners',
   bronze: 'Ondersteuners',
-  onbekend: 'Overige sponsors',
+  onbekend: 'Sponsor',
 }
 
 const tierStyles: Record<SponsorGroup, string> = {
@@ -40,9 +40,22 @@ function getLogoUrl(sponsor: Sponsor) {
   return url ? `https:${url}?w=600&fit=fill&f=center` : null
 }
 
+function getWebsiteUrl(website?: string) {
+  if (!website) return null
+  const trimmed = website.trim()
+  if (!trimmed) return null
+
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed
+  }
+
+  return `https://${trimmed}`
+}
+
 function SponsorCard({ sponsor }: { sponsor: Sponsor }) {
   const logoUrl = getLogoUrl(sponsor)
   const group = getSponsorGroup(sponsor)
+  const websiteUrl = getWebsiteUrl(sponsor.website)
   const content = (
     <>
       <div className="h-44 bg-[#f9f9f9] relative flex items-center justify-center p-6">
@@ -81,17 +94,17 @@ function SponsorCard({ sponsor }: { sponsor: Sponsor }) {
         </div>
 
         <div className="mt-auto inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-          {sponsor.website ? 'Bezoek website' : 'Website niet beschikbaar'}
-          {sponsor.website && <ExternalLink size={12} />}
+          {websiteUrl ? 'Bezoek website' : 'Website niet beschikbaar'}
+          {websiteUrl && <ExternalLink size={12} />}
         </div>
       </div>
     </>
   )
 
-  if (sponsor.website) {
+  if (websiteUrl) {
     return (
       <a
-        href={sponsor.website}
+        href={websiteUrl}
         target="_blank"
         rel="noopener noreferrer"
         className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#cc0000] focus-visible:ring-offset-2"

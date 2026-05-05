@@ -44,7 +44,10 @@ export function LayoutCard({ layout }: { layout: BeursLayout }) {
   return (
     <>
       {/* ── Kaart ─────────────────────────────────────────── */}
-      <article className="bg-white group flex flex-col overflow-hidden border border-[#e2e2e2] hover:border-[#cc0000] transition-colors duration-200 h-full">
+      <article
+        className="bg-white group flex flex-col overflow-hidden border border-[#e2e2e2] hover:border-[#cc0000] transition-colors duration-200 h-full cursor-pointer"
+        onClick={() => isTruncated && setOpen(true)}
+      >
         <div className="relative w-full aspect-[16/9] bg-[#f3f3f3] overflow-hidden">
           {imageUrl ? (
             <Image
@@ -92,12 +95,9 @@ export function LayoutCard({ layout }: { layout: BeursLayout }) {
 
           <div className="mt-auto pt-3 border-t border-[#e8e8e8] flex flex-wrap items-center gap-3">
             {isTruncated && (
-              <button
-                onClick={() => setOpen(true)}
-                className="text-xs font-bold text-[#cc0000] hover:text-[#9e0000] transition-colors"
-              >
+              <span className="text-xs font-bold text-[#cc0000]">
                 Lees meer →
-              </button>
+              </span>
             )}
             {layout.website && (
               <a
@@ -105,6 +105,7 @@ export function LayoutCard({ layout }: { layout: BeursLayout }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-[#926e69] hover:text-[#cc0000] transition-colors ml-auto"
+                onClick={(e) => e.stopPropagation()}
               >
                 Website
                 <ExternalLink size={12} />

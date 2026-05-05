@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Eye, EyeOff, LogOut, Lock } from 'lucide-react'
+import { Eye, EyeOff, LogOut } from 'lucide-react'
 import type { MemberAnnouncement, MemberDocument } from '@/lib/contentful/types'
 
 interface MemberLoginFormProps {
@@ -14,8 +14,8 @@ interface MemberLoginFormProps {
 
 // CONFIGURATIE - Pas deze waarden aan voor je klant
 const MEMBER_CONFIG = {
-  username: 'WMC', // Gemeenschappelijke gebruikersnaam
-  password: '1723HX', // Postcode als wachtwoord
+  username: 'WMC',
+  password: '1723HX',
 }
 
 export default function MemberLoginForm({
@@ -35,22 +35,19 @@ export default function MemberLoginForm({
     if (e) {
       e.preventDefault()
     }
+
     setError('')
     setIsLoading(true)
 
-    // Valideer inloggegevens
     if (!username.trim() || !password.trim()) {
-      setError('Vul alstublieft uw naam en postcode in.')
+      setError('Vul alstublieft uw gebruikersnaam en postcode in.')
       setIsLoading(false)
       return
     }
 
-    // Simuleer login delay
     await new Promise((resolve) => setTimeout(resolve, 300))
 
-    // Check gegevens
     if (username === MEMBER_CONFIG.username && password === MEMBER_CONFIG.password) {
-      // Login succesvol
       localStorage.setItem('memberLoggedIn', 'true')
       localStorage.setItem('memberUsername', username)
       onLoginSuccess({ announcements, documents })
@@ -77,7 +74,7 @@ export default function MemberLoginForm({
       <div className="flex items-center gap-3">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition font-medium"
+          className="flex items-center gap-2 px-4 py-2 bg-[#cc0000] text-white rounded-md hover:bg-[#b30000] transition font-medium"
         >
           <LogOut size={16} />
           Uitloggen
@@ -88,7 +85,6 @@ export default function MemberLoginForm({
 
   return (
     <div className="w-full">
-      {/* Username */}
       <div className="mb-5">
         <label htmlFor="username" className="block text-sm font-semibold text-[#1a1c1c] mb-2">
           Gebruikersnaam
@@ -105,7 +101,6 @@ export default function MemberLoginForm({
         />
       </div>
 
-      {/* Password */}
       <div className="mb-6">
         <label htmlFor="password" className="block text-sm font-semibold text-[#1a1c1c] mb-2">
           Postcode
@@ -131,19 +126,17 @@ export default function MemberLoginForm({
         </div>
       </div>
 
-      {/* Error Message */}
       {error && (
         <div className="p-3 bg-red-50 border border-red-200 rounded-lg mb-6">
           <p className="text-sm text-red-700 font-medium">{error}</p>
         </div>
       )}
 
-      {/* Submit Button */}
       <button
         type="submit"
         disabled={isLoading}
         onClick={handleLogin}
-        className="w-full px-4 py-3 bg-[#cc0000] text-white font-semibold rounded-lg hover:bg-red-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full px-4 py-3 bg-[#cc0000] text-white font-semibold rounded-lg hover:bg-[#b30000] transition disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {isLoading ? 'Even geduld...' : 'Inloggen'}
       </button>

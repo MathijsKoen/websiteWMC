@@ -1,9 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Lock } from 'lucide-react'
 import type { MemberAnnouncement, MemberDocument } from '@/lib/contentful/types'
-import MemberLoginForm from '@/components/sections/MemberLoginForm'
-import MemberPortal from '@/components/sections/MemberPortal'
+import MemberLoginForm from '../../components/sections/MemberLoginForm'
+import MemberPortal from '../../components/sections/MemberPortal'
 
 interface PortalData {
   announcements: MemberAnnouncement[]
@@ -74,7 +75,7 @@ export default function LedenPage() {
             {/* Logo & Title */}
             <div className="text-center mb-10">
               <div className="inline-flex items-center justify-center w-12 h-12 bg-[#cc0000] rounded mb-4">
-                <span className="text-white text-lg">▪</span>
+                <Lock className="text-white" size={18} />
               </div>
               <h1
                 className="font-black text-3xl tracking-tighter text-[#1a1c1c] mb-2"

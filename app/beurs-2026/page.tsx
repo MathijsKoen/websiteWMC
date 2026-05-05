@@ -1,13 +1,12 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
-import { MapPin, Clock, Calendar, ExternalLink, Train, ArrowRight, Users } from 'lucide-react'
+import { Clock, Calendar, MapPin, Train, ArrowRight, Users, ExternalLink } from 'lucide-react'
 import { getAllBeursLayouts } from '@/lib/contentful/queries'
 import { Button } from '@/components/ui/Button'
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/ScrollReveal'
 import { TiltCard } from '@/components/ui/TiltCard'
 import { FolderSection } from '@/components/ui/FolderViewer'
-import type { BeursLayout } from '@/lib/contentful/types'
+import { LayoutCard } from '@/components/ui/LayoutCard'
 
 export const metadata: Metadata = {
   title: 'WMC Beurs 2026 — Modelspoor Tentoonstelling',
@@ -27,74 +26,6 @@ const BEURS = {
   mapsUrl: 'https://maps.google.com/?q=Beukenlaan+1B+1723+HX+Heerhugowaard',
 }
 // ───────────────────────────────────────────────────────────────────────────
-
-function LayoutCard({ layout }: { layout: BeursLayout }) {
-  const imageUrl = layout.coverImage?.fields.file.url
-    ? `https:${layout.coverImage.fields.file.url}?w=800&h=500&fit=fill&f=center`
-    : null
-
-  return (
-    <article className="bg-white group flex flex-col overflow-hidden border border-[#e2e2e2] hover:border-[#cc0000] transition-colors duration-200">
-      <div className="relative w-full aspect-[16/9] bg-[#f3f3f3] overflow-hidden">
-        {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt={layout.name}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Train size={40} className="text-[#e2e2e2]" />
-          </div>
-        )}
-        {layout.scale && (
-          <div className="absolute top-3 left-3">
-            <span className="bg-[#cc0000] text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1">
-              {layout.scale}
-            </span>
-          </div>
-        )}
-      </div>
-
-      <div className="flex flex-col gap-2 p-6 flex-1">
-        <div>
-          <h2
-            className="font-black text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors leading-tight"
-            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-          >
-            {layout.name}
-          </h2>
-          <p className="text-sm text-[#926e69] mt-0.5 font-bold">{layout.club}</p>
-        </div>
-
-        <div className="flex items-center gap-1.5 text-xs text-[#926e69]">
-          <MapPin size={12} className="shrink-0" />
-          <span>{layout.city}</span>
-        </div>
-        
-        {layout.description && (
-          <p className="text-sm text-[#4d4c4c] leading-relaxed flex-1 mt-1">
-            {layout.description}
-          </p>
-        )}
-
-        {layout.website && (
-          <a
-            href={layout.website}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-auto inline-flex items-center gap-1.5 text-xs font-bold text-[#cc0000] hover:text-[#9e0000] transition-colors pt-3 border-t border-[#e8e8e8]"
-          >
-            Website vereniging
-            <ExternalLink size={12} />
-          </a>
-        )}
-      </div>
-    </article>
-  )
-}
 
 export default async function Beurs2026Page() {
   const layouts = await getAllBeursLayouts()

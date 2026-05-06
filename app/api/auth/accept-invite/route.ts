@@ -1,28 +1,6 @@
 import { cookies } from 'next/headers'
+import { getIdentityCandidates } from '@/lib/identity'
 import { NextRequest, NextResponse } from 'next/server'
-
-const IDENTITY_URL = process.env.NETLIFY_IDENTITY_URL!
-
-function normalizeIdentityUrl(baseUrl: string) {
-  return baseUrl.replace(/\/+$/, '')
-}
-
-function getIdentityCandidates(req: NextRequest) {
-  const candidates = new Set<string>()
-
-  if (process.env.NETLIFY_IDENTITY_URL) {
-    candidates.add(normalizeIdentityUrl(process.env.NETLIFY_IDENTITY_URL))
-  }
-
-  candidates.add(normalizeIdentityUrl(`${req.nextUrl.origin}/.netlify/identity`))
-
-  const forwardedHost = req.headers.get('x-forwarded-host')
-  if (forwardedHost) {
-    candidates.add(normalizeIdentityUrl(`https://${forwardedHost}/.netlify/identity`))
-  }
-
-  return Array.from(candidates)
-}
 
 export async function POST(req: NextRequest) {
   const { token: rawToken, password } = await req.json()
@@ -55,7 +33,7 @@ export async function POST(req: NextRequest) {
   const verifyTypes = ['invite', 'signup']
 
   let verifiedEmail = ''
-  let usedIdentityUrl = IDENTITY_URL
+  let usedIdentityUrl = identityCandidates[0] || ''
   let verifyError = ''
 
   for (const identityUrl of identityCandidates) {

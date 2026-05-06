@@ -1,7 +1,6 @@
 import { cookies } from 'next/headers'
+import { getIdentityCandidates } from '@/lib/identity'
 import { NextRequest, NextResponse } from 'next/server'
-
-const IDENTITY_URL = process.env.NETLIFY_IDENTITY_URL!
 
 export async function POST(req: NextRequest) {
   const { email, password } = await req.json()
@@ -10,13 +9,29 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Vul e-mailadres en wachtwoord in.' }, { status: 400 })
   }
 
-  const identityRes = await fetch(`${IDENTITY_URL}/token`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ grant_type: 'password', username: email, password }),
-  })
+  const identityCandidates = getIdentityCandidates(req)
+  let identityRes: Response | null = null
 
-  if (!identityRes.ok) {
+  for (const identityUrl of identityCandidates) {
+    const res = await fetch(`${identityUrl}/token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ grant_type: 'password', username: email, password }),
+    })
+
+    if (res.ok) {
+      identityRes = res
+      break
+    }
+
+    // Alleen doorproberen bij endpoint/config issues; bij echte auth-fouten stoppen.
+    if (res.status !== 404 && res.status !== 502 && res.status !== 503) {
+      identityRes = res
+      break
+    }
+  }
+
+  if (!identityRes || !identityRes.ok) {
     return NextResponse.json({ error: 'Ongeldig e-mailadres of wachtwoord.' }, { status: 401 })
   }
 

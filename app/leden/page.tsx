@@ -21,12 +21,28 @@ export default function LedenPage() {
 
   useEffect(() => {
     const rawHash = window.location.hash.replace(/^#/, '')
-    const hash = new URLSearchParams(rawHash)
+
+    const parseHashValue = (key: string) => {
+      if (!rawHash) return ''
+      for (const pair of rawHash.split('&')) {
+        const [k, ...valueParts] = pair.split('=')
+        if (k === key) {
+          const value = valueParts.join('=')
+          try {
+            return decodeURIComponent(value)
+          } catch {
+            return value
+          }
+        }
+      }
+      return ''
+    }
+
     const token =
-      hash.get('invite_token') ||
-      hash.get('confirmation_token') ||
-      hash.get('token') ||
-      hash.get('access_token') ||
+      parseHashValue('invite_token') ||
+      parseHashValue('confirmation_token') ||
+      parseHashValue('token') ||
+      parseHashValue('access_token') ||
       (rawHash && !rawHash.includes('=') ? decodeURIComponent(rawHash) : '')
 
     if (token) {

@@ -28,6 +28,21 @@ export async function POST(req: NextRequest) {
   const { token: rawToken, password } = await req.json()
   const token = String(rawToken ?? '').trim().replace(/^#/, '')
 
+  const tokenCandidates = Array.from(
+    new Set([
+      token,
+      token.replace(/ /g, '+'),
+      token.replace(/ /g, '%2B'),
+      (() => {
+        try {
+          return decodeURIComponent(token)
+        } catch {
+          return token
+        }
+      })(),
+    ].filter(Boolean))
+  )
+
   if (!token || !password) {
     return NextResponse.json({ error: 'Token en wachtwoord zijn verplicht.' }, { status: 400 })
   }
@@ -45,36 +60,42 @@ export async function POST(req: NextRequest) {
 
   for (const identityUrl of identityCandidates) {
     for (const verifyType of verifyTypes) {
-      const verifyRes = await fetch(`${identityUrl}/verify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, type: verifyType, password }),
-      })
+      for (const candidateToken of tokenCandidates) {
+        const verifyRes = await fetch(`${identityUrl}/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: candidateToken, type: verifyType, password }),
+        })
 
-      if (verifyRes.ok) {
-        const verifyData = await verifyRes.json()
-        verifiedEmail = verifyData.email
-        usedIdentityUrl = identityUrl
-        console.info('[accept-invite] verify success', {
+        if (verifyRes.ok) {
+          const verifyData = await verifyRes.json()
+          verifiedEmail = verifyData.email
+          usedIdentityUrl = identityUrl
+          console.info('[accept-invite] verify success', {
+            identityUrl,
+            verifyType,
+            email: verifiedEmail,
+          })
+          break
+        }
+
+        try {
+          verifyError = await verifyRes.text()
+        } catch {
+          verifyError = 'Onbekende fout bij verificatie.'
+        }
+
+        console.warn('[accept-invite] verify failed', {
           identityUrl,
           verifyType,
-          email: verifiedEmail,
+          status: verifyRes.status,
+          body: verifyError,
         })
+      }
+
+      if (verifiedEmail) {
         break
       }
-
-      try {
-        verifyError = await verifyRes.text()
-      } catch {
-        verifyError = 'Onbekende fout bij verificatie.'
-      }
-
-      console.warn('[accept-invite] verify failed', {
-        identityUrl,
-        verifyType,
-        status: verifyRes.status,
-        body: verifyError,
-      })
     }
 
     if (verifiedEmail) break
@@ -92,6 +113,11 @@ export async function POST(req: NextRequest) {
       {
         error: 'Uitnodiging is ongeldig of verlopen.',
         details: verifyError || 'Geen details beschikbaar.',
+        hints: [
+          'Maak een nieuwe uitnodiging aan (token is one-time).',
+          'Open de uitnodigingslink direct vanuit de e-mail.',
+          'Gebruik hetzelfde domein als in de invite-link.',
+        ],
       },
       { status: 400 }
     )

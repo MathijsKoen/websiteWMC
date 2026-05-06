@@ -1,7 +1,7 @@
 import { getMemberDocuments } from '@/lib/contentful/queries'
 import { NextResponse } from 'next/server'
 
-export const revalidate = 300 // Cache for 5 minutes
+export const dynamic = 'force-dynamic' // Altijd verse data, geen CDN-cache
 
 export async function GET() {
   try {

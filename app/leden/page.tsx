@@ -20,14 +20,18 @@ export default function LedenPage() {
   const [dataLoading, setDataLoading] = useState(false)
 
   useEffect(() => {
-    const hash = new URLSearchParams(window.location.hash.substring(1))
-    const token = hash.get('invite_token')
+    const rawHash = window.location.hash.replace(/^#/, '')
+    const hash = new URLSearchParams(rawHash)
+    const token =
+      hash.get('invite_token') ||
+      hash.get('confirmation_token') ||
+      hash.get('token') ||
+      hash.get('access_token') ||
+      (rawHash && !rawHash.includes('=') ? decodeURIComponent(rawHash) : '')
 
     if (token) {
       setInviteToken(token)
       setAuthState('acceptInvite')
-      // Verwijder de token uit de URL
-      window.history.replaceState(null, '', window.location.pathname)
       return
     }
 
@@ -202,8 +206,11 @@ function AcceptInviteForm({ token, onSuccess }: { token: string; onSuccess: () =
 
       const data = await res.json()
       if (!res.ok) {
-        setError(data.error ?? 'Er is iets misgegaan.')
+        const detailText = data?.details ? ` (${data.details})` : ''
+        setError(`${data.error ?? 'Er is iets misgegaan.'}${detailText}`)
       } else {
+        // Na succesvolle activatie verwijderen we de token uit de URL
+        window.history.replaceState(null, '', window.location.pathname)
         onSuccess()
       }
     } catch {

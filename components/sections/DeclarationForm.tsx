@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Script from 'next/script'
 import { CheckCircle, AlertCircle } from 'lucide-react'
 
 const KOSTENPLAATSEN = [
@@ -39,13 +40,19 @@ const initialState: FormState = {
   rekeningnummer: '',
 }
 
+type Grecaptcha = { getResponse: () => string; reset: () => void }
+
+function getGrecaptcha(): Grecaptcha | undefined {
+  return (window as unknown as { grecaptcha?: Grecaptcha }).grecaptcha
+}
+
 export default function DeclarationForm() {
   const [form, setForm] = useState<FormState>(initialState)
-  const [errors, setErrors] = useState<Partial<FormState>>({})
+  const [errors, setErrors] = useState<Partial<FormState & { recaptcha: string }>>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
 
   const validate = (): boolean => {
-    const newErrors: Partial<FormState> = {}
+    const newErrors: Partial<FormState & { recaptcha: string }> = {}
 
     if (!form.naam.trim()) newErrors.naam = 'Naam is verplicht'
     if (!form.email.trim()) {
@@ -60,6 +67,9 @@ export default function DeclarationForm() {
     }
     if (!form.kostenplaats) newErrors.kostenplaats = 'Kies een kostenplaats'
     if (!form.omschrijving.trim()) newErrors.omschrijving = 'Omschrijving is verplicht'
+
+    const recaptchaToken = getGrecaptcha()?.getResponse() ?? ''
+    if (!recaptchaToken) newErrors.recaptcha = 'Bevestig dat u geen robot bent.'
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -82,6 +92,8 @@ export default function DeclarationForm() {
     setStatus('sending')
 
     try {
+      const recaptchaToken = getGrecaptcha()?.getResponse() ?? ''
+
       const body = new URLSearchParams({
         'form-name': 'declaratie',
         naam: form.naam,
@@ -90,6 +102,7 @@ export default function DeclarationForm() {
         kostenplaats: form.kostenplaats,
         omschrijving: form.omschrijving,
         rekeningnummer: form.rekeningnummer || '(niet opgegeven)',
+        'g-recaptcha-response': recaptchaToken,
       })
 
       const response = await fetch('/', {
@@ -102,8 +115,10 @@ export default function DeclarationForm() {
 
       setStatus('success')
       setForm(initialState)
+      getGrecaptcha()?.reset()
     } catch {
       setStatus('error')
+      getGrecaptcha()?.reset()
     }
   }
 
@@ -129,6 +144,8 @@ export default function DeclarationForm() {
 
   return (
     <div className="max-w-xl">
+      <Script src="https://www.netlify.com/recaptcha/api.js" strategy="lazyOnload" />
+
       <p className="text-sm text-gray-600 mb-6">
         Vul het formulier volledig in. De penningmeester ontvangt je declaratie per e-mail en neemt
         contact met je op bij vragen.
@@ -142,7 +159,7 @@ export default function DeclarationForm() {
       )}
 
       {/* Hidden form for Netlify form detection */}
-      <form name="declaratie" data-netlify="true" hidden>
+      <form name="declaratie" data-netlify="true" data-netlify-recaptcha="true" hidden>
         <input name="naam" />
         <input name="email" />
         <input name="bedrag" />
@@ -276,6 +293,14 @@ export default function DeclarationForm() {
             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#cc0000] focus:border-transparent transition uppercase"
             placeholder="NL00 BANK 0000 0000 00"
           />
+        </div>
+
+        {/* reCAPTCHA */}
+        <div>
+          <div data-netlify-recaptcha="true" />
+          {errors.recaptcha && (
+            <p className="mt-1 text-xs text-red-600">{errors.recaptcha}</p>
+          )}
         </div>
 
         <div className="pt-2">

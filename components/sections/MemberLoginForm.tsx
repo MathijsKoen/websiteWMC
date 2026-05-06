@@ -2,70 +2,57 @@
 
 import { useState } from 'react'
 import { Eye, EyeOff, LogOut } from 'lucide-react'
-import type { MemberAnnouncement, MemberDocument } from '@/lib/contentful/types'
 
 interface MemberLoginFormProps {
-  onLoginSuccess: (data: { announcements: MemberAnnouncement[]; documents: MemberDocument[] }) => void
+  onLoginSuccess: () => void
   onLogout: () => void
   isLoggedIn: boolean
-  announcements?: MemberAnnouncement[]
-  documents?: MemberDocument[]
 }
 
-// CONFIGURATIE - Pas deze waarden aan voor je klant
-const MEMBER_CONFIG = {
-  username: 'WMC',
-  password: '1723HX',
-}
-
-export default function MemberLoginForm({
-  onLoginSuccess,
-  onLogout,
-  isLoggedIn,
-  announcements = [],
-  documents = [],
-}: MemberLoginFormProps) {
-  const [username, setUsername] = useState('')
+export default function MemberLoginForm({ onLoginSuccess, onLogout, isLoggedIn }: MemberLoginFormProps) {
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
   const handleLogin = async (e?: React.FormEvent) => {
-    if (e) {
-      e.preventDefault()
-    }
+    if (e) e.preventDefault()
 
     setError('')
     setIsLoading(true)
 
-    if (!username.trim() || !password.trim()) {
-      setError('Vul alstublieft uw gebruikersnaam en postcode in.')
+    if (!email.trim() || !password.trim()) {
+      setError('Vul alstublieft uw e-mailadres en wachtwoord in.')
       setIsLoading(false)
       return
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 300))
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
 
-    if (username === MEMBER_CONFIG.username && password === MEMBER_CONFIG.password) {
-      localStorage.setItem('memberLoggedIn', 'true')
-      localStorage.setItem('memberUsername', username)
-      onLoginSuccess({ announcements, documents })
-    } else if (username !== MEMBER_CONFIG.username) {
-      setError('De ingevoerde gebruikersnaam is onjuist.')
-    } else {
-      setError('De ingevoerde postcode is onjuist.')
+      if (!res.ok) {
+        const data = await res.json()
+        setError(data.error ?? 'Inloggen mislukt.')
+      } else {
+        onLoginSuccess()
+      }
+    } catch {
+      setError('Er is een fout opgetreden. Probeer het opnieuw.')
+    } finally {
+      setIsLoading(false)
     }
-
-    setIsLoading(false)
   }
 
-  const handleLogout = () => {
-    setUsername('')
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' })
+    setEmail('')
     setPassword('')
     setError('')
-    localStorage.removeItem('memberLoggedIn')
-    localStorage.removeItem('memberUsername')
     onLogout()
   }
 
@@ -84,26 +71,26 @@ export default function MemberLoginForm({
   }
 
   return (
-    <div className="w-full">
+    <form onSubmit={handleLogin} className="w-full">
       <div className="mb-5">
-        <label htmlFor="username" className="block text-sm font-semibold text-[#1a1c1c] mb-2">
-          Gebruikersnaam
+        <label htmlFor="email" className="block text-sm font-semibold text-[#1a1c1c] mb-2">
+          E-mailadres
         </label>
         <input
-          id="username"
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           disabled={isLoading}
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#cc0000] focus:border-transparent disabled:bg-gray-50 transition text-gray-900"
-          placeholder="wmc"
+          placeholder="naam@voorbeeld.nl"
           required
         />
       </div>
 
       <div className="mb-6">
         <label htmlFor="password" className="block text-sm font-semibold text-[#1a1c1c] mb-2">
-          Postcode
+          Wachtwoord
         </label>
         <div className="relative">
           <input
@@ -113,7 +100,7 @@ export default function MemberLoginForm({
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#cc0000] focus:border-transparent pr-12 disabled:bg-gray-50 transition text-gray-900"
-            placeholder="Bijv. 1723 HX"
+            placeholder="••••••••"
             required
           />
           <button
@@ -135,11 +122,10 @@ export default function MemberLoginForm({
       <button
         type="submit"
         disabled={isLoading}
-        onClick={handleLogin}
         className="w-full px-4 py-3 bg-[#cc0000] text-white font-semibold rounded-lg hover:bg-[#b30000] transition disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {isLoading ? 'Even geduld...' : 'Inloggen'}
       </button>
-    </div>
+    </form>
   )
 }

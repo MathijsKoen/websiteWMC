@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { CheckCircle, AlertCircle } from 'lucide-react'
 
-const RECAPTCHA_SITE_KEY = '6Ldnr90sAAAAACCrYWaJLjwnbbR4HEk5nKDXATs9'
+const RECAPTCHA_SITE_KEY = '6LdRsN0sAAAAAGFkvqPfrrkDKke2tRPLNvWZbLNE'
 
 const KOSTENPLAATSEN = [
   { code: '15', naam: 'Algemeen' },

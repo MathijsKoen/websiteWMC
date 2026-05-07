@@ -4,6 +4,7 @@ import { FileText, AlertCircle, Calendar, Search, Filter, ChevronDown, ChevronUp
 import { useState, useMemo } from 'react'
 import type { MemberAnnouncement, MemberDocument } from '@/lib/contentful/types'
 import DeclarationForm from './DeclarationForm'
+import { Badge } from '@/components/ui/Badge'
 
 interface MemberPortalProps {
   announcements: MemberAnnouncement[]
@@ -84,22 +85,33 @@ export default function MemberPortal({ announcements, documents }: MemberPortalP
   const getPriorityColor = (priority?: string) => {
     switch (priority) {
       case 'hoog':
-        return 'bg-red-50 border-l-red-500'
+        return 'border-l-[#cc0000]'
       case 'laag':
-        return 'bg-blue-50 border-l-blue-500'
+        return 'border-l-[#0058bb]'
       default:
-        return 'bg-yellow-50 border-l-yellow-500'
+        return 'border-l-[#926e69]'
     }
   }
 
-  const getPriorityBadgeColor = (priority?: string) => {
+  const getPriorityBadgeVariant = (priority?: string) => {
     switch (priority) {
       case 'hoog':
-        return 'bg-red-100 text-red-800'
+        return 'primary'
       case 'laag':
-        return 'bg-blue-100 text-blue-800'
+        return 'secondary'
       default:
-        return 'bg-yellow-100 text-yellow-800'
+        return 'outline'
+    }
+  }
+
+  const getPriorityLabel = (priority?: string) => {
+    switch (priority) {
+      case 'hoog':
+        return 'Hoge prioriteit'
+      case 'laag':
+        return 'Informatief'
+      default:
+        return 'Normaal'
     }
   }
 
@@ -121,17 +133,25 @@ export default function MemberPortal({ announcements, documents }: MemberPortalP
       {announcements.length > 0 && (
         <section>
           <div className="flex items-center gap-3 mb-6">
-            <div className="flex items-center justify-center w-10 h-10 bg-red-100 rounded-lg">
-              <AlertCircle size={22} className="text-[#cc0000]" />
+            <div className="flex items-center justify-center w-10 h-10 bg-[#1a1c1c] rounded-lg">
+              <AlertCircle size={20} className="text-[#cc0000]" />
             </div>
-            <h2 className="text-2xl font-bold text-[#1a1c1c]">Mededelingen</h2>
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#926e69]">Ledenportaal</p>
+              <h2
+                className="text-2xl font-black tracking-tight text-[#1a1c1c]"
+                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+              >
+                Mededelingen
+              </h2>
+            </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 gap-px bg-[#e2e2e2] border border-[#e2e2e2]">
             {announcements.map((announcement) => (
-              <div
+              <article
                 key={announcement.id}
-                className={`border-l-4 rounded-r-lg transition cursor-pointer hover:shadow-md ${getPriorityColor(announcement.priority)}`}
+                className={`group bg-white border-l-4 transition-colors hover:bg-[#fafafa] ${getPriorityColor(announcement.priority)}`}
               >
                 <div
                   onClick={() =>
@@ -139,38 +159,48 @@ export default function MemberPortal({ announcements, documents }: MemberPortalP
                       expandedAnnouncement === announcement.id ? null : announcement.id
                     )
                   }
-                  className="p-5 flex items-start justify-between gap-4"
+                  className="p-6 flex items-start justify-between gap-4 cursor-pointer"
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start gap-3 mb-2">
-                      <h3 className="text-lg font-semibold text-[#1a1c1c] leading-tight">
-                        {announcement.title}
-                      </h3>
-                      {announcement.priority && (
-                        <span
-                          className={`px-2.5 py-1 text-xs font-semibold rounded-full whitespace-nowrap flex-shrink-0 ${getPriorityBadgeColor(announcement.priority)}`}
-                        >
-                          {announcement.priority === 'hoog' && '⚠️ Belangrijk'}
-                          {announcement.priority === 'normaal' && '📌 Normaal'}
-                          {announcement.priority === 'laag' && 'ℹ️ Informatief'}
-                        </span>
-                      )}
+                    <div className="flex flex-wrap items-center gap-3 mb-2">
+                      <Badge variant={getPriorityBadgeVariant(announcement.priority)}>
+                        {getPriorityLabel(announcement.priority)}
+                      </Badge>
+                      <time
+                        dateTime={announcement.publishedAt}
+                        className="text-xs text-[#926e69] flex items-center gap-1"
+                      >
+                        <Calendar size={12} />
+                        {formatDate(announcement.publishedAt)}
+                      </time>
                     </div>
+
+                    <h3
+                      className="text-xl font-black text-[#1a1c1c] group-hover:text-[#cc0000] leading-tight transition-colors"
+                      style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                    >
+                        {announcement.title}
+                    </h3>
+
+                    {expandedAnnouncement !== announcement.id && (
+                      <p className="text-sm text-[#4d4c4c] leading-relaxed mt-3 line-clamp-2">
+                        {announcement.content}
+                      </p>
+                    )}
+
                     {expandedAnnouncement === announcement.id && (
-                      <p className="text-gray-700 leading-relaxed mt-3">{announcement.content}</p>
+                      <p className="text-[#4d4c4c] leading-relaxed mt-4 whitespace-pre-line">{announcement.content}</p>
                     )}
                   </div>
-                </div>
-                <div className="px-5 pb-3 flex items-center justify-between text-xs text-gray-500">
-                  <div className="flex items-center gap-1">
-                    <Calendar size={14} />
-                    {formatDate(announcement.publishedAt)}
-                  </div>
-                  <span className="text-xs">
-                    {expandedAnnouncement === announcement.id ? '▼' : '▶'}
+
+                  <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000] whitespace-nowrap self-center">
+                    {expandedAnnouncement === announcement.id ? 'Sluit' : 'Lees'}
                   </span>
                 </div>
-              </div>
+                <div className="px-6 pb-5 text-[11px] text-[#926e69] font-bold uppercase tracking-widest">
+                  {expandedAnnouncement === announcement.id ? 'Minder tonen' : 'Klik voor volledige mededeling'}
+                </div>
+              </article>
             ))}
           </div>
         </section>

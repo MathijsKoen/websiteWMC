@@ -118,7 +118,7 @@ export function FolderSection() {
                         }`}
                         style={{ fontFamily: 'Space Grotesk, sans-serif' }}
                       >
-                        {s === 'voor' ? 'Voorkant' : s === 'achter' ? 'Achterkant' : 'Diorama reglement'}
+                        {s === 'voor' ? 'Voorkant' : s === 'achter' ? 'Achterkant' : 'Diorama regelement'}
                       </button>
                     ))}
                   </div>
@@ -162,7 +162,7 @@ export function FolderSection() {
                     style={{ minHeight: '60vh' }}
                     title={
                       side === 'diorama'
-                        ? 'Diorama reglement'
+                        ? 'Diorama regelement'
                         : `WMC Beurs 2026 folder ${side}kant`
                     }
                   />

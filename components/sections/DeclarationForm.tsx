@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useRef, useState } from 'react'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { CheckCircle, AlertCircle } from 'lucide-react'
@@ -44,12 +45,13 @@ const initialState: FormState = {
 
 export default function DeclarationForm() {
   const [form, setForm] = useState<FormState>(initialState)
-  const [errors, setErrors] = useState<Partial<FormState & { recaptcha: string }>>({})
+  const [privacyAccepted, setPrivacyAccepted] = useState(false)
+  const [errors, setErrors] = useState<Partial<FormState & { recaptcha: string; privacy: string }>>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
   const recaptchaRef = useRef<ReCAPTCHA>(null)
 
   const validate = (): boolean => {
-    const newErrors: Partial<FormState & { recaptcha: string }> = {}
+    const newErrors: Partial<FormState & { recaptcha: string; privacy: string }> = {}
 
     if (!form.naam.trim()) newErrors.naam = 'Naam is verplicht'
     if (!form.email.trim()) {
@@ -67,6 +69,8 @@ export default function DeclarationForm() {
 
     const recaptchaToken = recaptchaRef.current?.getValue() ?? ''
     if (!recaptchaToken) newErrors.recaptcha = 'Bevestig dat u geen robot bent.'
+
+    if (!privacyAccepted) newErrors.privacy = 'Ga akkoord met de privacyverklaring en het regelement.'
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -109,6 +113,7 @@ export default function DeclarationForm() {
 
       setStatus('success')
       setForm(initialState)
+      setPrivacyAccepted(false)
       recaptchaRef.current?.reset()
     } catch {
       setStatus('error')
@@ -287,6 +292,35 @@ export default function DeclarationForm() {
           {errors.recaptcha && (
             <p className="mt-1 text-xs text-red-600">{errors.recaptcha}</p>
           )}
+        </div>
+
+        {/* Juridische akkoordverklaring */}
+        <div className={`rounded-lg border p-3 ${errors.privacy ? 'border-red-300 bg-red-50' : 'border-gray-200 bg-gray-50'}`}>
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={privacyAccepted}
+              onChange={(e) => {
+                setPrivacyAccepted(e.target.checked)
+                if (errors.privacy) {
+                  setErrors((prev) => ({ ...prev, privacy: undefined }))
+                }
+              }}
+              className="mt-1"
+            />
+            <span className="text-sm text-gray-700 leading-6">
+              Ik ga akkoord met de{' '}
+              <Link href="/privacy" className="text-[#cc0000] hover:underline font-medium" target="_blank">
+                privacyverklaring
+              </Link>{' '}
+              en het{' '}
+              <Link href="/regelement" className="text-[#cc0000] hover:underline font-medium" target="_blank">
+                huishoudelijk regelement
+              </Link>{' '}
+              van De WMC.
+            </span>
+          </label>
+          {errors.privacy && <p className="mt-2 text-xs text-red-600">{errors.privacy}</p>}
         </div>
 
         <div className="pt-2">

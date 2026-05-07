@@ -19,10 +19,14 @@ async function verifyRecaptcha(token: string): Promise<boolean> {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { naam, email, bedrag, kostenplaats, omschrijving, rekeningnummer, recaptchaToken } = body
+    const { naam, email, bedrag, kostenplaats, omschrijving, rekeningnummer, recaptchaToken, privacyAccepted } = body
 
     if (!naam || !email || !bedrag || !kostenplaats || !omschrijving) {
       return NextResponse.json({ error: 'Velden ontbreken' }, { status: 400 })
+    }
+
+    if (!privacyAccepted) {
+      return NextResponse.json({ error: 'Akkoord op privacyverklaring en regelement is vereist' }, { status: 400 })
     }
 
     const captchaOk = await verifyRecaptcha(recaptchaToken ?? '')

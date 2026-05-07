@@ -15,7 +15,7 @@ const footerLinks = {
     { href: '/contact', label: 'Contact' },
     { href: '/leden', label: 'Ledenportaal' },
     { href: '/privacy', label: 'Privacybeleid' },
-    { href: '/reglement', label: 'Reglement' },
+    { href: '/regelement', label: 'Regelement' },
   ],
 }
 

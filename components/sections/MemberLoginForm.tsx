@@ -10,7 +10,7 @@ interface MemberLoginFormProps {
 }
 
 export default function MemberLoginForm({ onLoginSuccess, onLogout, isLoggedIn }: MemberLoginFormProps) {
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
@@ -22,8 +22,8 @@ export default function MemberLoginForm({ onLoginSuccess, onLogout, isLoggedIn }
     setError('')
     setIsLoading(true)
 
-    if (!email.trim() || !password.trim()) {
-      setError('Vul alstublieft uw e-mailadres en wachtwoord in.')
+    if (!username.trim() || !password.trim()) {
+      setError('Vul alstublieft uw gebruikersnaam en wachtwoord in.')
       setIsLoading(false)
       return
     }
@@ -32,7 +32,7 @@ export default function MemberLoginForm({ onLoginSuccess, onLogout, isLoggedIn }
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
       })
 
       if (!res.ok) {
@@ -50,7 +50,7 @@ export default function MemberLoginForm({ onLoginSuccess, onLogout, isLoggedIn }
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
-    setEmail('')
+    setUsername('')
     setPassword('')
     setError('')
     onLogout()
@@ -73,18 +73,19 @@ export default function MemberLoginForm({ onLoginSuccess, onLogout, isLoggedIn }
   return (
     <form onSubmit={handleLogin} className="w-full">
       <div className="mb-5">
-        <label htmlFor="email" className="block text-sm font-semibold text-[#1a1c1c] mb-2">
-          E-mailadres
+        <label htmlFor="username" className="block text-sm font-semibold text-[#1a1c1c] mb-2">
+          Gebruikersnaam
         </label>
         <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          id="username"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           disabled={isLoading}
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#cc0000] focus:border-transparent disabled:bg-gray-50 transition text-gray-900"
-          placeholder="naam@voorbeeld.nl"
+          placeholder="Gebruikersnaam"
           required
+          autoComplete="username"
         />
       </div>
 
@@ -102,6 +103,7 @@ export default function MemberLoginForm({ onLoginSuccess, onLogout, isLoggedIn }
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#cc0000] focus:border-transparent pr-12 disabled:bg-gray-50 transition text-gray-900"
             placeholder="••••••••"
             required
+            autoComplete="current-password"
           />
           <button
             type="button"

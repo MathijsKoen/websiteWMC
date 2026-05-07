@@ -182,7 +182,7 @@ export default async function SponsorenPage() {
               Sponsoren en partners
             </p>
             <p className="text-sm md:text-base font-bold" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-              {sponsors.length} {sponsors.length === 1 ? 'sponsor' : 'sponsoren'} zichtbaar in Contentful
+              {sponsors.length} {sponsors.length === 1 ? 'sponsor' : 'sponsoren'}
             </p>
           </div>
           <Link

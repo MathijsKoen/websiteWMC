@@ -91,21 +91,18 @@ export default function DeclarationForm() {
     try {
       const recaptchaToken = recaptchaRef.current?.getValue() ?? ''
 
-      const body = new URLSearchParams({
-        'form-name': 'declaratie',
-        naam: form.naam,
-        email: form.email,
-        bedrag: form.bedrag,
-        kostenplaats: form.kostenplaats,
-        omschrijving: form.omschrijving,
-        rekeningnummer: form.rekeningnummer || '(niet opgegeven)',
-        'g-recaptcha-response': recaptchaToken,
-      })
-
-      const response = await fetch('/', {
+      const response = await fetch('/api/declaratie', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body.toString(),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          naam: form.naam,
+          email: form.email,
+          bedrag: form.bedrag,
+          kostenplaats: form.kostenplaats,
+          omschrijving: form.omschrijving,
+          rekeningnummer: form.rekeningnummer,
+          recaptchaToken,
+        }),
       })
 
       if (!response.ok) throw new Error('Verzenden mislukt')
@@ -152,16 +149,6 @@ export default function DeclarationForm() {
           <p className="text-sm">Er is iets misgegaan. Probeer het opnieuw of neem contact op via e-mail.</p>
         </div>
       )}
-
-      {/* Hidden form for Netlify form detection */}
-      <form name="declaratie" data-netlify="true" data-netlify-recaptcha="true" hidden>
-        <input name="naam" />
-        <input name="email" />
-        <input name="bedrag" />
-        <input name="kostenplaats" />
-        <textarea name="omschrijving" />
-        <input name="rekeningnummer" />
-      </form>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         {/* Naam */}

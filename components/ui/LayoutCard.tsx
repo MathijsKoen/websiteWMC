@@ -20,8 +20,7 @@ export function LayoutCard({ layout }: { layout: BeursLayout }) {
     : null
 
   const description = layout.description ?? ''
-  const isTruncated = description.length > DESCRIPTION_LIMIT
-  const truncated = isTruncated
+  const truncated = description.length > DESCRIPTION_LIMIT
     ? description.slice(0, DESCRIPTION_LIMIT).trimEnd() + '…'
     : description
 
@@ -46,7 +45,7 @@ export function LayoutCard({ layout }: { layout: BeursLayout }) {
       {/* ── Kaart ─────────────────────────────────────────── */}
       <article
         className="bg-white group flex flex-col overflow-hidden border border-[#e2e2e2] hover:border-[#cc0000] transition-colors duration-200 h-full cursor-pointer"
-        onClick={() => isTruncated && setOpen(true)}
+        onClick={() => setOpen(true)}
       >
         <div className="relative w-full aspect-[16/9] bg-[#f3f3f3] overflow-hidden">
           {imageUrl ? (
@@ -94,11 +93,9 @@ export function LayoutCard({ layout }: { layout: BeursLayout }) {
           )}
 
           <div className="mt-auto pt-3 border-t border-[#e8e8e8] flex flex-wrap items-center gap-3">
-            {isTruncated && (
-              <span className="text-xs font-bold text-[#cc0000]">
-                Lees meer →
-              </span>
-            )}
+            <span className="text-xs font-bold text-[#cc0000]">
+              Lees meer →
+            </span>
             {layout.website && (
               <a
                 href={layout.website}

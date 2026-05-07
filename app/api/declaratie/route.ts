@@ -31,21 +31,55 @@ export async function POST(req: NextRequest) {
     }
 
     await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: process.env.DECLARATIE_EMAIL ?? '',
-      subject: `Nieuwe declaratie van ${naam} — €${bedrag}`,
-      html: `
-        <h2>Nieuwe declaratie ingediend</h2>
-        <table style="border-collapse:collapse;width:100%;max-width:500px">
-          <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Naam</td><td style="padding:8px;border:1px solid #ddd">${naam}</td></tr>
-          <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">E-mail</td><td style="padding:8px;border:1px solid #ddd">${email}</td></tr>
-          <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Bedrag</td><td style="padding:8px;border:1px solid #ddd">€${bedrag}</td></tr>
-          <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Kostenplaats</td><td style="padding:8px;border:1px solid #ddd">${kostenplaats}</td></tr>
-          <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Omschrijving</td><td style="padding:8px;border:1px solid #ddd">${omschrijving}</td></tr>
-          <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">IBAN</td><td style="padding:8px;border:1px solid #ddd">${rekeningnummer || '(niet opgegeven)'}</td></tr>
+  // Tip: Gebruik een eigen domein (bijv. info@jouwdomein.nl) zodra je dit hebt ingesteld in Resend
+  from: 'Declaratie Systeem <onboarding@resend.dev>',
+  replyTo: email, // Zo antwoord je direct naar de indiener
+  to: process.env.DECLARATIE_EMAIL ?? '',
+  subject: `Nieuwe declaratie: ${naam} — €${bedrag}`,
+  html: `
+    <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
+      <div style="background-color: #f8f9fa; padding: 20px; border-bottom: 1px solid #eee;">
+        <h2 style="margin: 0; color: #1a1a1a; font-size: 20px;">Nieuwe declaratie ingediend</h2>
+      </div>
+      
+      <div style="padding: 20px;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666; width: 150px;">Indiener</td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: 500;">${naam}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">E-mailadres</td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #eee;">${email}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">Bedrag</td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #2e7d32;">€${bedrag}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">Kostenplaats</td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #eee;">${kostenplaats}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">IBAN</td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-family: monospace;">${rekeningnummer || '<em>Niet opgegeven</em>'}</td>
+          </tr>
         </table>
-      `,
-    })
+
+        <div style="margin-top: 20px;">
+          <p style="color: #666; margin-bottom: 8px;">Omschrijving:</p>
+          <div style="background-color: #f4f4f4; padding: 15px; border-radius: 4px; font-style: italic;">
+            "${omschrijving}"
+          </div>
+        </div>
+      </div>
+
+      <div style="background-color: #f8f9fa; padding: 15px; text-align: center; font-size: 12px; color: #999;">
+        Dit is een automatisch bericht verzonden vanaf het declaratieformulier.
+      </div>
+    </div>
+  `,
+});
 
     return NextResponse.json({ ok: true })
   } catch (err) {

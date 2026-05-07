@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Download, ChevronLeft, ChevronRight } from 'lucide-react'
+import { X, Download } from 'lucide-react'
 
 interface FolderViewerProps {
   /** Wordt getoond als trigger op de pagina */

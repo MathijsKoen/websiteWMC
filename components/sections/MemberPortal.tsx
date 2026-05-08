@@ -133,7 +133,7 @@ export default function MemberPortal({ announcements, documents }: MemberPortalP
       {announcements.length > 0 && (
         <section>
           <div className="flex items-center gap-3 mb-6">
-            <div className="flex items-center justify-center w-10 h-10 bg-[#1a1c1c] rounded-lg">
+            <div className="flex items-center justify-center w-10 h-10 bg-white rounded-lg">
               <AlertCircle size={20} className="text-[#cc0000]" />
             </div>
             <div>

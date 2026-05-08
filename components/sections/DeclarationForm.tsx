@@ -145,7 +145,7 @@ export default function DeclarationForm() {
     <div className="max-w-xl">
       <p className="text-sm text-gray-600 mb-6">
         Vul het formulier volledig in. De penningmeester ontvangt je declaratie per e-mail en neemt
-        contact met je op bij vragen.
+        contact met je op bij vragen. Ook krijg je een bevestiging per mail zodra je declaratie goed is ontvangen en verwerkt.
       </p>
 
       {status === 'error' && (

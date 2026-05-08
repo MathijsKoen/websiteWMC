@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRef, useState } from 'react'
 import ReCAPTCHA from 'react-google-recaptcha'
-import { CheckCircle, AlertCircle } from 'lucide-react'
+import { CheckCircle, XCircle } from 'lucide-react'
 
 const RECAPTCHA_SITE_KEY = '6LdRsN0sAAAAAGFkvqPfrrkDKke2tRPLNvWZbLNE'
 
@@ -48,6 +48,7 @@ export default function DeclarationForm() {
   const [privacyAccepted, setPrivacyAccepted] = useState(false)
   const [errors, setErrors] = useState<Partial<FormState & { recaptcha: string; privacy: string }>>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const recaptchaRef = useRef<ReCAPTCHA>(null)
 
   const validate = (): boolean => {
@@ -91,6 +92,7 @@ export default function DeclarationForm() {
     if (!validate()) return
 
     setStatus('sending')
+    setErrorMessage(null)
 
     try {
       const recaptchaToken = recaptchaRef.current?.getValue() ?? ''
@@ -106,17 +108,31 @@ export default function DeclarationForm() {
           omschrijving: form.omschrijving,
           rekeningnummer: form.rekeningnummer,
           recaptchaToken,
+          privacyAccepted,
         }),
       })
 
-      if (!response.ok) throw new Error('Verzenden mislukt')
+      if (!response.ok) {
+        let serverMessage = 'Verzenden mislukt'
+        try {
+          const data = await response.json()
+          if (typeof data?.error === 'string' && data.error.trim()) {
+            serverMessage = data.error
+          }
+        } catch {
+          // Use fallback if response body is not JSON.
+        }
+
+        throw new Error(serverMessage)
+      }
 
       setStatus('success')
       setForm(initialState)
       setPrivacyAccepted(false)
       recaptchaRef.current?.reset()
-    } catch {
+    } catch (err) {
       setStatus('error')
+      setErrorMessage(err instanceof Error ? err.message : 'Verzenden mislukt')
       recaptchaRef.current?.reset()
     }
   }
@@ -141,19 +157,32 @@ export default function DeclarationForm() {
     )
   }
 
+  if (status === 'error') {
+    return (
+      <div className="text-center py-16 px-6">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-5">
+          <XCircle size={32} className="text-red-600" />
+        </div>
+        <h3 className="text-xl font-bold text-[#1a1c1c] mb-2">Declaratie niet verzonden</h3>
+        <p className="text-gray-600 mb-6">
+          {errorMessage ?? 'Er is iets misgegaan. Probeer het opnieuw of neem contact op via e-mail.'}
+        </p>
+        <button
+          onClick={() => setStatus('idle')}
+          className="px-6 py-2.5 bg-[#cc0000] text-white rounded-lg font-medium hover:bg-red-800 transition"
+        >
+          Opnieuw proberen
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-xl">
       <p className="text-sm text-gray-600 mb-6">
         Vul het formulier volledig in. De penningmeester ontvangt je declaratie per e-mail en neemt
         contact met je op bij vragen. Ook krijg je een bevestiging per mail zodra je declaratie goed is ontvangen en verwerkt.
       </p>
-
-      {status === 'error' && (
-        <div className="flex items-center gap-3 p-4 mb-5 bg-red-50 border border-red-200 rounded-lg text-red-700">
-          <AlertCircle size={18} className="flex-shrink-0" />
-          <p className="text-sm">Er is iets misgegaan. Probeer het opnieuw of neem contact op via e-mail.</p>
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         {/* Naam */}

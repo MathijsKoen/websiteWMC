@@ -104,6 +104,8 @@ export function Header({ tracks }: HeaderProps) {
               width={160}
               height={56}
               className="h-14 w-auto object-contain transition-opacity group-hover:opacity-70"
+              style={{ width: 'auto' }}
+              loading="eager"
               priority
             />
           </Link>

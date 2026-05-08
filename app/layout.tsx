@@ -82,7 +82,11 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="nl" className={`${spaceGrotesk.variable} ${inter.variable}`}>
+    <html
+      lang="nl"
+      data-scroll-behavior="smooth"
+      className={`${spaceGrotesk.variable} ${inter.variable}`}
+    >
       <body className="min-h-screen flex flex-col font-body antialiased">
         {/* Skip-to-main voor toetsenbordgebruikers */}
         <a

@@ -35,6 +35,7 @@ export function Footer() {
                 width={160}
                 height={56}
                 className="h-14 w-auto object-contain brightness-0 invert transition-opacity group-hover:opacity-70"
+                style={{ width: 'auto' }}
               />
             </Link>
 

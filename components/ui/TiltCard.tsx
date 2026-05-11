@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import type { ReactNode } from 'react'
 
@@ -16,6 +16,19 @@ interface TiltCardProps {
  */
 export function TiltCard({ children, className = '', intensity = 8 }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null)
+  const [interactive, setInteractive] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(
+      '(pointer: fine) and (hover: hover) and (prefers-reduced-motion: no-preference)'
+    )
+
+    const sync = () => setInteractive(mediaQuery.matches)
+    sync()
+
+    mediaQuery.addEventListener('change', sync)
+    return () => mediaQuery.removeEventListener('change', sync)
+  }, [])
 
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -41,6 +54,10 @@ export function TiltCard({ children, className = '', intensity = 8 }: TiltCardPr
   function handleMouseLeave() {
     x.set(0)
     y.set(0)
+  }
+
+  if (!interactive) {
+    return <div className={`relative ${className}`}>{children}</div>
   }
 
   return (

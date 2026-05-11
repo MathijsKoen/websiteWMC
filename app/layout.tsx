@@ -1,10 +1,15 @@
 import type { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import { Space_Grotesk, Inter } from 'next/font/google'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
-import { BeursPopup } from '@/components/ui/BeursPopup'
 import { getAllTracks } from '@/lib/contentful/queries'
 import './globals.css'
+
+const BeursPopup = dynamic(
+  () => import('@/components/ui/BeursPopup').then((mod) => mod.BeursPopup),
+  { ssr: false }
+)
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],

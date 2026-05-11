@@ -1,9 +1,18 @@
 'use client'
 
 import Link from 'next/link'
-import { useRef, useState } from 'react'
-import ReCAPTCHA from 'react-google-recaptcha'
+import dynamic from 'next/dynamic'
+import { useState } from 'react'
 import { CheckCircle, XCircle } from 'lucide-react'
+
+const ReCAPTCHA = dynamic(() => import('react-google-recaptcha'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full max-w-[304px] h-[78px] rounded border border-gray-200 bg-gray-50 flex items-center justify-center text-xs text-gray-500">
+      Beveiligingscheck laden...
+    </div>
+  ),
+})
 
 const RECAPTCHA_SITE_KEY = '6LdRsN0sAAAAAGFkvqPfrrkDKke2tRPLNvWZbLNE'
 
@@ -46,10 +55,11 @@ const initialState: FormState = {
 export default function DeclarationForm() {
   const [form, setForm] = useState<FormState>(initialState)
   const [privacyAccepted, setPrivacyAccepted] = useState(false)
+  const [recaptchaToken, setRecaptchaToken] = useState('')
+  const [captchaInstanceKey, setCaptchaInstanceKey] = useState(0)
   const [errors, setErrors] = useState<Partial<FormState & { recaptcha: string; privacy: string }>>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const recaptchaRef = useRef<ReCAPTCHA>(null)
 
   const validate = (): boolean => {
     const newErrors: Partial<FormState & { recaptcha: string; privacy: string }> = {}
@@ -68,7 +78,6 @@ export default function DeclarationForm() {
     if (!form.kostenplaats) newErrors.kostenplaats = 'Kies een kostenplaats'
     if (!form.omschrijving.trim()) newErrors.omschrijving = 'Omschrijving is verplicht'
 
-    const recaptchaToken = recaptchaRef.current?.getValue() ?? ''
     if (!recaptchaToken) newErrors.recaptcha = 'Bevestig dat u geen robot bent.'
 
     if (!privacyAccepted) newErrors.privacy = 'Ga akkoord met de privacyverklaring en het regelement.'
@@ -95,8 +104,6 @@ export default function DeclarationForm() {
     setErrorMessage(null)
 
     try {
-      const recaptchaToken = recaptchaRef.current?.getValue() ?? ''
-
       const response = await fetch('/api/declaratie', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -129,11 +136,13 @@ export default function DeclarationForm() {
       setStatus('success')
       setForm(initialState)
       setPrivacyAccepted(false)
-      recaptchaRef.current?.reset()
+      setRecaptchaToken('')
+      setCaptchaInstanceKey((prev) => prev + 1)
     } catch (err) {
       setStatus('error')
       setErrorMessage(err instanceof Error ? err.message : 'Verzenden mislukt')
-      recaptchaRef.current?.reset()
+      setRecaptchaToken('')
+      setCaptchaInstanceKey((prev) => prev + 1)
     }
   }
 
@@ -314,9 +323,15 @@ export default function DeclarationForm() {
         {/* reCAPTCHA */}
         <div>
           <ReCAPTCHA
-            ref={recaptchaRef}
+            key={captchaInstanceKey}
             sitekey={RECAPTCHA_SITE_KEY}
             hl="nl"
+            onChange={(token) => {
+              setRecaptchaToken(token ?? '')
+              if (errors.recaptcha) {
+                setErrors((prev) => ({ ...prev, recaptcha: undefined }))
+              }
+            }}
           />
           {errors.recaptcha && (
             <p className="mt-1 text-xs text-red-600">{errors.recaptcha}</p>

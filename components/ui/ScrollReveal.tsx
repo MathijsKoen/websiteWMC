@@ -1,10 +1,41 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
+
+function useDisableMotionOnMobile() {
+  const [disableMotion, setDisableMotion] = useState(false)
+
+  useEffect(() => {
+    const reducedMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const touchMq = window.matchMedia('(pointer: coarse), (hover: none), (max-width: 767px)')
+
+    const sync = () => {
+      setDisableMotion(reducedMotionMq.matches || touchMq.matches)
+    }
+
+    sync()
+    reducedMotionMq.addEventListener('change', sync)
+    touchMq.addEventListener('change', sync)
+
+    return () => {
+      reducedMotionMq.removeEventListener('change', sync)
+      touchMq.removeEventListener('change', sync)
+    }
+  }, [])
+
+  return disableMotion
+}
 
 // Scroll-indicator: bewegende lijn die naar beneden 'vloeit'
 export function ScrollHint({ className = '' }: { className?: string }) {
+  const disableMotion = useDisableMotionOnMobile()
+
+  if (disableMotion) {
+    return null
+  }
+
   return (
     <motion.div
       className={`flex flex-col items-center gap-2 ${className}`}
@@ -42,6 +73,12 @@ export function ScrollReveal({
   className = '',
   amount = 0.15,
 }: ScrollRevealProps) {
+  const disableMotion = useDisableMotionOnMobile()
+
+  if (disableMotion) {
+    return <div className={className}>{children}</div>
+  }
+
   return (
     <motion.div
       initial={{
@@ -73,6 +110,12 @@ export function StaggerContainer({
   stagger = 0.13,
   delayChildren = 0.15,
 }: StaggerContainerProps) {
+  const disableMotion = useDisableMotionOnMobile()
+
+  if (disableMotion) {
+    return <div className={className}>{children}</div>
+  }
+
   return (
     <motion.div
       initial="hidden"
@@ -101,6 +144,12 @@ export function StaggerItem({
   className = '',
   direction = 'up',
 }: StaggerItemProps) {
+  const disableMotion = useDisableMotionOnMobile()
+
+  if (disableMotion) {
+    return <div className={className}>{children}</div>
+  }
+
   return (
     <motion.div
       variants={{

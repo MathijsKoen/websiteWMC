@@ -23,7 +23,6 @@ export default function MemberPortal({ announcements, documents }: MemberPortalP
   // Labels voor categorieën
   const categoryLabels: Record<string, string> = {
     jaarverslag: 'Jaarverslagen',
-    begroting: 'Begrotingen',
     notulen: 'Vergadernotulen',
     financieel: 'Financiële Stukken',
     overig: 'Overige Documenten',

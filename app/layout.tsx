@@ -49,6 +49,9 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  verification: {
+    google: 'google7b08abef7ebb9381',
+  },
 }
 
 export const revalidate = 60

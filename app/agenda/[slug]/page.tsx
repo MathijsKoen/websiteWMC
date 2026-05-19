@@ -51,6 +51,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: event.title,
     description: event.description ?? `${event.title} op ${formatDate(event.date)} in ${event.location}`,
+    alternates: {
+      canonical: `https://dewmc.nl/agenda/${slug}`,
+    },
   }
 }
 

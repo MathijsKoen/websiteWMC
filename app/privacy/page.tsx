@@ -48,7 +48,7 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">3. Waarom verwerken wij gegevens?</h2>
             <ul className="list-disc pl-6 space-y-1">
               <li>Voor ledenadministratie en communicatie binnen de vereniging.</li>
-              <li>Voor behandeling van declaraties volgens het huishoudelijk regelement.</li>
+              <li>Voor behandeling van declaraties volgens het huishoudelijk reglement.</li>
               <li>Voor toegang tot het ledenportaal en beveiliging van accounts.</li>
               <li>Voor organisatie van activiteiten, werkgroepen en bestuurswerkzaamheden.</li>
             </ul>
@@ -117,13 +117,13 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">10. Relatie met ons regelement</h2>
+            <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">10. Relatie met ons reglement</h2>
             <p>
-              Deze privacyverklaring sluit aan op het huishoudelijk regelement van De WMC. Specifiek
+              Deze privacyverklaring sluit aan op het huishoudelijk reglement van De WMC. Specifiek
               rondom ledenadministratie en digitale communicatie (artikel 2.6) en declaraties (artikel 6).
             </p>
             <p className="mt-3">
-              Lees ook het volledige <Link href="/regelement" className="text-[#cc0000] hover:underline">regelement</Link>.
+              Lees ook het volledige <Link href="/reglement" className="text-[#cc0000] hover:underline">reglement</Link>.
             </p>
           </section>
         </div>

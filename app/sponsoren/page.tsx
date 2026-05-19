@@ -37,7 +37,7 @@ function getSponsorGroup(sponsor: Sponsor): SponsorGroup {
 
 function getLogoUrl(sponsor: Sponsor) {
   const url = sponsor.logo?.fields.file.url
-  return url ? `https:${url}?w=600&fit=fill&f=center` : null
+  return url ? `https:${url}?w=600&fit=fill&f=center&fm=webp` : null
 }
 
 function getWebsiteUrl(website?: string) {

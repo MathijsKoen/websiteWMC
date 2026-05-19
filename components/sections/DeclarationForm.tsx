@@ -80,7 +80,7 @@ export default function DeclarationForm() {
 
     if (!recaptchaToken) newErrors.recaptcha = 'Bevestig dat u geen robot bent.'
 
-    if (!privacyAccepted) newErrors.privacy = 'Ga akkoord met de privacyverklaring en het regelement.'
+    if (!privacyAccepted) newErrors.privacy = 'Ga akkoord met de privacyverklaring en het reglement.'
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -358,8 +358,8 @@ export default function DeclarationForm() {
                 privacyverklaring
               </Link>{' '}
               en het{' '}
-              <Link href="/regelement" className="text-[#cc0000] hover:underline font-medium" target="_blank">
-                huishoudelijk regelement
+              <Link href="/reglement" className="text-[#cc0000] hover:underline font-medium" target="_blank">
+                huishoudelijk reglement
               </Link>{' '}
               van De WMC.
             </span>

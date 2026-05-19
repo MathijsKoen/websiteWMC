@@ -58,7 +58,7 @@ const options: Options = {
         <figure className="my-6">
           <Image
             src={`https:${url}?w=1200&fm=webp&q=80`}
-            alt={file.description ?? file.title ?? ''}
+            alt={file.description?.trim() || file.title?.trim() || 'Afbeelding'}
             width={width}
             height={height}
             className="w-full h-auto"

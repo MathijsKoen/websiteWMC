@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (!privacyAccepted) {
-      return NextResponse.json({ error: 'Akkoord op privacyverklaring en regelement is vereist' }, { status: 400 })
+      return NextResponse.json({ error: 'Akkoord op privacyverklaring en reglement is vereist' }, { status: 400 })
     }
 
     const captchaOk = await verifyRecaptcha(recaptchaToken ?? '')

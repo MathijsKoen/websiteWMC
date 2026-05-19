@@ -11,13 +11,10 @@ interface HeroRevealProps {
 const ease = [0.22, 1, 0.36, 1] as const
 
 export function HeroReveal({ tracksCount }: HeroRevealProps) {
-  // Scroll vanaf het venster-begin — geen ref nodig
   const { scrollY } = useScroll()
 
-  // Tekst beweegt licht omhoog als je scrollt (parallax)
-  const y = useTransform(scrollY, [0, 500], [0, -80])
-  // Tekst vervaagt terwijl je de hero voorbij scrollt
-  const opacity = useTransform(scrollY, [0, 380], [1, 0])
+  // Parallax: tekst beweegt trager dan de pagina zodat er diepte ontstaat
+  const y = useTransform(scrollY, [0, 600], [0, -100])
   // Scroll-indicator verdwijnt snel
   const hintOpacity = useTransform(scrollY, [0, 180], [1, 0])
 
@@ -25,7 +22,7 @@ export function HeroReveal({ tracksCount }: HeroRevealProps) {
     <>
       {/* Animated hero content */}
       <motion.div
-        style={{ y, opacity }}
+        style={{ y, willChange: 'transform' }}
         className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-8 py-24"
       >
         <div className="grid grid-cols-1 md:grid-cols-2">
@@ -33,9 +30,9 @@ export function HeroReveal({ tracksCount }: HeroRevealProps) {
             {/* Label */}
             <motion.div
               className="flex items-center gap-3 mb-6"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease }}
+              transition={{ duration: 0.5, ease }}
             >
               <div className="w-8 h-0.5 bg-[#cc0000]" />
               <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
@@ -46,25 +43,28 @@ export function HeroReveal({ tracksCount }: HeroRevealProps) {
             {/* Heading — elke regel apart voor stagger */}
             <div className="font-black text-5xl md:text-6xl lg:text-7xl tracking-tighter leading-none mb-8" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
               {['Westfriese', 'Modelspoor', 'Club'].map((word, i) => (
-                <motion.div
-                  key={word}
-                  initial={{ opacity: 0, y: 48 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.75, delay: 0.1 + i * 0.12, ease }}
-                >
-                  <span className={word === 'Modelspoor' ? 'text-[#cc0000]' : ''}>
-                    {word}
-                  </span>
-                </motion.div>
+                <div key={word} style={{ overflow: 'hidden' }}>
+                  <motion.div
+                    initial={{ y: '100%' }}
+                    animate={{ y: '0%' }}
+                    transition={{ duration: 0.6, delay: 0.08 + i * 0.1, ease }}
+                    style={{ willChange: 'transform' }}
+                  >
+                    <span className={word === 'Modelspoor' ? 'text-[#cc0000]' : ''}>
+                      {word}
+                    </span>
+                  </motion.div>
+                </div>
               ))}
             </div>
 
             {/* Beschrijving */}
             <motion.div
               className="text-base text-[#4d4c4c] leading-relaxed mb-10 md:pr-8 flex flex-col gap-3"
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.46, ease }}
+              transition={{ duration: 0.5, delay: 0.38, ease }}
+              style={{ willChange: 'transform, opacity' }}
             >
               <p>De WMC heeft zijn clubgebouw in Noord-Scharwoude aan de Mossel 23e, waar we op de vrijdagavond clubavond hebben van 19.30 uur tot 22.00 uur.</p>
               <p>Hier zijn de clubleden bezig om de banen die we hebben in diverse schalen, te onderhouden en eventueel te vernieuwen. Ook kunnen we op deze avond belangstellenden ontvangen en laten zien waar we mee bezig zijn op trein gebied.</p>
@@ -76,7 +76,8 @@ export function HeroReveal({ tracksCount }: HeroRevealProps) {
               className="flex flex-wrap gap-4"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.58, ease }}
+              transition={{ duration: 0.45, delay: 0.48, ease }}
+              style={{ willChange: 'transform, opacity' }}
             >
               <Button href="/contact" size="lg" skewed>
                 <span>Wordt lid</span>

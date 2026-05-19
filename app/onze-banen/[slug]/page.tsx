@@ -29,6 +29,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: track.name,
     description: track.shortDescription,
+    alternates: {
+      canonical: `https://dewmc.nl/onze-banen/${slug}`,
+    },
   }
 }
 

@@ -248,7 +248,7 @@ export default async function HomePage() {
             <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {tracks.map((track, i) => {
                 const imageUrl = track.coverImage?.fields?.file?.url
-                  ? `https:${track.coverImage.fields.file.url}?w=600&h=400&fit=fill&f=center`
+                  ? `https:${track.coverImage.fields.file.url}?w=600&h=400&fit=fill&f=center&fm=webp`
                   : null
 
                 return (
@@ -265,6 +265,7 @@ export default async function HomePage() {
                               src={imageUrl}
                               alt={track.name}
                               fill
+                              priority={i < 3}
                               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                               className="object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500"
                             />

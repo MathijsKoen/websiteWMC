@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
 
     // 1. Mail naar de Penningmeester (intern)
     await resend.emails.send({
-      from: 'De WMC — Declaraties <onboarding@resend.dev>',
+      from: 'De WMC — Declaraties <info@mail.dewmc.nl>',
       replyTo: email,
       to: process.env.DECLARATIE_EMAIL ?? '',
       subject: `Nieuwe declaratie van ${naam} — €${bedrag}`,
@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
 
     // 2. Bevestigingsmail naar de indiener
     await resend.emails.send({
-      from: 'De WMC <onboarding@resend.dev>',
+      from: 'De WMC — Declaraties <info@mail.dewmc.nl>',
       to: email,
       subject: `Declaratie ontvangen — €${bedrag}`,
       html: `

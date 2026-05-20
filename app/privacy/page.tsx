@@ -110,25 +110,51 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">9. Cookies en sessies</h2>
-            <p>Wij gebruiken twee soorten cookies:</p>
-            <ul className="list-disc pl-6 mt-3 space-y-2">
-              <li>
-                <strong>Functionele cookies</strong> — Noodzakelijk voor het ledenportaal: sessie- en
-                beveiligingscookies die inloggen en beveiligde toegang mogelijk maken. Voor deze
-                cookies is geen toestemming vereist.
-              </li>
-              <li>
-                <strong>Analytische cookies (Google Analytics)</strong> — Alleen geplaatst na jouw
-                toestemming. Wij gebruiken Google Analytics 4 om anoniem bij te houden hoe bezoekers
-                onze website gebruiken. IP-adressen worden geanonimiseerd. De gegevens worden
-                verwerkt door Google LLC (VS) en worden niet gebruikt voor gepersonaliseerde
-                advertenties.
-              </li>
-            </ul>
-            <p className="mt-3">
-              Je kunt je cookievoorkeur op elk moment wijzigen door je browsercookies te wissen.
-              De banner verschijnt dan opnieuw bij je volgende bezoek.
+            <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">9. Cookies, lokale opslag en Google Analytics</h2>
+
+            <p className="mb-4">Wij gebruiken drie soorten opslag in je browser:</p>
+
+            <div className="space-y-4">
+              <div>
+                <p className="font-semibold text-[#1a1c1c]">Functionele cookies (altijd actief)</p>
+                <p className="mt-1">
+                  Sessie- en beveiligingscookies die nodig zijn voor het ledenportaal. Zonder deze
+                  cookies werkt inloggen niet. Hiervoor is geen toestemming vereist.
+                </p>
+              </div>
+
+              <div>
+                <p className="font-semibold text-[#1a1c1c]">Cookievoorkeur (lokale opslag)</p>
+                <p className="mt-1">
+                  Je keuze in de cookiebanner slaan wij op in de lokale opslag van je browser
+                  (geen cookie). Zo hoef je niet bij elk bezoek opnieuw te kiezen. Er worden geen
+                  persoonsgegevens in opgeslagen.
+                </p>
+              </div>
+
+              <div>
+                <p className="font-semibold text-[#1a1c1c]">Google Analytics 4 (alleen na toestemming)</p>
+                <p className="mt-1">
+                  Wij gebruiken Google Analytics 4 om anoniem bij te houden hoe bezoekers onze
+                  website gebruiken, zoals welke pagina&apos;s worden bekeken en hoe lang bezoekers blijven.
+                  Het GA-script wordt altijd geladen, maar staat standaard ingesteld op{' '}
+                  <em>geen tracking</em> (Google Consent Mode v2). Pas na jouw toestemming worden
+                  gegevens daadwerkelijk verzameld.
+                </p>
+                <ul className="list-disc pl-6 mt-2 space-y-1">
+                  <li>IP-adressen worden geanonimiseerd.</li>
+                  <li>Er worden geen advertentiecookies geplaatst.</li>
+                  <li>Gegevens worden verwerkt door Google LLC (Verenigde Staten), onder de standaard contractbepalingen van de EU.</li>
+                  <li>Bewaartermijn in Google Analytics: 14 maanden.</li>
+                </ul>
+              </div>
+            </div>
+
+            <p className="mt-4">
+              <strong>Toestemming intrekken:</strong> Wis de lokale opslag van dewmc.nl in je
+              browserinstellingen (Instellingen → Privacy → Browsegegevens wissen → Gecachte
+              afbeeldingen en bestanden / Sitegegevens). De cookiebanner verschijnt dan opnieuw
+              bij je volgende bezoek.
             </p>
           </section>
 

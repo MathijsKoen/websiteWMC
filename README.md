@@ -39,6 +39,15 @@ Benodigde omgevingsvariabelen:
 
 ---
 
+### Websitestatistieken
+
+**[Google Analytics 4](https://analytics.google.com)**
+Bijhouden hoeveel bezoekers de website heeft en welke pagina's het meest worden bezocht. IP-adressen worden geanonimiseerd. De tracking wordt alleen geactiveerd als een bezoeker toestemming geeft via de cookiebanner.
+
+Het Measurement ID (`G-CP8W9JKLPF`) staat direct in de code in [components/analytics/GoogleAnalytics.tsx](components/analytics/GoogleAnalytics.tsx). Er zijn geen omgevingsvariabelen nodig.
+
+---
+
 ### Spam-beveiliging
 
 **[Google reCAPTCHA v2](https://www.google.com/recaptcha/admin)**

@@ -84,6 +84,7 @@ export default function PrivacyPage() {
               <li>Hosting en websiteplatform (Netlify).</li>
               <li>E-mailverzending voor declaraties en communicatie (Resend).</li>
               <li>Beveiliging tegen misbruik van formulieren (Google reCAPTCHA).</li>
+              <li>Websitestatistieken (Google Analytics 4) — alleen na jouw toestemming.</li>
             </ul>
           </section>
 
@@ -110,9 +111,24 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">9. Cookies en sessies</h2>
-            <p>
-              Voor het ledenportaal gebruiken wij functionele sessie- en beveiligingscookies die nodig
-              zijn om inloggen en beveiligde toegang te laten werken.
+            <p>Wij gebruiken twee soorten cookies:</p>
+            <ul className="list-disc pl-6 mt-3 space-y-2">
+              <li>
+                <strong>Functionele cookies</strong> — Noodzakelijk voor het ledenportaal: sessie- en
+                beveiligingscookies die inloggen en beveiligde toegang mogelijk maken. Voor deze
+                cookies is geen toestemming vereist.
+              </li>
+              <li>
+                <strong>Analytische cookies (Google Analytics)</strong> — Alleen geplaatst na jouw
+                toestemming. Wij gebruiken Google Analytics 4 om anoniem bij te houden hoe bezoekers
+                onze website gebruiken. IP-adressen worden geanonimiseerd. De gegevens worden
+                verwerkt door Google LLC (VS) en worden niet gebruikt voor gepersonaliseerde
+                advertenties.
+              </li>
+            </ul>
+            <p className="mt-3">
+              Je kunt je cookievoorkeur op elk moment wijzigen door je browsercookies te wissen.
+              De banner verschijnt dan opnieuw bij je volgende bezoek.
             </p>
           </section>
 

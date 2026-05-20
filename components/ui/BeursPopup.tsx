@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Train, ArrowRight, MapPin, Calendar, FileText, Download } from 'lucide-react'
 
-const SESSION_KEY = 'wmc_beurs2026_popup_shown'
+const STORAGE_KEY = 'wmc_beurs2026_popup_shown'
 
 export function BeursPopup() {
   const [visible, setVisible] = useState(false)
@@ -13,7 +13,7 @@ export function BeursPopup() {
   const [side, setSide] = useState<'voor' | 'achter'>('voor')
 
   useEffect(() => {
-    const alreadyShown = sessionStorage.getItem(SESSION_KEY)
+    const alreadyShown = localStorage.getItem(STORAGE_KEY)
     if (!alreadyShown) {
       const t = setTimeout(() => setVisible(true), 700)
       return () => clearTimeout(t)
@@ -31,7 +31,7 @@ export function BeursPopup() {
   }, [visible])
 
   function dismiss() {
-    sessionStorage.setItem(SESSION_KEY, '1')
+    localStorage.setItem(STORAGE_KEY, '1')
     setVisible(false)
     setFolderOpen(false)
   }

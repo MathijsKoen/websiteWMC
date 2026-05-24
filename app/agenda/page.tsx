@@ -205,7 +205,6 @@ export default async function AgendaPage() {
               <div className="w-8 h-0.5 bg-[#cc0000]" />
               Vaste clubavonden
             </h2>
-            <p className="text-white/50 text-sm mb-8 ml-11">Alleen voor leden</p>
 
             <div className="flex flex-col gap-px bg-white/10">
               {memberEvents.map((event) => (
@@ -240,9 +239,7 @@ export default async function AgendaPage() {
                       </span>
                     </div>
                   </div>
-                  <span className="text-xs font-bold text-[#926e69] uppercase tracking-widest shrink-0">
-                    Alleen leden
-                  </span>
+
                 </div>
               ))}
             </div>

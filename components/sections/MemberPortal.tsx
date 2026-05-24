@@ -5,6 +5,7 @@ import { useState, useMemo } from 'react'
 import type { MemberAnnouncement, MemberDocument } from '@/lib/contentful/types'
 import DeclarationForm from './DeclarationForm'
 import { Badge } from '@/components/ui/Badge'
+import { renderInlineMarkdownLinks } from '@/lib/inlineMarkdown'
 
 interface MemberPortalProps {
   announcements: MemberAnnouncement[]
@@ -183,12 +184,14 @@ export default function MemberPortal({ announcements, documents }: MemberPortalP
 
                     {expandedAnnouncement !== announcement.id && (
                       <p className="text-sm text-[#4d4c4c] leading-relaxed mt-3 line-clamp-2">
-                        {announcement.content}
+                        {renderInlineMarkdownLinks(announcement.content, 'text-[#cc0000] font-bold hover:text-[#9e0000] underline underline-offset-2 transition-colors')}
                       </p>
                     )}
 
                     {expandedAnnouncement === announcement.id && (
-                      <p className="text-[#4d4c4c] leading-relaxed mt-4 whitespace-pre-line">{announcement.content}</p>
+                      <p className="text-[#4d4c4c] leading-relaxed mt-4 whitespace-pre-line">
+                        {renderInlineMarkdownLinks(announcement.content, 'text-[#cc0000] font-bold hover:text-[#9e0000] underline underline-offset-2 transition-colors')}
+                      </p>
                     )}
                   </div>
 

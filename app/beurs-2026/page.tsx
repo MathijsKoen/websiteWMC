@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Clock, Calendar, MapPin, Train, ArrowRight, Users, ExternalLink } from 'lucide-react'
 import { getAllBeursLayouts } from '@/lib/contentful/queries'
@@ -22,7 +22,7 @@ const BEURS = {
   time: 'Zaterdag: 10:00 – 16:00, zondag: 10:00 – 15:00',      // bijv. '10:00 – 17:00 uur'
   location: 'Heerhugowaard',
   venue: 'De Waardergolf\nBeukenlaan 1B\n1723 HX Heerhugowaard',
-  admission: '€ 6 ,— | kinderen t/m 12jr gratis onder begeleiding',
+  admission: '€ 6,— | kinderen t/m 12 jaar gratis onder begeleiding',
   mapsUrl: 'https://maps.google.com/?q=Beukenlaan+1B+1723+HX+Heerhugowaard',
 }
 // ───────────────────────────────────────────────────────────────────────────
@@ -204,11 +204,11 @@ export default async function Beurs2026Page() {
               </h2>
               <div className="flex flex-col gap-4 text-[#4d4c4c] text-base leading-relaxed">
                 <p>
-                  De Westfriese Modelspoor Club organiseert een grote modelspoor en modelbouw evenement,
-                  waarbij exposanten uit Nederland, Belgie, Duitsland en Frankrijk hun banen presenteren.
+                  De Westfriese Modelspoor Club organiseert een groot modelspoor- en modelbouwevenement,
+                  waarbij exposanten uit Nederland, België, Duitsland en Frankrijk hun banen presenteren.
                 </p>
                 <p>
-                  Of je nu een fervent modelspoor of modelbouw fan bent, of gewoon benieuwd bent naar
+                  Of je nu een fervent modelspoor- of modelbouwfan bent, of gewoon benieuwd bent naar
                   deze bijzondere hobby - de beurs is toegankelijk voor iedereen. Kom kijken, stel vragen
                   en laat je inspireren.
                 </p>

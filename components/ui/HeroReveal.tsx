@@ -80,7 +80,7 @@ export function HeroReveal({ tracksCount }: HeroRevealProps) {
               style={{ willChange: 'transform, opacity' }}
             >
               <Button href="/contact" size="lg" skewed>
-                <span>Wordt lid</span>
+                <span>Word lid</span>
                 <ArrowRight size={18} />
               </Button>
               <Button href="/over-ons" variant="secondary" size="lg">

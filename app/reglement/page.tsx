@@ -17,7 +17,7 @@ const artikelen = [
     punten: [
       'Leden behandelen elkaar correct, ook bij meningsverschillen.',
       'Bij ernstige conflicten of schade aan club of imago kan het bestuur het lidmaatschap ontzeggen.',
-      'Binnen werkgroepen geldt het meerderheidsstandpunt; de coordinator bewaakt dit.',
+      'Binnen werkgroepen geldt het meerderheidsstandpunt; de coördinator bewaakt dit.',
     ],
   },
   {
@@ -44,7 +44,7 @@ const artikelen = [
     punten: [
       'Werkgroepen werken met jaarplan en begroting, vastgesteld door de ledenvergadering.',
       'Budgetoverschrijding of bijzondere aankopen vereisen toestemming van het bestuur via de secretaris.',
-      'Aankopen door leden binnen werkgroepbudget verlopen met toestemming van de coordinator.',
+      'Aankopen door leden binnen werkgroepbudget verlopen met toestemming van de coördinator.',
     ],
   },
   {
@@ -69,7 +69,7 @@ const artikelen = [
     titel: 'Bestuur medewerkers en commissies',
     punten: [
       'Bestuur kan leden formeel aanstellen voor taken; bestuur blijft eindverantwoordelijk.',
-      'Kascommissie en continuiteitscommissie worden jaarlijks aangesteld.',
+      'Kascommissie en continuïteitscommissie worden jaarlijks aangesteld.',
       'Bestuursleden zitten niet in deze commissies.',
     ],
   },

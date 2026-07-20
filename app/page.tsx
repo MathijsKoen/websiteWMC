@@ -56,15 +56,16 @@ export default async function HomePage() {
       {/* ===== HERO ===== */}
       <section className="relative bg-white text-[#1a1c1c] overflow-hidden min-h-[85vh] flex items-center">
         {/* Rood vlak rechts met clipPath — alleen tablet en groter */}
-        {/* clipPath: diagonaal snijdt van 15% bovenaan naar 0% onderaan, tekst zit altijd links */}
+        {/* Asymmetrische diagonaal: loopt schuin af naar één punt onderaan i.p.v. een rechte rand,
+            zodat het niet abrupt eindigt maar oogt als het begin van een doorlopende vorm (zie /agenda). */}
         <div
           className="hidden md:block absolute top-0 right-0 h-full w-1/2 bg-[#cc0000] pointer-events-none"
-          style={{ clipPath: 'polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%)' }}
+          style={{ clipPath: 'polygon(34% 0%, 100% 0%, 100% 82%, 10% 100%)' }}
         />
         <div
           className="hidden md:block absolute top-0 right-0 h-full w-1/2 opacity-[0.08] pointer-events-none"
           style={{
-            clipPath: 'polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%)',
+            clipPath: 'polygon(34% 0%, 100% 0%, 100% 82%, 10% 100%)',
             backgroundImage:
               'repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 0,transparent 50%),repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 0,transparent 50%)',
             backgroundSize: '40px 40px',

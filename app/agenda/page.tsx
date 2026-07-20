@@ -89,7 +89,23 @@ export default async function AgendaPage() {
     <>
       {/* Hero */}
       <section className="bg-[#1a1c1c] text-white py-20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/4 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/4" />
+        {/* Zelfde motief als de homepage-hero: asymmetrisch rood vlak dat schuin afloopt naar
+            een punt, zodat de vormtaal van de landingspagina hier lijkt door te lopen. */}
+        <div
+          className="hidden md:block absolute top-0 right-0 h-full w-1/2 bg-[#cc0000] pointer-events-none"
+          style={{ clipPath: 'polygon(42% 0%, 100% 0%, 100% 70%, 18% 100%)' }}
+        />
+        <div
+          className="hidden md:block absolute top-0 right-0 h-full w-1/2 opacity-[0.06] pointer-events-none"
+          style={{
+            clipPath: 'polygon(42% 0%, 100% 0%, 100% 70%, 18% 100%)',
+            backgroundImage:
+              'repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 0,transparent 50%),repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 0,transparent 50%)',
+            backgroundSize: '40px 40px',
+          }}
+        />
+        {/* Mobiel: dunne rode bovenbalk i.p.v. het vlak */}
+        <div className="md:hidden absolute top-0 inset-x-0 h-1 bg-[#cc0000]" />
         <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-0.5 bg-[#cc0000]" />

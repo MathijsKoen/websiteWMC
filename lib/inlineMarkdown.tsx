@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { MouseEvent, ReactNode } from 'react'
 
 const MARKDOWN_LINK_REGEX = /\[([^\]]+)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g
 
@@ -9,7 +9,11 @@ function isSafeHref(href: string): boolean {
 /**
  * Render eenvoudige inline markdown links zoals [label](https://example.com "title").
  */
-export function renderInlineMarkdownLinks(text: string, linkClassName = ''): ReactNode[] {
+export function renderInlineMarkdownLinks(
+  text: string,
+  linkClassName = '',
+  onLinkClick?: (event: MouseEvent<HTMLAnchorElement>) => void
+): ReactNode[] {
   const nodes: ReactNode[] = []
   let lastIndex = 0
 
@@ -29,6 +33,7 @@ export function renderInlineMarkdownLinks(text: string, linkClassName = ''): Rea
         <a
           key={`md-link-${start}`}
           href={href}
+          onClick={onLinkClick}
           className={linkClassName}
           target={isExternal ? '_blank' : undefined}
           rel={isExternal ? 'noopener noreferrer' : undefined}

@@ -12,8 +12,8 @@ export async function POST(req: NextRequest) {
   const validUsername = process.env.MEMBER_USERNAME
   const validPassword = process.env.MEMBER_PASSWORD
 
-  if (!validUsername || !validPassword) {
-    console.error('[login] MEMBER_USERNAME or MEMBER_PASSWORD env var not set')
+  if (!validUsername || !validPassword || !process.env.SESSION_SECRET) {
+    console.error('[login] MEMBER_USERNAME, MEMBER_PASSWORD or SESSION_SECRET env var not set')
     return NextResponse.json({ error: 'Inloggen is niet geconfigureerd.' }, { status: 500 })
   }
 

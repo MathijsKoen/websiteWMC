@@ -3,7 +3,10 @@ import { cookies } from 'next/headers'
 const SESSION_DURATION = 8 * 60 * 60 // 8 hours in seconds
 
 async function getSecret(): Promise<CryptoKey> {
-  const secret = process.env.SESSION_SECRET ?? 'dev-secret-change-me'
+  const secret = process.env.SESSION_SECRET
+  if (!secret) {
+    throw new Error('SESSION_SECRET env var is not set')
+  }
   const key = await crypto.subtle.importKey(
     'raw',
     new TextEncoder().encode(secret),

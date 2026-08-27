@@ -3,6 +3,15 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+function escapeHtml(value: unknown): string {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 async function verifyRecaptcha(token: string): Promise<boolean> {
   const res = await fetch('https://www.google.com/recaptcha/api/siteverify', {
     method: 'POST',
@@ -29,10 +38,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Akkoord op privacyverklaring en reglement is vereist' }, { status: 400 })
     }
 
+    const bedragNum = parseFloat(String(bedrag).replace(',', '.'))
+    if (isNaN(bedragNum) || bedragNum <= 0) {
+      return NextResponse.json({ error: 'Voer een geldig bedrag in' }, { status: 400 })
+    }
+    const bedragFormatted = bedragNum.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
     const captchaOk = await verifyRecaptcha(recaptchaToken ?? '')
     if (!captchaOk) {
       return NextResponse.json({ error: 'reCAPTCHA verificatie mislukt' }, { status: 400 })
     }
+
+    const naamSafe = escapeHtml(naam)
+    const emailSafe = escapeHtml(email)
+    const kostenplaatsSafe = escapeHtml(kostenplaats)
+    const omschrijvingSafe = escapeHtml(omschrijving)
+    const rekeningnummerSafe = rekeningnummer ? escapeHtml(rekeningnummer) : ''
 
     const indienDatum = new Date().toLocaleDateString('nl-NL', {
       day: 'numeric', month: 'long', year: 'numeric',
@@ -70,7 +91,7 @@ export async function POST(req: NextRequest) {
       from: 'De WMC — Declaraties <info@mail.dewmc.nl>',
       replyTo: email,
       to: process.env.DECLARATIE_EMAIL ?? '',
-      subject: `Nieuwe declaratie van ${naam} — €${bedrag}`,
+      subject: `Nieuwe declaratie van ${naam} — €${bedragFormatted}`,
       html: `
         <div style="font-family: Arial, Helvetica, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid ${randKleur}; background-color: #fff;">
           ${emailHeader('Nieuwe declaratie ingediend', `Ingediend op ${indienDatum} via het ledenportaal`)}
@@ -80,16 +101,16 @@ export async function POST(req: NextRequest) {
             <p style="margin: 0 0 22px; color: #555; font-size: 14px; line-height: 1.7;">Er is een nieuwe declaratie binnengekomen. Hieronder vind je alle benodigde informatie om dit te verwerken.</p>
 
             <table style="width: 100%; border-collapse: collapse;">
-              ${detailRij('Naam', naam, true)}
-              ${detailRij('E-mailadres', `<a href="mailto:${email}" style="color: ${rood}; text-decoration: none;">${email}</a>`, false)}
-              ${detailRij('Bedrag', `€${bedrag}`, true, `color: ${rood}; font-weight: 700; font-size: 16px;`)}
-              ${detailRij('Kostenplaats', kostenplaats, false)}
-              ${detailRij('IBAN', rekeningnummer || '<em style="color:#999;">Niet opgegeven</em>', true, 'font-family: monospace;')}
+              ${detailRij('Naam', naamSafe, true)}
+              ${detailRij('E-mailadres', `<a href="mailto:${emailSafe}" style="color: ${rood}; text-decoration: none;">${emailSafe}</a>`, false)}
+              ${detailRij('Bedrag', `€${bedragFormatted}`, true, `color: ${rood}; font-weight: 700; font-size: 16px;`)}
+              ${detailRij('Kostenplaats', kostenplaatsSafe, false)}
+              ${detailRij('IBAN', rekeningnummerSafe || '<em style="color:#999;">Niet opgegeven</em>', true, 'font-family: monospace;')}
             </table>
 
             <div style="margin-top: 20px; background-color: ${lichtGrijs}; border-left: 3px solid ${rood}; padding: 14px 16px;">
               <p style="margin: 0 0 6px; font-size: 12px; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Omschrijving</p>
-              <p style="margin: 0; color: #333; font-size: 14px; line-height: 1.7;">${omschrijving}</p>
+              <p style="margin: 0; color: #333; font-size: 14px; line-height: 1.7; white-space: pre-line;">${omschrijvingSafe}</p>
             </div>
 
             <p style="margin: 22px 0 0; font-size: 13px; color: #999; line-height: 1.6;">Je kunt de indiener direct bereiken door op deze e-mail te antwoorden.</p>
@@ -104,13 +125,13 @@ export async function POST(req: NextRequest) {
     await resend.emails.send({
       from: 'De WMC — Declaraties <info@mail.dewmc.nl>',
       to: email,
-      subject: `Declaratie ontvangen — €${bedrag}`,
+      subject: `Declaratie ontvangen — €${bedragFormatted}`,
       html: `
         <div style="font-family: Arial, Helvetica, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid ${randKleur}; background-color: #fff;">
           ${emailHeader('Je declaratie is ontvangen')}
 
           <div style="padding: 28px 32px; line-height: 1.7; color: #444; font-size: 15px;">
-            <p style="margin: 0 0 12px;">Hoi ${naam},</p>
+            <p style="margin: 0 0 12px;">Hoi ${naamSafe},</p>
             <p style="margin: 0 0 22px;">Goed nieuws — je declaratie is in goede orde ontvangen! De penningmeester neemt dit in behandeling en neemt contact met je op als er nog vragen zijn.</p>
 
             <div style="background-color: ${lichtGrijs}; border: 1px solid ${randKleur}; padding: 20px 22px; margin-bottom: 22px;">
@@ -118,11 +139,11 @@ export async function POST(req: NextRequest) {
               <table style="width: 100%; font-size: 14px; border-collapse: collapse;">
                 <tr>
                   <td style="padding: 7px 0; color: #666; width: 42%; border-bottom: 1px solid ${randKleur};">Bedrag</td>
-                  <td style="padding: 7px 0; color: ${donker}; font-weight: 700; border-bottom: 1px solid ${randKleur};">€${bedrag}</td>
+                  <td style="padding: 7px 0; color: ${donker}; font-weight: 700; border-bottom: 1px solid ${randKleur};">€${bedragFormatted}</td>
                 </tr>
                 <tr>
                   <td style="padding: 7px 0; color: #666; border-bottom: 1px solid ${randKleur};">Kostenplaats</td>
-                  <td style="padding: 7px 0; color: ${donker}; border-bottom: 1px solid ${randKleur};">${kostenplaats}</td>
+                  <td style="padding: 7px 0; color: ${donker}; border-bottom: 1px solid ${randKleur};">${kostenplaatsSafe}</td>
                 </tr>
                 <tr>
                   <td style="padding: 7px 0; color: #666; border-bottom: 1px solid ${randKleur};">Ingediend op</td>

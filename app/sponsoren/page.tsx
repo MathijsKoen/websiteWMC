@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { ArrowRight, ExternalLink, Sparkles } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
+import { Eyebrow } from '@/components/ui/Eyebrow'
+import { PageHero } from '@/components/ui/PageHero'
 import { getSponsors } from '@/lib/contentful/queries'
 import type { Sponsor } from '@/lib/contentful/types'
 
@@ -85,10 +87,7 @@ function SponsorCard({ sponsor }: { sponsor: Sponsor }) {
               </span>
             )}
           </div>
-          <h2
-            className="font-black text-2xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors"
-            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-          >
+          <h2 className="font-black text-2xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors">
             {sponsor.name}
           </h2>
         </div>
@@ -140,39 +139,11 @@ export default async function SponsorenPage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative bg-[#1a1c1c] text-white overflow-hidden min-h-[60vh] flex items-center">
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 0,transparent 50%),repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 0,transparent 50%)',
-            backgroundSize: '40px 40px',
-          }}
-        />
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/4" />
-        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 py-24 w-full">
-          <div className="max-w-3xl">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-0.5 bg-[#cc0000]" />
-              <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                Met dank aan onze partners
-              </span>
-            </div>
-            <h1
-              className="font-black text-5xl md:text-6xl lg:text-7xl tracking-tighter mb-6"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            >
-              Sponsoren
-            </h1>
-            <p className="text-white/70 text-lg max-w-2xl leading-relaxed">
-              Deze bedrijven en partners helpen De WMC bij het bouwen, onderhouden en presenteren
-              van onze modelspoorbanen. Zonder hun steun was een deel van het werk simpelweg niet
-              mogelijk.
-            </p>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Met dank aan onze partners"
+        title="Sponsoren"
+        lead="Deze bedrijven en partners helpen De WMC bij het bouwen, onderhouden en presenteren van onze modelspoorbanen. Zonder hun steun was een deel van het werk simpelweg niet mogelijk."
+      />
 
       {/* Intro strip */}
       <section className="bg-[#cc0000] text-white">
@@ -181,7 +152,7 @@ export default async function SponsorenPage() {
             <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-1">
               Sponsoren en partners
             </p>
-            <p className="text-sm md:text-base font-bold" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+            <p className="font-headline text-sm md:text-base font-bold">
               {sponsors.length} {sponsors.length === 1 ? 'sponsor' : 'sponsoren'}
             </p>
           </div>
@@ -215,12 +186,7 @@ export default async function SponsorenPage() {
             <div className="space-y-14">
               {visibleGroups.map((group) => (
                 <section key={group}>
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-8 h-0.5 bg-[#cc0000]" />
-                    <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                      {tierLabels[group]}
-                    </span>
-                  </div>
+                  <Eyebrow className="mb-6">{tierLabels[group]}</Eyebrow>
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {groupedSponsors[group].map((sponsor) => (
                       <SponsorCard key={sponsor.id} sponsor={sponsor} />

@@ -50,10 +50,7 @@ export function TimelineReveal({ items }: TimelineRevealProps) {
               }}
             />
 
-            <span
-              className="text-[#cc0000] font-black text-sm tracking-widest"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            >
+            <span className="font-headline text-[#cc0000] font-black text-sm tracking-widest">
               {item.year}
             </span>
             <p className="text-[#4d4c4c] text-sm mt-1">{item.event}</p>

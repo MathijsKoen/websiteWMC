@@ -97,10 +97,7 @@ export function BeursPopup() {
                       </span>
                     </div>
 
-                    <h2
-                      className="font-black text-4xl md:text-5xl tracking-tighter text-white leading-none mb-3"
-                      style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                    >
+                    <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-white leading-none mb-3">
                       WMC Beurs
                       <br />
                       <span className="text-[#cc0000]">2026</span>
@@ -129,8 +126,7 @@ export function BeursPopup() {
                       <Link
                         href="/beurs-2026"
                         onClick={dismiss}
-                        className="flex-1 inline-flex items-center justify-center gap-2 bg-[#cc0000] hover:bg-[#9e0000] text-white font-black text-sm px-6 py-3.5 transition-colors duration-200"
-                        style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                        className="font-headline flex-1 inline-flex items-center justify-center gap-2 bg-[#cc0000] hover:bg-[#9e0000] text-white font-black text-sm px-6 py-3.5 transition-colors duration-200"
                       >
                         Meer informatie
                         <ArrowRight size={16} />
@@ -171,10 +167,9 @@ export function BeursPopup() {
                         <button
                           key={s}
                           onClick={() => setSide(s)}
-                          className={`px-4 py-1.5 text-xs font-black uppercase tracking-widest transition-colors ${
+                          className={`font-headline px-4 py-1.5 text-xs font-black uppercase tracking-widest transition-colors ${
                             side === s ? 'bg-[#cc0000] text-white' : 'text-white/40 hover:text-white'
                           }`}
-                          style={{ fontFamily: 'Space Grotesk, sans-serif' }}
                         >
                           {s === 'voor' ? 'Voorkant' : 'Achterkant'}
                         </button>

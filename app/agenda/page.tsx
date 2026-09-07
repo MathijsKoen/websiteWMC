@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Calendar, Clock, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
+import { PageHero } from '@/components/ui/PageHero'
 import { getAllEvents } from '@/lib/contentful/queries'
 import { stripInlineMarkdownLinks } from '@/lib/inlineMarkdown'
 import type { AgendaEvent } from '@/lib/contentful/types'
@@ -87,51 +88,63 @@ export default async function AgendaPage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="bg-[#1a1c1c] text-white py-20 relative overflow-hidden">
-        {/* Zelfde motief als de homepage-hero: asymmetrisch rood vlak dat schuin afloopt naar
-            een punt, zodat de vormtaal van de landingspagina hier lijkt door te lopen. */}
-        <div
-          className="hidden md:block absolute top-0 right-0 h-full w-1/2 bg-[#cc0000] pointer-events-none"
-          style={{ clipPath: 'polygon(42% 0%, 100% 0%, 100% 70%, 18% 100%)' }}
-        />
-        <div
-          className="hidden md:block absolute top-0 right-0 h-full w-1/2 opacity-[0.06] pointer-events-none"
-          style={{
-            clipPath: 'polygon(42% 0%, 100% 0%, 100% 70%, 18% 100%)',
-            backgroundImage:
-              'repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 0,transparent 50%),repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 0,transparent 50%)',
-            backgroundSize: '40px 40px',
-          }}
-        />
-        {/* Mobiel: dunne rode bovenbalk i.p.v. het vlak */}
-        <div className="md:hidden absolute top-0 inset-x-0 h-1 bg-[#cc0000]" />
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-0.5 bg-[#cc0000]" />
-            <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-              Beurzen • Open Dagen • Clubavonden
-            </span>
+      <PageHero
+        eyebrow="Beurzen • Open dagen • Clubavonden"
+        title="Agenda"
+        lead="Blijf op de hoogte van aankomende beurzen, open dagen en wekelijkse clubavonden."
+      />
+
+      {/* Vaste clubavonden — staat bovenaan omdat dit het vaste ritme van de
+          club is; de losse evenementen eronder wisselen per seizoen. */}
+      {memberEvents.length > 0 && (
+        <section className="bg-white py-16">
+          <div className="max-w-7xl mx-auto px-6 md:px-8">
+            <h2 className="font-black text-2xl tracking-tighter mb-8 text-[#1a1c1c] flex items-center gap-3">
+              <div className="w-8 h-0.5 bg-[#cc0000]" />
+              Vaste clubavonden
+            </h2>
+
+            <div className="flex flex-col gap-px bg-[#e2e2e2] border border-[#e2e2e2]">
+              {memberEvents.map((event) => (
+                <div key={event.id} className="bg-white p-6 flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div className="sm:w-28 shrink-0">
+                    <Badge>{categoryConfig[event.category].label}</Badge>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-black text-lg tracking-tight text-[#1a1c1c]">
+                      {event.title}
+                    </h3>
+                    <div className="flex flex-wrap gap-4 mt-1.5 text-sm text-[#4d4c4c]">
+                      <span className="flex items-center gap-1.5">
+                        <Calendar size={13} className="text-[#cc0000]" />
+                        {formatDate(displayDate(event))}
+                        {event.isRecurring && (
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69] ml-1">
+                            terugkerend
+                          </span>
+                        )}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Clock size={13} className="text-[#cc0000]" />
+                        {event.startTime}{event.endTime ? ` – ${event.endTime}` : ''}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <MapPin size={13} className="text-[#cc0000]" />
+                        {event.location}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <h1
-            className="font-black text-5xl md:text-6xl tracking-tighter mb-6"
-            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-          >
-            Agenda
-          </h1>
-          <p className="text-white/70 text-lg max-w-2xl leading-relaxed">
-            Blijf op de hoogte van aankomende beurzen, open dagen en wekelijkse clubavonden.
-          </p>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Publieke evenementen */}
       <section className="bg-[#f9f9f9] py-20">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <h2
-            className="font-black text-2xl tracking-tighter mb-8 text-[#1a1c1c] flex items-center gap-3"
-            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-          >
+          <h2 className="font-black text-2xl tracking-tighter mb-8 text-[#1a1c1c] flex items-center gap-3">
             <div className="w-8 h-0.5 bg-[#cc0000]" />
             Aankomende evenementen
           </h2>
@@ -157,10 +170,7 @@ export default async function AgendaPage() {
                         <Badge variant={config.variant}>{config.label}</Badge>
                       </div>
                       <div className="flex-1">
-                        <h3
-                          className="font-black text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors mb-3"
-                          style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                        >
+                        <h3 className="font-black text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors mb-3">
                           {event.title}
                         </h3>
                         <div className="flex flex-wrap gap-4 text-sm text-[#4d4c4c] mb-4">
@@ -196,8 +206,7 @@ export default async function AgendaPage() {
                         {event.price == null || event.price === '' ? (
                           <span className="text-xs font-bold text-[#926e69] uppercase tracking-widest">zie website</span>
                         ) : (
-                          <span className="font-black text-lg text-[#1a1c1c]"
-                            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                          <span className="font-headline font-black text-lg text-[#1a1c1c]"
                           >{event.price}</span>
                         )}
                       </div>
@@ -209,59 +218,6 @@ export default async function AgendaPage() {
           )}
         </div>
       </section>
-
-      {/* Leden clubavonden */}
-      {memberEvents.length > 0 && (
-        <section className="bg-[#1a1c1c] text-white py-20">
-          <div className="max-w-7xl mx-auto px-6 md:px-8">
-            <h2
-              className="font-black text-2xl tracking-tighter mb-2 flex items-center gap-3"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            >
-              <div className="w-8 h-0.5 bg-[#cc0000]" />
-              Vaste clubavonden
-            </h2>
-
-            <div className="flex flex-col gap-px bg-white/10">
-              {memberEvents.map((event) => (
-                <div key={event.id} className="bg-[#1a1c1c] p-6 flex flex-col sm:flex-row sm:items-center gap-4">
-                  <div className="sm:w-28 shrink-0">
-                    <Badge>{categoryConfig[event.category].label}</Badge>
-                  </div>
-                  <div className="flex-1">
-                    <h3
-                      className="font-black text-lg tracking-tight"
-                      style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                    >
-                      {event.title}
-                    </h3>
-                    <div className="flex flex-wrap gap-4 mt-1 text-sm text-white/50">
-                      <span className="flex items-center gap-1">
-                        <Calendar size={12} />
-                        {formatDate(displayDate(event))}
-                        {event.isRecurring && (
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-[#926e69] ml-1">
-                            terugkerend
-                          </span>
-                        )}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock size={12} />
-                        {event.startTime}{event.endTime ? ` – ${event.endTime}` : ''}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MapPin size={12} />
-                        {event.location}
-                      </span>
-                    </div>
-                  </div>
-
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
     </>
   )
 }

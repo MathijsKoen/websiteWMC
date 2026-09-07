@@ -25,10 +25,7 @@ export default function GlobalError({ error, reset }: ErrorProps) {
           </span>
           <div className="w-8 h-0.5 bg-[#cc0000]" />
         </div>
-        <h1
-          className="font-black text-5xl tracking-tighter text-[#1a1c1c] mb-4"
-          style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-        >
+        <h1 className="font-black text-5xl tracking-tighter text-[#1a1c1c] mb-4">
           Pagina kon niet laden
         </h1>
         <p className="text-[#4d4c4c] leading-relaxed mb-8">

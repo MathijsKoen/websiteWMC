@@ -74,10 +74,7 @@ export default function LedenPage() {
             <div className="inline-flex items-center justify-center w-12 h-12 bg-[#cc0000] rounded mb-4">
               <Lock className="text-white" size={18} />
             </div>
-            <h1
-              className="font-black text-3xl tracking-tighter text-[#1a1c1c] mb-2"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            >
+            <h1 className="font-black text-3xl tracking-tighter text-[#1a1c1c] mb-2">
               Ledenportaal
             </h1>
             <p className="text-gray-600 text-sm">De WMC</p>
@@ -100,10 +97,7 @@ export default function LedenPage() {
     <section className="bg-white min-h-screen">
       <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-200">
-          <h1
-            className="font-black text-3xl tracking-tighter text-[#1a1c1c]"
-            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-          >
+          <h1 className="font-black text-3xl tracking-tighter text-[#1a1c1c]">
             Ledenportaal
           </h1>
           <MemberLoginForm

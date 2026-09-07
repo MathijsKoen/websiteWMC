@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, Calendar } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
+import { PageHero } from '@/components/ui/PageHero'
 import { RichText } from '@/components/ui/RichText'
 import { getAllNews, getNewsBySlug } from '@/lib/contentful/queries'
 import type { Document } from '@contentful/rich-text-types'
@@ -58,56 +58,40 @@ export default async function NieuwsDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Hero */}
-      <section className="bg-[#1a1c1c] text-white relative overflow-hidden">
-        {coverImage && (
-          <div className="absolute inset-0">
-            <Image
-              src={`https:${coverImage.fields.file.url}?w=1600&h=600&fit=fill&f=center`}
-              alt={article.title}
-              fill
-              priority
-              className="object-cover opacity-20"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#1a1c1c] via-[#1a1c1c]/80 to-transparent" />
-          </div>
-        )}
-        <div className="absolute top-0 right-0 w-1/4 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/4" />
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 py-20" {...sbObject(article.id)}>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-0.5 bg-[#cc0000]" />
-            <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-              Nieuws
+      <PageHero
+        eyebrow="Nieuws"
+        title={article.title}
+        contentProps={sbObject(article.id)}
+        titleProps={sbField(article.id, 'title')}
+        image={
+          coverImage
+            ? {
+                src: `https:${coverImage.fields.file.url}?w=1600&h=600&fit=fill&f=center`,
+                alt: article.title,
+              }
+            : undefined
+        }
+      >
+        <div className="flex flex-wrap items-center gap-3">
+          {article.category && (
+            <span {...sbField(article.id, 'category')}>
+              <Badge variant="primary">{article.category}</Badge>
             </span>
-          </div>
-          <div className="flex flex-wrap items-center gap-3 mb-4">
-            {article.category && (
-              <span {...sbField(article.id, 'category')}>
-                <Badge variant="primary">{article.category}</Badge>
-              </span>
-            )}
-            <time
-              dateTime={article.publishedAt}
-              className="text-xs text-white/50 flex items-center gap-1"
-              {...sbField(article.id, 'publishedAt')}
-            >
-              <Calendar size={12} />
-              {new Date(article.publishedAt).toLocaleDateString('nl-NL', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-              })}
-            </time>
-          </div>
-          <h1
-            className="font-black text-4xl md:text-5xl tracking-tighter max-w-3xl"
-            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            {...sbField(article.id, 'title')}
+          )}
+          <time
+            dateTime={article.publishedAt}
+            className="text-xs text-white/60 flex items-center gap-1.5"
+            {...sbField(article.id, 'publishedAt')}
           >
-            {article.title}
-          </h1>
+            <Calendar size={12} />
+            {new Date(article.publishedAt).toLocaleDateString('nl-NL', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })}
+          </time>
         </div>
-      </section>
+      </PageHero>
 
       {/* Content */}
       <section className="bg-white py-20">
@@ -125,20 +109,14 @@ export default async function NieuwsDetailPage({ params }: Props) {
             {/* Sidebar */}
             <div className="space-y-6">
               <div className="bg-[#f3f3f3] border-l-4 border-[#cc0000] p-6">
-                <h3
-                  className="font-black text-sm uppercase tracking-widest text-[#1a1c1c] mb-3"
-                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                >
+                <h3 className="font-black text-sm uppercase tracking-widest text-[#1a1c1c] mb-3">
                   Samenvatting
                 </h3>
                 <p className="text-sm text-[#4d4c4c] leading-relaxed" {...sbField(article.id, 'summary')}>{article.summary}</p>
               </div>
 
               <div className="bg-[#f3f3f3] p-6 space-y-3">
-                <h3
-                  className="font-black text-sm uppercase tracking-widest text-[#1a1c1c] mb-3"
-                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                >
+                <h3 className="font-black text-sm uppercase tracking-widest text-[#1a1c1c] mb-3">
                   Details
                 </h3>
                 <div className="flex justify-between items-baseline gap-4">

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Download } from 'lucide-react'
+import { Eyebrow } from '@/components/ui/Eyebrow'
 
 interface FolderViewerProps {
   /** Wordt getoond als trigger op de pagina */
@@ -22,16 +23,8 @@ export function FolderSection() {
 
             {/* Tekst */}
             <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-0.5 bg-[#cc0000]" />
-                <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                  Digitale folder
-                </span>
-              </div>
-              <h2
-                className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c] mb-4"
-                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-              >
+              <Eyebrow className="mb-4">Digitale folder</Eyebrow>
+              <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c] mb-4">
                 Bekijk onze
                 <br />beursfolder
               </h2>
@@ -42,8 +35,7 @@ export function FolderSection() {
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => setOpen(true)}
-                  className="inline-flex items-center gap-2 bg-[#cc0000] hover:bg-[#9e0000] text-white font-black text-sm px-6 py-3.5 transition-colors"
-                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                  className="font-headline inline-flex items-center gap-2 bg-[#cc0000] hover:bg-[#9e0000] text-white font-black text-sm px-6 py-3.5 transition-colors"
                 >
                   Folder bekijken
                 </button>
@@ -111,12 +103,11 @@ export function FolderSection() {
                       <button
                         key={s}
                         onClick={() => setSide(s)}
-                        className={`px-4 py-1.5 text-xs font-black uppercase tracking-widest transition-colors ${
+                        className={`font-headline px-4 py-1.5 text-xs font-black uppercase tracking-widest transition-colors ${
                           side === s
                             ? 'bg-[#cc0000] text-white'
                             : 'text-white/40 hover:text-white'
                         }`}
-                        style={{ fontFamily: 'Space Grotesk, sans-serif' }}
                       >
                         {s === 'voor' ? 'Voorkant' : s === 'achter' ? 'Achterkant' : 'Diorama reglement'}
                       </button>

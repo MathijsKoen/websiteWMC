@@ -138,10 +138,7 @@ export default function MemberPortal({ announcements, documents }: MemberPortalP
             </div>
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#926e69]">Ledenportaal</p>
-              <h2
-                className="text-2xl font-black tracking-tight text-[#1a1c1c]"
-                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-              >
+              <h2 className="text-2xl font-black tracking-tight text-[#1a1c1c]">
                 Mededelingen
               </h2>
             </div>
@@ -175,10 +172,7 @@ export default function MemberPortal({ announcements, documents }: MemberPortalP
                       </time>
                     </div>
 
-                    <h3
-                      className="text-xl font-black text-[#1a1c1c] group-hover:text-[#cc0000] leading-tight transition-colors"
-                      style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                    >
+                    <h3 className="text-xl font-black text-[#1a1c1c] group-hover:text-[#cc0000] leading-tight transition-colors">
                         {announcement.title}
                     </h3>
 

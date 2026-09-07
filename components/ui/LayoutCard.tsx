@@ -72,10 +72,7 @@ export function LayoutCard({ layout }: { layout: BeursLayout }) {
 
         <div className="flex flex-col gap-2 p-6 flex-1">
           <div>
-            <h2
-              className="font-black text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors leading-tight"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            >
+            <h2 className="font-black text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors leading-tight">
               {layout.name}
             </h2>
             <p className="text-sm text-[#926e69] mt-0.5 font-bold">{layout.club}</p>
@@ -154,10 +151,7 @@ export function LayoutCard({ layout }: { layout: BeursLayout }) {
             <div className="p-6 flex flex-col gap-4 flex-1">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3
-                    className="font-black text-2xl tracking-tight text-[#1a1c1c] leading-tight"
-                    style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                  >
+                  <h3 className="font-black text-2xl tracking-tight text-[#1a1c1c] leading-tight">
                     {layout.name}
                   </h3>
                   <p className="text-sm text-[#926e69] font-bold mt-0.5">{layout.club}</p>

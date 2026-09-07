@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { PageHero } from '@/components/ui/PageHero'
 
 export const metadata: Metadata = {
   title: 'Huishoudelijk Reglement',
@@ -85,50 +86,41 @@ const artikelen = [
 
 export default function ReglementPage() {
   return (
-    <section className="bg-white min-h-screen">
-      <div className="max-w-4xl mx-auto px-6 py-12 md:py-16">
-        <h1
-          className="font-black text-4xl tracking-tighter text-[#1a1c1c] mb-4"
-          style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-        >
-          Huishoudelijk Reglement
-        </h1>
-        <p className="text-gray-600 leading-7">
-          Deze pagina bevat een leesbare samenvatting van het huishoudelijk reglement van De WMC
-          (vastgesteld in 2021). Bij twijfel of geschillen geldt altijd de formele, door de ALV
-          vastgestelde tekst.
-        </p>
+    <>
+      <PageHero
+        eyebrow="Vastgesteld in 2021"
+        title="Huishoudelijk Reglement"
+        lead="Een leesbare samenvatting van het huishoudelijk reglement van De WMC. Bij twijfel of geschillen geldt altijd de formele, door de ALV vastgestelde tekst."
+      />
 
-        <div className="mt-8 rounded-lg border border-[#e5e5e5] bg-[#f7f7f7] p-5 text-sm text-gray-700 leading-6">
-          Voor privacy en gegevensverwerking, zie ook de{' '}
-          <Link href="/privacy" className="text-[#cc0000] hover:underline">
-            privacyverklaring
-          </Link>
-          .
-        </div>
+      <section className="bg-white">
+        <div className="max-w-3xl mx-auto px-6 md:px-8 py-16 md:py-20 space-y-10 text-[15px] leading-7 text-[#4d4c4c]">
+          <div className="border-l-4 border-[#e2e2e2] bg-[#f9f9f9] p-5 text-sm leading-6">
+            Voor privacy en gegevensverwerking, zie ook de{' '}
+            <Link href="/privacy" className="text-[#cc0000] font-bold underline underline-offset-2 hover:text-[#9e0000] transition-colors">
+              privacyverklaring
+            </Link>
+            .
+          </div>
 
-        <div className="mt-10 space-y-6">
           {artikelen.map((artikel) => (
-            <article key={artikel.nummer} className="border border-[#e5e5e5] rounded-xl overflow-hidden">
-              <div className="bg-[#1a1c1c] px-5 py-4">
-                <p className="text-xs tracking-widest uppercase text-white/70 mb-1">{artikel.nummer}</p>
-                <h2 className="text-xl font-bold text-white">{artikel.titel}</h2>
-              </div>
-              <div className="bg-white px-5 py-5">
-                <ul className="list-disc pl-5 space-y-2 text-[15px] leading-7 text-gray-700">
-                  {artikel.punten.map((punt) => (
-                    <li key={punt}>{punt}</li>
-                  ))}
-                </ul>
-              </div>
-            </article>
+            <section key={artikel.nummer}>
+              <h2 className="font-headline font-black text-2xl tracking-tight text-[#1a1c1c] mb-3 pl-4 border-l-4 border-[#cc0000]">
+                {artikel.nummer} — {artikel.titel}
+              </h2>
+              <ul className="list-disc pl-6 space-y-1">
+                {artikel.punten.map((punt) => (
+                  <li key={punt}>{punt}</li>
+                ))}
+              </ul>
+            </section>
           ))}
-        </div>
 
-        <p className="mt-10 text-sm text-gray-500">
-          Bron: Huishoudelijk reglement De Westfriese Modelspoor Club, goedgekeurd in mei 2021.
-        </p>
-      </div>
-    </section>
+          <p className="text-sm text-[#926e69]">
+            Bron: Huishoudelijk reglement De Westfriese Modelspoor Club, goedgekeurd in mei 2021.
+          </p>
+        </div>
+      </section>
+    </>
   )
 }

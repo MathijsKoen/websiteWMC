@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronDown, Menu, X } from 'lucide-react'
 
 type TrackNavItem = {
@@ -33,12 +33,44 @@ export function Header({ tracks }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [desktopDropdown, setDesktopDropdown] = useState<'tracks' | 'more' | null>(null)
   const [mobileDropdown, setMobileDropdown] = useState<'tracks' | 'more' | null>(null)
+  const desktopNavRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     setMenuOpen(false)
     setDesktopDropdown(null)
     setMobileDropdown(null)
   }, [pathname])
+
+  // Een geopend uitklapmenu sluit bij een klik ernaast — anders blijft het
+  // openstaan tot je de knop opnieuw aanklikt.
+  useEffect(() => {
+    if (!desktopDropdown) return
+
+    function handlePointerDown(event: PointerEvent) {
+      if (!desktopNavRef.current?.contains(event.target as Node)) {
+        setDesktopDropdown(null)
+      }
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown)
+    return () => document.removeEventListener('pointerdown', handlePointerDown)
+  }, [desktopDropdown])
+
+  // Escape sluit zowel het uitklapmenu als het mobiele menu.
+  useEffect(() => {
+    if (!desktopDropdown && !menuOpen) return
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setDesktopDropdown(null)
+        setMenuOpen(false)
+        setMobileDropdown(null)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [desktopDropdown, menuOpen])
 
   const isTracksActive = pathname.startsWith('/onze-banen')
   const isMoreActive = moreLinks.some((link) => pathname === link.href || pathname.startsWith(link.href))
@@ -54,6 +86,7 @@ export function Header({ tracks }: HeaderProps) {
 
     return (
       <Link
+        key={href}
         href={href}
         className={[
           'px-4 py-2 text-sm font-bold transition-colors duration-150',
@@ -71,7 +104,8 @@ export function Header({ tracks }: HeaderProps) {
     label: string,
     isActive: boolean,
     isOpen: boolean,
-    onToggle: () => void
+    onToggle: () => void,
+    panelId: string
   ) {
     return (
       <button
@@ -84,6 +118,8 @@ export function Header({ tracks }: HeaderProps) {
             : 'text-[#4d4c4c] hover:text-[#cc0000]',
         ].join(' ')}
         aria-expanded={isOpen}
+        aria-haspopup="true"
+        aria-controls={panelId}
       >
         {label}
         <ChevronDown size={14} className={isOpen ? 'rotate-180 transition-transform' : 'transition-transform'} />
@@ -111,35 +147,26 @@ export function Header({ tracks }: HeaderProps) {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1" aria-label="Hoofdnavigatie">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href ||
-                (link.href !== '/' && pathname.startsWith(link.href))
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={[
-                    'px-4 py-2 text-sm font-bold transition-colors duration-150',
-                    isActive
-                      ? 'text-[#cc0000] border-b-2 border-[#cc0000]'
-                      : 'text-[#4d4c4c] hover:text-[#cc0000]',
-                  ].join(' ')}
-                >
-                  {link.label}
-                </Link>
-              )
-            })}
+          <nav
+            ref={desktopNavRef}
+            className="hidden md:flex items-center gap-1"
+            aria-label="Hoofdnavigatie"
+          >
+            {navLinks.map((link) => renderDesktopLink(link.href, link.label))}
 
             <div className="relative">
               {renderDropdownButton(
                 'Onze Banen',
                 isTracksActive,
                 desktopDropdown === 'tracks',
-                () => setDesktopDropdown(desktopDropdown === 'tracks' ? null : 'tracks')
+                () => setDesktopDropdown(desktopDropdown === 'tracks' ? null : 'tracks'),
+                'nav-banen'
               )}
               {desktopDropdown === 'tracks' && (
-                <div className="absolute top-full left-0 mt-2 w-72 bg-white border border-[#e2e2e2] shadow-lg overflow-hidden">
+                <div
+                  id="nav-banen"
+                  className="absolute top-full left-0 mt-2 w-72 bg-white border border-[#e2e2e2] shadow-lg overflow-hidden"
+                >
                   <div className="px-4 py-3 border-b border-[#f1f1f1]">
                     <p className="text-[10px] font-bold uppercase tracking-widest text-[#926e69]">
                       Alle banen
@@ -179,10 +206,14 @@ export function Header({ tracks }: HeaderProps) {
                 'Meer',
                 isMoreActive,
                 desktopDropdown === 'more',
-                () => setDesktopDropdown(desktopDropdown === 'more' ? null : 'more')
+                () => setDesktopDropdown(desktopDropdown === 'more' ? null : 'more'),
+                'nav-meer'
               )}
               {desktopDropdown === 'more' && (
-                <div className="absolute top-full left-0 mt-2 w-56 bg-white border border-[#e2e2e2] shadow-lg overflow-hidden">
+                <div
+                  id="nav-meer"
+                  className="absolute top-full left-0 mt-2 w-56 bg-white border border-[#e2e2e2] shadow-lg overflow-hidden"
+                >
                   <div className="py-2">
                     {moreLinks.map((link) => {
                       const isActive = pathname === link.href || pathname.startsWith(link.href)

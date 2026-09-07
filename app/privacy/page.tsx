@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { PageHero } from '@/components/ui/PageHero'
 
 export const metadata: Metadata = {
   title: 'Privacyverklaring',
@@ -9,20 +10,17 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <section className="bg-white min-h-screen">
-      <div className="max-w-4xl mx-auto px-6 py-12 md:py-16">
-        <h1
-          className="font-black text-4xl tracking-tighter text-[#1a1c1c] mb-4"
-          style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-        >
-          Privacyverklaring
-        </h1>
+    <>
+      <PageHero
+        eyebrow="Versie mei 2026"
+        title="Privacyverklaring"
+        lead="Hoe De WMC omgaat met persoonsgegevens via de website, het ledenportaal en het declaratieproces."
+      />
 
-        <p className="text-sm text-gray-500 mb-10">Versie: mei 2026</p>
-
-        <div className="space-y-8 text-[15px] leading-7 text-gray-700">
+      <section className="bg-white">
+        <div className="max-w-3xl mx-auto px-6 md:px-8 py-16 md:py-20 space-y-10 text-[15px] leading-7 text-[#4d4c4c]">
           <section>
-            <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">1. Wie zijn wij?</h2>
+            <h2 className="font-headline font-black text-2xl tracking-tight text-[#1a1c1c] mb-3 pl-4 border-l-4 border-[#cc0000]">1. Wie zijn wij?</h2>
             <p>
               De Westfriese Modelspoor Club (De WMC) is verantwoordelijk voor de verwerking van
               persoonsgegevens zoals beschreven in deze verklaring.
@@ -34,7 +32,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">2. Welke gegevens verwerken wij?</h2>
+            <h2 className="font-headline font-black text-2xl tracking-tight text-[#1a1c1c] mb-3 pl-4 border-l-4 border-[#cc0000]">2. Welke gegevens verwerken wij?</h2>
             <p>Wij verwerken alleen gegevens die nodig zijn voor onze verenigingsactiviteiten.</p>
             <ul className="list-disc pl-6 mt-3 space-y-1">
               <li>Contactgegevens zoals naam, e-mailadres, telefoonnummer en adresgegevens.</li>
@@ -45,7 +43,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">3. Waarom verwerken wij gegevens?</h2>
+            <h2 className="font-headline font-black text-2xl tracking-tight text-[#1a1c1c] mb-3 pl-4 border-l-4 border-[#cc0000]">3. Waarom verwerken wij gegevens?</h2>
             <ul className="list-disc pl-6 space-y-1">
               <li>Voor ledenadministratie en communicatie binnen de vereniging.</li>
               <li>Voor behandeling van declaraties volgens het huishoudelijk reglement.</li>
@@ -55,7 +53,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">4. Rechtsgronden (AVG)</h2>
+            <h2 className="font-headline font-black text-2xl tracking-tight text-[#1a1c1c] mb-3 pl-4 border-l-4 border-[#cc0000]">4. Rechtsgronden (AVG)</h2>
             <p>Wij verwerken persoonsgegevens op basis van een of meer van de volgende AVG-grondslagen:</p>
             <ul className="list-disc pl-6 mt-3 space-y-1">
               <li>Toestemming (bijvoorbeeld voor specifieke formulieren).</li>
@@ -66,7 +64,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">5. Bewaartermijnen</h2>
+            <h2 className="font-headline font-black text-2xl tracking-tight text-[#1a1c1c] mb-3 pl-4 border-l-4 border-[#cc0000]">5. Bewaartermijnen</h2>
             <ul className="list-disc pl-6 space-y-1">
               <li>Gegevens worden niet langer bewaard dan nodig is voor het doel van verwerking.</li>
               <li>Administratieve gegevens (zoals declaraties) bewaren wij conform wettelijke termijnen.</li>
@@ -75,7 +73,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">6. Delen van gegevens met derden</h2>
+            <h2 className="font-headline font-black text-2xl tracking-tight text-[#1a1c1c] mb-3 pl-4 border-l-4 border-[#cc0000]">6. Delen van gegevens met derden</h2>
             <p>
               Wij verkopen geen persoonsgegevens. Wij delen gegevens alleen wanneer dat nodig is voor
               onze dienstverlening of wettelijke verplichtingen.
@@ -89,7 +87,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">7. Beveiliging</h2>
+            <h2 className="font-headline font-black text-2xl tracking-tight text-[#1a1c1c] mb-3 pl-4 border-l-4 border-[#cc0000]">7. Beveiliging</h2>
             <p>
               De WMC treft passende technische en organisatorische maatregelen om persoonsgegevens te
               beschermen tegen verlies, misbruik en onbevoegde toegang.
@@ -97,7 +95,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">8. Jouw rechten</h2>
+            <h2 className="font-headline font-black text-2xl tracking-tight text-[#1a1c1c] mb-3 pl-4 border-l-4 border-[#cc0000]">8. Jouw rechten</h2>
             <p>Je hebt op grond van de AVG onder meer recht op:</p>
             <ul className="list-disc pl-6 mt-3 space-y-1">
               <li>Inzage in je persoonsgegevens.</li>
@@ -110,7 +108,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">9. Cookies, lokale opslag en Google Analytics</h2>
+            <h2 className="font-headline font-black text-2xl tracking-tight text-[#1a1c1c] mb-3 pl-4 border-l-4 border-[#cc0000]">9. Cookies, lokale opslag en Google Analytics</h2>
 
             <p className="mb-4">Wij gebruiken drie soorten opslag in je browser:</p>
 
@@ -159,17 +157,17 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-[#1a1c1c] mb-3">10. Relatie met ons reglement</h2>
+            <h2 className="font-headline font-black text-2xl tracking-tight text-[#1a1c1c] mb-3 pl-4 border-l-4 border-[#cc0000]">10. Relatie met ons reglement</h2>
             <p>
               Deze privacyverklaring sluit aan op het huishoudelijk reglement van De WMC. Specifiek
               rondom ledenadministratie en digitale communicatie (artikel 2.6) en declaraties (artikel 6).
             </p>
             <p className="mt-3">
-              Lees ook het volledige <Link href="/reglement" className="text-[#cc0000] hover:underline">reglement</Link>.
+              Lees ook het volledige <Link href="/reglement" className="text-[#cc0000] font-bold underline underline-offset-2 hover:text-[#9e0000] transition-colors">reglement</Link>.
             </p>
           </section>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   )
 }

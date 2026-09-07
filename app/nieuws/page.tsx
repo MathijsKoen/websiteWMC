@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Calendar } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
+import { PageHero } from '@/components/ui/PageHero'
 import { getAllNews } from '@/lib/contentful/queries'
 
 export const metadata: Metadata = {
@@ -17,24 +18,11 @@ export default async function NieuwsPage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="bg-[#1a1c1c] text-white py-20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/4 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/4" />
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-0.5 bg-[#cc0000]" />
-            <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-              Laatste nieuws
-            </span>
-          </div>
-          <h1
-            className="font-black text-5xl md:text-6xl tracking-tighter"
-            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-          >
-            Nieuws
-          </h1>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Laatste nieuws"
+        title="Nieuws"
+        lead="Beurzen, open dagen en updates over onze banen — hier lees je waar de club mee bezig is."
+      />
 
       {/* Articles */}
       <section className="bg-[#f3f3f3] py-20">
@@ -69,10 +57,7 @@ export default async function NieuwsPage() {
                         })}
                       </time>
                     </div>
-                    <h2
-                      className="font-black text-2xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors"
-                      style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                    >
+                    <h2 className="font-black text-2xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors">
                       {article.title}
                     </h2>
                     <p className="text-[#4d4c4c] text-sm leading-relaxed flex-1">

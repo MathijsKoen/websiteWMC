@@ -3,11 +3,12 @@ import Image from 'next/image'
 import { ArrowRight, Train, MapPin, Clock, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { Eyebrow } from '@/components/ui/Eyebrow'
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/ScrollReveal'
 import { HeroReveal } from '@/components/ui/HeroReveal'
 import { TiltCard } from '@/components/ui/TiltCard'
-import { getAllTracks, getUpcomingEvents, getLatestNews } from '@/lib/contentful/queries'
-import type { AgendaEvent } from '@/lib/contentful/types'
+import { getAllTracks, getUpcomingEvents, getLatestNews, getSiteSettings } from '@/lib/contentful/queries'
+import type { AgendaEvent, TrackScale } from '@/lib/contentful/types'
 
 export const revalidate = 60
 
@@ -45,40 +46,70 @@ function parseDateParts(dateStr: string): { day: string; month: string; year: st
 }
 
 export default async function HomePage() {
-  const [tracks, events, news] = await Promise.all([
+  const [tracks, events, news, settings] = await Promise.all([
     getAllTracks(),
     getUpcomingEvents(4),
     getLatestNews(3),
+    getSiteSettings(),
   ])
+
+  // De hero toont een echte clubbaan in plaats van een decoratief vlak.
+  const heroTrack = tracks.find((track) => track.coverImage?.fields?.file?.url)
+  const heroImageUrl = heroTrack?.coverImage?.fields?.file?.url
+    ? `https:${heroTrack.coverImage.fields.file.url}?w=2000&h=1200&fit=fill&f=center&fm=webp`
+    : null
+
+  // Aanwezige schalen, van klein naar groot, afgekort tot 'N' / 'H0' / '0'.
+  const scaleOrder: TrackScale[] = ['N (1:160)', 'H0 (1:87)', '0 (1:43,5)']
+  const scales = scaleOrder
+    .filter((scale) => tracks.some((track) => track.scale === scale))
+    .map((scale) => scale.split(' ')[0])
+
+  // "N-, H0- en 0-schaal" — blijft kloppen als er een schaal bij komt of wegvalt.
+  const scaleList =
+    scales.length > 1
+      ? `${scales.slice(0, -1).join('-, ')}- en ${scales[scales.length - 1]}-schaal`
+      : scales.length === 1
+        ? `${scales[0]}-schaal`
+        : 'diverse schalen'
+
+  const heroFacts = [
+    { label: 'Clubbanen', value: String(tracks.length) },
+    { label: 'Schalen', value: scales.join(' · ') },
+    { label: 'Opgericht', value: '1998' },
+    { label: settings.openingsDag, value: settings.openingsTijd.replace(/ uur$/, '') },
+  ]
 
   return (
     <>
       {/* ===== HERO ===== */}
-      <section className="relative bg-white text-[#1a1c1c] overflow-hidden min-h-[85vh] flex items-center">
-        {/* Rood vlak rechts met clipPath — alleen tablet en groter */}
-        {/* Asymmetrische diagonaal: loopt schuin af naar één punt onderaan i.p.v. een rechte rand,
-            zodat het niet abrupt eindigt maar oogt als het begin van een doorlopende vorm (zie /agenda). */}
-        <div
-          className="hidden md:block absolute top-0 right-0 h-full w-1/2 bg-[#cc0000] pointer-events-none"
-          style={{ clipPath: 'polygon(34% 0%, 100% 0%, 100% 82%, 10% 100%)' }}
-        />
-        <div
-          className="hidden md:block absolute top-0 right-0 h-full w-1/2 opacity-[0.08] pointer-events-none"
-          style={{
-            clipPath: 'polygon(34% 0%, 100% 0%, 100% 82%, 10% 100%)',
-            backgroundImage:
-              'repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 0,transparent 50%),repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 0,transparent 50%)',
-            backgroundSize: '40px 40px',
-          }}
-        />
+      <section className="relative bg-[#1a1c1c] text-white overflow-hidden">
+        {heroImageUrl && (
+          <div className="absolute inset-0" aria-hidden="true">
+            <Image
+              src={heroImageUrl}
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+            {/* Scrim in drie lagen: een lichte tint over het geheel, een
+                horizontaal verloop dat de tekstkolom dekkend maakt, en een
+                voet die naar de feitenbalk toe wegvalt. De rechterkant blijft
+                open zodat de baan zelf zichtbaar is. */}
+            <div className="absolute inset-0 bg-[#1a1c1c]/25" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#1a1c1c] via-[#1a1c1c]/80 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#1a1c1c] to-transparent" />
+          </div>
+        )}
 
-        {/* Mobiel: dunne rode bovenbalk i.p.v. het vlak */}
-        <div className="md:hidden absolute top-0 inset-x-0 h-1 bg-[#cc0000]" />
-        {/* Verticale rode lijn links */}
-        <div className="absolute bottom-0 left-0 w-1 h-3/4 bg-[#cc0000]" />
-
-        {/* Client component: laad-animatie per regel + scroll-parallax + scroll-hint */}
-        <HeroReveal tracksCount={tracks.length} />
+        <HeroReveal
+          eyebrow={`  ${settings.stad}`}
+          headline={['De Westfriese', 'Modelspoor Club']}
+          lead={`De Westfriese Modelspoor Club bouwt en onderhoudt ${tracks.length} clubbanen in ${scaleList}. Elke ${settings.openingsDag.toLowerCase()} staat de deur open voor bezoekers en nieuwe leden.`}
+          
+        />
       </section>
 
       {/* ===== AGENDA ===== */}
@@ -87,16 +118,8 @@ export default async function HomePage() {
           <ScrollReveal>
             <div className="flex items-end justify-between mb-10">
               <div>
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-0.5 bg-[#cc0000]" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                    Aankomende evenementen
-                  </span>
-                </div>
-                <h2
-                  className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]"
-                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                >
+                <Eyebrow className="mb-3">Aankomende evenementen</Eyebrow>
+                <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]">
                   Agenda
                 </h2>
               </div>
@@ -124,10 +147,7 @@ export default async function HomePage() {
                       <div className={`${categoryAccent[event.category]} w-20 md:w-24 shrink-0 flex flex-col items-center justify-center py-6 px-2`}>
                         {dateParts ? (
                           <>
-                            <span
-                              className="text-white font-black text-3xl md:text-4xl leading-none"
-                              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                            >
+                            <span className="font-headline text-white font-black text-3xl md:text-4xl leading-none">
                               {dateParts.day}
                             </span>
                             <span className="text-white/80 text-[10px] font-bold uppercase tracking-widest mt-1">
@@ -155,10 +175,7 @@ export default async function HomePage() {
                             </span>
                           )}
                         </div>
-                        <h3
-                          className="font-black text-lg md:text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors leading-tight"
-                          style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                        >
+                        <h3 className="font-black text-lg md:text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors leading-tight">
                           {event.title}
                         </h3>
                         <div className="flex flex-wrap gap-4 mt-2 text-sm text-[#926e69]">
@@ -177,7 +194,7 @@ export default async function HomePage() {
                         {event.price == null || event.price === '' ? (
                           <span className="text-xs font-bold text-[#926e69] uppercase tracking-widest">Alleen leden</span>
                         ) : (
-                          <span className="font-black text-xl text-[#1a1c1c]" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                          <span className="font-headline font-black text-xl text-[#1a1c1c]">
                             {event.price}
                           </span>
                         )}
@@ -222,16 +239,8 @@ export default async function HomePage() {
             <ScrollReveal>
               <div className="flex items-end justify-between mb-12">
                 <div>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-8 h-0.5 bg-[#cc0000]" />
-                    <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                      {tracks.length} actieve groepen
-                    </span>
-                  </div>
-                  <h2
-                    className="font-black text-4xl md:text-5xl tracking-tighter text-white"
-                    style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                  >
+                  <Eyebrow className="mb-3">{tracks.length} actieve groepen</Eyebrow>
+                  <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-white">
                     Onze Banen
                   </h2>
                 </div>
@@ -272,10 +281,7 @@ export default async function HomePage() {
                             />
                           ) : (
                             <div className="absolute inset-0 flex items-end p-4">
-                              <span
-                                className="font-black text-[80px] leading-none text-white/5 select-none"
-                                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                              >
+                              <span className="font-headline font-black text-[80px] leading-none text-white/5 select-none">
                                 {String(i + 1).padStart(2, '0')}
                               </span>
                             </div>
@@ -299,10 +305,7 @@ export default async function HomePage() {
 
                         {/* Info */}
                         <div className="flex flex-col gap-2 p-5 flex-1">
-                          <h3
-                            className="font-black text-lg text-white group-hover:text-[#cc0000] transition-colors leading-tight"
-                            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                          >
+                          <h3 className="font-black text-lg text-white group-hover:text-[#cc0000] transition-colors leading-tight">
                             {track.name}
                           </h3>
                           <p className="text-xs text-white/40 font-medium">{track.groupName}</p>
@@ -352,16 +355,8 @@ export default async function HomePage() {
             <ScrollReveal>
               <div className="flex items-end justify-between mb-10">
                 <div>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-8 h-0.5 bg-[#cc0000]" />
-                    <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                      Laatste updates
-                    </span>
-                  </div>
-                  <h2
-                    className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]"
-                    style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                  >
+                  <Eyebrow className="mb-3">Laatste updates</Eyebrow>
+                  <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]">
                     Nieuws
                   </h2>
                 </div>
@@ -390,10 +385,7 @@ export default async function HomePage() {
                         })}
                       </time>
                     </div>
-                    <h3
-                      className="font-black text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors"
-                      style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                    >
+                    <h3 className="font-black text-xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors">
                       {article.title}
                     </h3>
                     <p className="text-sm text-[#4d4c4c] leading-relaxed flex-1">{article.summary}</p>
@@ -419,10 +411,7 @@ export default async function HomePage() {
         />
         <ScrollReveal className="relative max-w-7xl mx-auto px-6 md:px-8 text-center text-white">
           <Train size={32} className="mx-auto mb-4" />
-          <h2
-            className="font-black text-4xl md:text-6xl tracking-tighter mb-6"
-            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-          >
+          <h2 className="font-black text-4xl md:text-6xl tracking-tighter mb-6">
             Word lid van de WMC
           </h2>
           <p className="text-white/80 text-lg max-w-xl mx-auto mb-10 leading-relaxed">

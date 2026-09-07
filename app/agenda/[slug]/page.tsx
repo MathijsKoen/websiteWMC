@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft, Calendar, Clock, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
+import { PageHero } from '@/components/ui/PageHero'
 import { getAllEvents, getEventBySlug } from '@/lib/contentful/queries'
 import { renderInlineMarkdownLinks } from '@/lib/inlineMarkdown'
 import type { AgendaEvent } from '@/lib/contentful/types'
@@ -80,40 +81,34 @@ export default async function AgendaDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Hero */}
-      <section className="bg-[#1a1c1c] text-white py-20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/4 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/4" />
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10" {...sbObject(event.id)}>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-0.5 bg-[#cc0000]" />
-            <span {...sbField(event.id, 'category')}><Badge variant={config.variant}>{config.label}</Badge></span>
-          </div>
-          <h1
-            className="font-black text-4xl md:text-5xl tracking-tighter max-w-3xl mb-6"
-            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            {...sbField(event.id, 'title')}
-          >
-            {event.title}
-          </h1>
-          <div className="flex flex-wrap gap-6 text-white/70 text-sm">
-            <span className="flex items-center gap-2" {...sbField(event.id, 'date')}>
-              <Calendar size={16} className="text-[#cc0000]" />
-              {formatDate(event.date)}
-              {event.endDate && event.endDate !== event.date && (
-                <> – {formatDate(event.endDate)}</>
-              )}
-            </span>
-            <span className="flex items-center gap-2" {...sbField(event.id, 'startTime')}>
-              <Clock size={16} className="text-[#cc0000]" />
-              {event.startTime}{event.endTime ? ` – ${event.endTime}` : ''}
-            </span>
-            <span className="flex items-center gap-2" {...sbField(event.id, 'location')}>
-              <MapPin size={16} className="text-[#cc0000]" />
-              {event.location}
-            </span>
-          </div>
+      <PageHero
+        eyebrow={
+          <span {...sbField(event.id, 'category')}>
+            <Badge variant={config.variant}>{config.label}</Badge>
+          </span>
+        }
+        title={event.title}
+        contentProps={sbObject(event.id)}
+        titleProps={sbField(event.id, 'title')}
+      >
+        <div className="flex flex-wrap gap-x-6 gap-y-3 text-white/70 text-sm">
+          <span className="flex items-center gap-2" {...sbField(event.id, 'date')}>
+            <Calendar size={16} className="text-[#ff3333] shrink-0" />
+            {formatDate(event.date)}
+            {event.endDate && event.endDate !== event.date && (
+              <> – {formatDate(event.endDate)}</>
+            )}
+          </span>
+          <span className="flex items-center gap-2" {...sbField(event.id, 'startTime')}>
+            <Clock size={16} className="text-[#ff3333] shrink-0" />
+            {event.startTime}{event.endTime ? ` – ${event.endTime}` : ''}
+          </span>
+          <span className="flex items-center gap-2" {...sbField(event.id, 'location')}>
+            <MapPin size={16} className="text-[#ff3333] shrink-0" />
+            {event.location}
+          </span>
         </div>
-      </section>
+      </PageHero>
 
       {/* Content */}
       <section className="bg-white py-20">
@@ -138,10 +133,7 @@ export default async function AgendaDetailPage({ params }: Props) {
             {/* Sidebar */}
             <div className="space-y-6">
               <div className={`bg-[#f3f3f3] ${config.accentClass} p-6 space-y-4`}>
-                <h3
-                  className="font-black text-sm uppercase tracking-widest text-[#1a1c1c]"
-                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                >
+                <h3 className="font-black text-sm uppercase tracking-widest text-[#1a1c1c]">
                   Details
                 </h3>
 
@@ -180,7 +172,7 @@ export default async function AgendaDetailPage({ params }: Props) {
                     {event.price == null || event.price === '' ? (
                       <span className="text-sm font-bold text-[#926e69]">zie website</span>
                     ) : (
-                      <span className="font-black text-[#1a1c1c]" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                      <span className="font-headline font-black text-[#1a1c1c]">
                         {event.price}
                       </span>
                     )}

@@ -44,10 +44,7 @@ export function CookieConsent() {
               </span>
             </div>
 
-            <p
-              className="text-white font-bold text-base mb-1 leading-snug"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            >
+            <p className="font-headline text-white font-bold text-base mb-1 leading-snug">
               Mogen wij analytische cookies plaatsen?
             </p>
             <p className="text-white/50 text-[13px] leading-relaxed mb-5">
@@ -61,8 +58,7 @@ export function CookieConsent() {
             <div className="flex gap-2">
               <button
                 onClick={() => respond('accepted')}
-                className="flex-1 bg-[#cc0000] hover:bg-[#9e0000] text-white font-black text-sm py-2.5 transition-colors"
-                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                className="font-headline flex-1 bg-[#cc0000] hover:bg-[#9e0000] text-white font-black text-sm py-2.5 transition-colors"
               >
                 Accepteren
               </button>

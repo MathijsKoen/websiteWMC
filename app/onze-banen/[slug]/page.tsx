@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft, Images } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
+import { PageHero } from '@/components/ui/PageHero'
 import { RichText } from '@/components/ui/RichText'
 import { getAllTracks, getTrackBySlug } from '@/lib/contentful/queries'
 import type { Document } from '@contentful/rich-text-types'
@@ -69,56 +70,42 @@ export default async function TrackDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Hero */}
-      <section className="bg-[#1a1c1c] text-white relative overflow-hidden">
-        {/* Cover afbeelding als hero-achtergrond */}
-        {track.coverImage && (
-          <div className="absolute inset-0">
-            <Image
-              src={`https:${(track.coverImage as ContentfulImage).fields.file.url}?w=1600&h=700&fit=fill&f=center`}
-              alt={track.name}
-              fill
-              priority
-              className="object-cover opacity-25"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#1a1c1c] via-[#1a1c1c]/80 to-transparent" />
-          </div>
-        )}
-        <div className="absolute top-0 right-0 w-1/4 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/4" />
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 py-20" {...sbObject(track.id)}>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-0.5 bg-[#cc0000]" />
-            <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-              {track.scale} — {track.system}
-            </span>
-          </div>
-          <h1
-            className="font-black text-5xl md:text-6xl tracking-tighter mb-3"
-            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            {...sbField(track.id, 'name')}
-          >
-            {track.name}
-          </h1>
-          <p className="text-white/50 text-lg mb-6" {...sbField(track.id, 'groupName')}>{track.groupName}</p>
-          <div className="flex flex-wrap items-center gap-4">
-            <Badge variant="primary">{track.scale}</Badge>
-            <Badge>{track.system}</Badge>
-            {track.status && (
-              <div className="flex items-center gap-1.5">
-                <span
-                  className={[
-                    'w-2 h-2 rounded-full',
-                    track.status === 'Actief' ? 'bg-green-400' : 'bg-amber-400',
-                  ].join(' ')}
-                />
-                <span className="text-xs font-bold uppercase tracking-widest text-white/60">
-                  {track.status}
-                </span>
-              </div>
-            )}
-          </div>
+      <PageHero
+        eyebrow={`${track.scale} — ${track.system}`}
+        title={track.name}
+        contentProps={sbObject(track.id)}
+        titleProps={sbField(track.id, 'name')}
+        image={
+          track.coverImage
+            ? {
+                src: `https:${(track.coverImage as ContentfulImage).fields.file.url}?w=1600&h=700&fit=fill&f=center`,
+                alt: track.name,
+              }
+            : undefined
+        }
+      >
+        <p className="text-white/60 text-lg" {...sbField(track.id, 'groupName')}>
+          {track.groupName}
+        </p>
+        <div className="flex flex-wrap items-center gap-4 mt-6">
+          <Badge variant="primary">{track.scale}</Badge>
+          <Badge>{track.system}</Badge>
+          {track.status && (
+            <div className="flex items-center gap-1.5">
+              <span
+                aria-hidden="true"
+                className={[
+                  'w-2 h-2 rounded-full',
+                  track.status === 'Actief' ? 'bg-green-400' : 'bg-amber-400',
+                ].join(' ')}
+              />
+              <span className="text-xs font-bold uppercase tracking-widest text-white/60">
+                {track.status}
+              </span>
+            </div>
+          )}
         </div>
-      </section>
+      </PageHero>
 
       {/* Content */}
       <section className="bg-white py-20">
@@ -137,10 +124,7 @@ export default async function TrackDetailPage({ params }: Props) {
             <div className="space-y-6">
               {/* Specs */}
               <div className="bg-[#f3f3f3] border-l-4 border-[#cc0000] p-6">
-                <h3
-                  className="font-black text-sm uppercase tracking-widest text-[#1a1c1c] mb-4"
-                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                >
+                <h3 className="font-black text-sm uppercase tracking-widest text-[#1a1c1c] mb-4">
                   Specificaties
                 </h3>
                 <dl className="space-y-3">
@@ -157,10 +141,7 @@ export default async function TrackDetailPage({ params }: Props) {
 
               {/* Short description as highlight */}
               <div className="bg-[#f3f3f3] p-6">
-                <h3
-                  className="font-black text-sm uppercase tracking-widest text-[#1a1c1c] mb-3"
-                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                >
+                <h3 className="font-black text-sm uppercase tracking-widest text-[#1a1c1c] mb-3">
                   In het kort
                 </h3>
                 <p className="text-sm text-[#4d4c4c] leading-relaxed" {...sbField(track.id, 'shortDescription')}>{track.shortDescription}</p>
@@ -176,10 +157,7 @@ export default async function TrackDetailPage({ params }: Props) {
           <div className="max-w-7xl mx-auto px-6 md:px-8">
             <div className="flex items-center gap-3 mb-8">
               <Images size={18} className="text-[#cc0000]" />
-              <h2
-                className="font-black text-2xl tracking-tight text-[#1a1c1c]"
-                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-              >
+              <h2 className="font-black text-2xl tracking-tight text-[#1a1c1c]">
                 Fotogalerij
               </h2>
               <span className="text-sm text-[#926e69] font-bold ml-1">

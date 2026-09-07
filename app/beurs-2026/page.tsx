@@ -7,6 +7,7 @@ import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/Scr
 import { TiltCard } from '@/components/ui/TiltCard'
 import { FolderSection } from '@/components/ui/FolderViewer'
 import { LayoutCard } from '@/components/ui/LayoutCard'
+import { Eyebrow } from '@/components/ui/Eyebrow'
 
 export const metadata: Metadata = {
   title: 'WMC Beurs 2026 — Modelspoor Tentoonstelling',
@@ -49,16 +50,8 @@ export default async function Beurs2026Page() {
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 py-24">
           <div className="max-w-3xl">
             <ScrollReveal duration={0.7}>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-0.5 bg-[#cc0000]" />
-                <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                  Westfriese Modelspoor Club
-                </span>
-              </div>
-              <h1
-                className="font-black text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-none mb-4"
-                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-              >
+              <Eyebrow className="mb-6">Westfriese Modelspoor Club</Eyebrow>
+              <h1 className="font-black text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-none mb-4">
                 WMC
                 <br />
                 <span className="text-[#cc0000]">Beurs</span>
@@ -121,7 +114,7 @@ export default async function Beurs2026Page() {
               ].map(({ label, value }) => (
                 <div key={label}>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-0.5">{label}</p>
-                  <p className="text-sm font-black text-white" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>{value}</p>
+                  <p className="font-headline text-sm font-black text-white">{value}</p>
                 </div>
               ))}
             </div>
@@ -141,16 +134,8 @@ export default async function Beurs2026Page() {
       <section id="banen" className="bg-[#f3f3f3] py-20">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <ScrollReveal className="mb-12">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-0.5 bg-[#cc0000]" />
-              <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                Uitgenodigde clubs
-              </span>
-            </div>
-            <h2
-              className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c] mb-4"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            >
+            <Eyebrow className="mb-4">Uitgenodigde clubs</Eyebrow>
+            <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c] mb-4">
               Uitgenodigde Banen
             </h2>
             <p className="text-[#4d4c4c] text-lg max-w-2xl leading-relaxed">
@@ -162,7 +147,7 @@ export default async function Beurs2026Page() {
             <ScrollReveal>
               <div className="bg-white border border-[#e2e2e2] p-16 text-center">
                 <Train size={40} className="mx-auto text-[#e2e2e2] mb-4" />
-                <p className="font-black text-xl text-[#1a1c1c] mb-2" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                <p className="font-headline font-black text-xl text-[#1a1c1c] mb-2">
                   Banen worden binnenkort bekendgemaakt
                 </p>
                 <p className="text-sm text-[#926e69] max-w-sm mx-auto">
@@ -190,16 +175,8 @@ export default async function Beurs2026Page() {
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
             <ScrollReveal>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-0.5 bg-[#cc0000]" />
-                <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                  Over de beurs
-                </span>
-              </div>
-              <h2
-                className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c] mb-6"
-                style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-              >
+              <Eyebrow className="mb-4">Over de beurs</Eyebrow>
+              <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c] mb-6">
                 Een dag vol<br />modeltreinen
               </h2>
               <div className="flex flex-col gap-4 text-[#4d4c4c] text-base leading-relaxed">
@@ -238,7 +215,7 @@ export default async function Beurs2026Page() {
                     </div>
                     <div>
                       <p className="text-[10px] font-bold uppercase tracking-widest text-[#926e69] mb-1">{label}</p>
-                      <p className="font-black text-lg text-[#1a1c1c] leading-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                      <p className="font-headline font-black text-lg text-[#1a1c1c] leading-tight">
                         {value}
                       </p>
                       <p className="text-xs text-[#926e69] mt-0.5">{sub}</p>
@@ -265,16 +242,8 @@ export default async function Beurs2026Page() {
         />
         <div className="relative max-w-7xl mx-auto px-6 md:px-8">
           <ScrollReveal>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-0.5 bg-[#cc0000]" />
-              <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-                Bereikbaarheid
-              </span>
-            </div>
-            <h2
-              className="font-black text-4xl md:text-5xl tracking-tighter text-white mb-8"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            >
+            <Eyebrow className="mb-4">Bereikbaarheid</Eyebrow>
+            <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-white mb-8">
               Hoe kom je er?
             </h2>
           </ScrollReveal>
@@ -282,7 +251,7 @@ export default async function Beurs2026Page() {
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <StaggerItem>
               <div className="bg-white/5 border border-white/10 p-8">
-                <h3 className="font-black text-xl text-white mb-3" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                <h3 className="font-black text-xl text-white mb-3">
                   Adres
                 </h3>
                 <p className="text-white/70 text-sm leading-relaxed whitespace-pre-line mb-6">
@@ -303,13 +272,13 @@ export default async function Beurs2026Page() {
 
             <StaggerItem>
               <div className="bg-white/5 border border-white/10 p-8">
-                <h3 className="font-black text-xl text-white mb-3" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                <h3 className="font-black text-xl text-white mb-3">
                   Per OV
                 </h3>
                 <p className="text-white/70 text-sm leading-relaxed mb-4">
                   Vanaf station Alkmaar met buslijn 160. Deze bus stopt voor de sporthal/zwembad.
                 </p>
-                <h3 className="font-black text-xl text-white mb-3" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                <h3 className="font-black text-xl text-white mb-3">
                   Vragen?
                 </h3>
                 <p className="text-white/70 text-sm leading-relaxed">

@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
-import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/ScrollReveal'
+import { StaggerContainer, StaggerItem } from '@/components/ui/ScrollReveal'
 import { TiltCard } from '@/components/ui/TiltCard'
+import { PageHero } from '@/components/ui/PageHero'
 import { getAllTracks } from '@/lib/contentful/queries'
 
 export const metadata: Metadata = {
@@ -20,31 +21,11 @@ export default async function OnzeBanenPage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="bg-[#1a1c1c] text-white py-20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/4 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/4" />
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-0.5 bg-[#cc0000]" />
-            <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000]">
-              {tracks.length} actieve groepen
-            </span>
-          </div>
-          <ScrollReveal>
-            <h1
-              className="font-black text-5xl md:text-6xl tracking-tighter mb-6"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            >
-              Onze Banen
-            </h1>
-            <p className="text-white/70 text-lg max-w-2xl leading-relaxed">
-              De WMC telt {tracks.length} actieve groepen, elk met hun eigen specialiteit. Van de
-              fijngevoelige N-schaal (1:160) tot de imposante 0-schaal (1:43,5) — voor elk
-              modelspoorenthusiast is er een plek.
-            </p>
-          </ScrollReveal>
-        </div>
-      </section>
+      <PageHero
+        eyebrow={`${tracks.length} actieve groepen`}
+        title="Onze Banen"
+        lead={`De WMC telt ${tracks.length} actieve groepen, elk met hun eigen specialiteit. Van de fijngevoelige N-schaal (1:160) tot de imposante 0-schaal (1:43,5) — voor elke modelspoorliefhebber is er een plek.`}
+      />
 
       {/* Tracks grid */}
       <section className="bg-[#f3f3f3] py-20">
@@ -70,10 +51,7 @@ export default async function OnzeBanenPage() {
                       <span className="text-xs font-bold uppercase tracking-widest text-[#cc0000] block mb-1">
                         {track.scale}
                       </span>
-                      <h2
-                        className="font-black text-2xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors"
-                        style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-                      >
+                      <h2 className="font-black text-2xl tracking-tight text-[#1a1c1c] group-hover:text-[#cc0000] transition-colors">
                         {track.name}
                       </h2>
                       <p className="text-sm text-[#926e69] mt-0.5">{track.groupName}</p>

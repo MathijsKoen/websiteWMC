@@ -70,10 +70,7 @@ export function Footer() {
 
           {/* Club links */}
           <div>
-            <h3
-              className="font-headline font-black text-sm uppercase tracking-widest text-[#cc0000] mb-4"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            >
+            <h3 className="font-headline font-black text-sm uppercase tracking-widest text-[#cc0000] mb-4">
               De Club
             </h3>
             <ul className="flex flex-col gap-2">
@@ -92,10 +89,7 @@ export function Footer() {
 
           {/* Info links */}
           <div>
-            <h3
-              className="font-headline font-black text-sm uppercase tracking-widest text-[#cc0000] mb-4"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            >
+            <h3 className="font-headline font-black text-sm uppercase tracking-widest text-[#cc0000] mb-4">
               Informatie
             </h3>
             <ul className="flex flex-col gap-2">

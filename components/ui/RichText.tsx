@@ -15,18 +15,12 @@ const options: Options = {
       <p className="text-[#4d4c4c] leading-relaxed mb-4 last:mb-0">{children}</p>
     ),
     [BLOCKS.HEADING_2]: (_node: Block | Inline, children: ReactNode) => (
-      <h2
-        className="font-black text-2xl tracking-tight text-[#1a1c1c] mt-8 mb-4 first:mt-0"
-        style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-      >
+      <h2 className="font-black text-2xl tracking-tight text-[#1a1c1c] mt-8 mb-4 first:mt-0">
         {children}
       </h2>
     ),
     [BLOCKS.HEADING_3]: (_node: Block | Inline, children: ReactNode) => (
-      <h3
-        className="font-black text-xl tracking-tight text-[#1a1c1c] mt-6 mb-3 first:mt-0"
-        style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-      >
+      <h3 className="font-black text-xl tracking-tight text-[#1a1c1c] mt-6 mb-3 first:mt-0">
         {children}
       </h3>
     ),

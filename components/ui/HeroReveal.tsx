@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Eyebrow } from '@/components/ui/Eyebrow'
+import { useDisableMotionOnMobile } from '@/components/ui/ScrollReveal'
 
 export interface HeroFact {
   label: string
@@ -21,6 +22,7 @@ interface HeroRevealProps {
 const ease = [0.22, 1, 0.36, 1] as const
 
 export function HeroReveal({ eyebrow, headline, lead }: HeroRevealProps) {
+  const disableMotion = useDisableMotionOnMobile()
   const { scrollY } = useScroll()
 
   // Lichte parallax: de tekst loopt iets achter op de foto, wat diepte geeft
@@ -30,7 +32,7 @@ export function HeroReveal({ eyebrow, headline, lead }: HeroRevealProps) {
   return (
     <div className="relative z-10 flex min-h-[38rem] lg:min-h-[44rem] flex-col">
       <motion.div
-        style={{ y, willChange: 'transform' }}
+        style={disableMotion ? undefined : { y, willChange: 'transform' }}
         className="flex flex-1 items-center"
       >
         <div className="w-full max-w-7xl mx-auto px-6 md:px-8 py-20 lg:py-24">

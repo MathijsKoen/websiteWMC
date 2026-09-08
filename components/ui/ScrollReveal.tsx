@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 
-function useDisableMotionOnMobile() {
+export function useDisableMotionOnMobile() {
   const [disableMotion, setDisableMotion] = useState(false)
 
   useEffect(() => {

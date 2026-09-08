@@ -137,12 +137,12 @@ export default async function HomePage() {
             <p className="text-[#926e69] text-sm">Geen aankomende evenementen.</p>
           ) : (
             <StaggerContainer className="flex flex-col divide-y divide-[#e2e2e2] border border-[#e2e2e2]">
-              {events.map((event) => {
+              {events.map((event, i) => {
                 const dateParts = parseDateParts(event.date)
                 const isPublic = event.isPublic
 
                 return (
-                  <StaggerItem key={event.id} direction="none">
+                  <StaggerItem key={event.id} direction="none" className={i >= 2 ? 'hidden md:block' : ''}>
                     <Link href={`/agenda/${event.slug}`} className="flex items-stretch group hover:bg-[#f9f9f9] transition-colors">
                       <div className={`${categoryAccent[event.category]} w-20 md:w-24 shrink-0 flex flex-col items-center justify-center py-6 px-2`}>
                         {dateParts ? (
@@ -215,7 +215,7 @@ export default async function HomePage() {
 
           <div className="mt-6 md:hidden">
             <Button href="/agenda" variant="secondary" className="w-full justify-center">
-              Volledige agenda
+              Bekijk de volledige agenda
               <ArrowRight size={16} />
             </Button>
           </div>
@@ -262,7 +262,7 @@ export default async function HomePage() {
                   : null
 
                 return (
-                  <StaggerItem key={track.slug}>
+                  <StaggerItem key={track.slug} className={i >= 3 ? 'hidden sm:block' : ''}>
                     <TiltCard className="h-full" intensity={5}>
                       <Link
                         href={`/onze-banen/${track.slug}`}
@@ -338,9 +338,9 @@ export default async function HomePage() {
               })}
             </StaggerContainer>
 
-            <div className="mt-8 flex justify-center">
-              <Button href="/onze-banen" variant="outline" size="lg" className="!border-white/20 !text-white hover:!bg-white hover:!text-[#1a1c1c]">
-                Bekijk alle banen
+            <div className="mt-8 sm:flex sm:justify-center">
+              <Button href="/onze-banen" variant="outline" size="lg" className="w-full sm:w-auto !border-white/20 !text-white hover:!bg-white hover:!text-[#1a1c1c]">
+                Bekijk alle {tracks.length} banen
                 <ArrowRight size={18} />
               </Button>
             </div>

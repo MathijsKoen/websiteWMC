@@ -178,8 +178,8 @@ export function BeursPopup() {
                     <div className="flex items-center gap-3">
                       <a
                         href={side === 'voor'
-                          ? '/PRINT_VOOR_WMC_Flyer_100_.pdf'
-                          : '/PRINT_ACHTER_WMC_Flyer_100_.pdf'}
+                          ? '/wmc-flyer-voorkant.pdf'
+                          : '/wmc-flyer-achterkant.pdf'}
                         download
                         className="flex items-center gap-1.5 text-xs font-bold text-white/50 hover:text-white transition-colors"
                       >
@@ -202,8 +202,8 @@ export function BeursPopup() {
                       key={side}
                       src={
                         side === 'voor'
-                          ? '/PRINT_VOOR_WMC_Flyer_100_.pdf#toolbar=0&navpanes=0'
-                          : '/PRINT_ACHTER_WMC_Flyer_100_.pdf#toolbar=0&navpanes=0'
+                          ? '/wmc-flyer-voorkant.pdf#toolbar=0&navpanes=0'
+                          : '/wmc-flyer-achterkant.pdf#toolbar=0&navpanes=0'
                       }
                       className="w-full border-0"
                       style={{ height: '75vh' }}

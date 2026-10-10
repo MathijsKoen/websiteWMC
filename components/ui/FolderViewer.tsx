@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Download } from 'lucide-react'
 import { Eyebrow } from '@/components/ui/Eyebrow'
@@ -40,7 +41,7 @@ export function FolderSection() {
                   Folder bekijken
                 </button>
                 <a
-                  href="/PRINT_VOOR_WMC_Flyer_100_.pdf"
+                  href="/wmc-flyer-voorkant.pdf"
                   download
                   className="inline-flex items-center gap-2 border border-[#1a1c1c] text-[#1a1c1c] hover:bg-[#1a1c1c] hover:text-white font-bold text-sm px-6 py-3.5 transition-colors"
                 >
@@ -56,10 +57,14 @@ export function FolderSection() {
               className="group relative w-full max-w-sm mx-auto lg:mx-0 lg:ml-auto shadow-xl hover:shadow-2xl transition-shadow duration-300 focus:outline-none"
               aria-label="Folder vergroten"
             >
-              <iframe
-                src="/PRINT_VOOR_WMC_Flyer_100_.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH"
-                className="w-full aspect-[3/4] pointer-events-none border-0"
-                title="WMC Beurs 2026 folder voorkant"
+              {/* Statische afbeelding i.p.v. PDF-iframe: scheelt per bezoek MB's bandbreedte */}
+              <Image
+                src="/flyer-voorkant.webp"
+                alt="WMC Beurs 2026 folder voorkant"
+                width={667}
+                height={936}
+                sizes="(min-width: 1024px) 384px, 90vw"
+                className="w-full h-auto"
               />
               {/* Hover overlay */}
               <div className="absolute inset-0 bg-[#cc0000]/0 group-hover:bg-[#cc0000]/10 transition-colors duration-300 flex items-center justify-center">
@@ -117,9 +122,9 @@ export function FolderSection() {
                     <a
                       href={
                         side === 'voor'
-                          ? '/PRINT_VOOR_WMC_Flyer_100_.pdf'
+                          ? '/wmc-flyer-voorkant.pdf'
                           : side === 'achter'
-                          ? '/PRINT_ACHTER_WMC_Flyer_100_.pdf'
+                          ? '/wmc-flyer-achterkant.pdf'
                           : '/Diorama reglement.pdf'
                       }
                       download
@@ -144,9 +149,9 @@ export function FolderSection() {
                     key={side}
                     src={
                       side === 'voor'
-                        ? '/PRINT_VOOR_WMC_Flyer_100_.pdf#toolbar=0&navpanes=0'
+                        ? '/wmc-flyer-voorkant.pdf#toolbar=0&navpanes=0'
                         : side === 'achter'
-                        ? '/PRINT_ACHTER_WMC_Flyer_100_.pdf#toolbar=0&navpanes=0'
+                        ? '/wmc-flyer-achterkant.pdf#toolbar=0&navpanes=0'
                         : '/Diorama reglement.pdf#toolbar=0&navpanes=0'
                     }
                     className="w-full h-full border-0"

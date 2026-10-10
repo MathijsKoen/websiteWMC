@@ -10,7 +10,7 @@ import { TiltCard } from '@/components/ui/TiltCard'
 import { getAllTracks, getUpcomingEvents, getLatestNews, getSiteSettings } from '@/lib/contentful/queries'
 import type { AgendaEvent, TrackScale } from '@/lib/contentful/types'
 
-export const revalidate = 60
+export const revalidate = 300
 
 type EventCategory = AgendaEvent['category']
 

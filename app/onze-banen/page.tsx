@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 }
 
 // Revalideer elke 60 minuten
-export const revalidate = 60
+export const revalidate = 300
 
 export default async function OnzeBanenPage() {
   const tracks = await getAllTracks()

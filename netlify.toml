@@ -27,3 +27,43 @@ package = "@netlify/plugin-nextjs"
     # X-Frame-Options weggelaten: Netlify visual editor heeft iframe-toegang nodig.
     # In plaats daarvan CSP frame-ancestors beperken tot Netlify domeinen:
     Content-Security-Policy = "frame-ancestors 'self' https://*.netlify.app https://app.netlify.com"
+
+# ── Bandbreedte besparen ──────────────────────────────────────
+# Oude (print-kwaliteit) PDF-links doorsturen naar de lichte webversies.
+[[redirects]]
+  from = "/PRINT_VOOR_WMC_Flyer_100_.pdf"
+  to = "/wmc-flyer-voorkant.pdf"
+  status = 301
+
+[[redirects]]
+  from = "/PRINT_ACHTER_WMC_Flyer_100_.pdf"
+  to = "/wmc-flyer-achterkant.pdf"
+  status = 301
+
+[[redirects]]
+  from = "/og-image.png"
+  to = "/og-image.jpg"
+  status = 301
+
+# Browsers mogen statische bestanden uit /public een week bewaren,
+# zodat terugkerende bezoekers ze niet opnieuw downloaden.
+[[headers]]
+  for = "/*.pdf"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+    X-Robots-Tag = "noindex"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

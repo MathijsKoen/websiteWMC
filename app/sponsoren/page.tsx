@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     'Bekijk de sponsoren en partners die De Westfriese Modelspoor Club ondersteunen.',
 }
 
-export const revalidate = 60
+export const revalidate = 300
 
 type SponsorGroup = 'gold' | 'silver' | 'bronze' | 'onbekend'
 

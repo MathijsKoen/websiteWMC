@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     'Het laatste nieuws van De Westfriese Modelspoor Club: beurzen, evenementen en updates over onze banen.',
 }
 
-export const revalidate = 60
+export const revalidate = 300
 
 export default async function NieuwsPage() {
   const articles = await getAllNews()

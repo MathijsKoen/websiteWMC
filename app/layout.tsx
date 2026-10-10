@@ -41,11 +41,11 @@ export const metadata: Metadata = {
     title: 'De WMC — Westfriese Modelspoor Club',
     description:
       'Actieve modelspoorvereniging opgericht in 1998. Leden werken elke vrijdagavond aan N-banen, H0-banen en 0-schaal modellen in Noord-Scharwoude.',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'De WMC — Westfriese Modelspoor Club' }],
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'De WMC — Westfriese Modelspoor Club' }],
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['/og-image.png'],
+    images: ['/og-image.jpg'],
   },
   robots: {
     index: true,
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   },
 }
 
-export const revalidate = 60
+export const revalidate = 300
 
 export default async function RootLayout({
   children,

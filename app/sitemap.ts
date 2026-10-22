@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { getAllNews, getAllTracks, getAllEvents } from '@/lib/contentful/queries'
+import { showBeursPage } from '@/lib/site-config'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [news, tracks, events] = await Promise.allSettled([
@@ -18,7 +19,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/agenda`,          changeFrequency: 'daily',   priority: 0.9 },
     { url: `${base}/contact`,         changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/sponsoren`,       changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${base}/beurs-2026`,      changeFrequency: 'weekly',  priority: 0.8 },
+    ...(showBeursPage
+      ? [{ url: `${base}/beurs-2026`, changeFrequency: 'weekly' as const, priority: 0.8 }]
+      : []),
   ]
 
   const trackRoutes: MetadataRoute.Sitemap =

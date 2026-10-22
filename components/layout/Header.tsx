@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { ChevronDown, Menu, X } from 'lucide-react'
+import { showBeursPage } from '@/lib/site-config'
 
 type TrackNavItem = {
   slug: string
@@ -241,17 +242,19 @@ export function Header({ tracks }: HeaderProps) {
 
           {/* Member Portal + Mobile Toggle */}
           <div className="flex items-center gap-3">
-            <Link
-              href={featuredLink.href}
-              className={[
-                'hidden md:inline-flex items-center gap-2 text-sm font-bold px-4 py-2 transition-colors duration-150 border',
-                pathname.startsWith(featuredLink.href)
-                  ? 'bg-[#cc0000] text-white border-[#cc0000]'
-                  : 'text-[#cc0000] border-[#cc0000] hover:bg-[#cc0000] hover:text-white',
-              ].join(' ')}
-            >
-              {featuredLink.label}
-            </Link>
+            {showBeursPage && (
+              <Link
+                href={featuredLink.href}
+                className={[
+                  'hidden md:inline-flex items-center gap-2 text-sm font-bold px-4 py-2 transition-colors duration-150 border',
+                  pathname.startsWith(featuredLink.href)
+                    ? 'bg-[#cc0000] text-white border-[#cc0000]'
+                    : 'text-[#cc0000] border-[#cc0000] hover:bg-[#cc0000] hover:text-white',
+                ].join(' ')}
+              >
+                {featuredLink.label}
+              </Link>
+            )}
             <Link
               href="/leden"
               className="hidden md:inline-flex items-center gap-2 bg-[#9e0000] text-white text-sm font-bold px-6 py-2 hover:bg-[#cc0000] transition-colors duration-200 skew-15"
@@ -384,18 +387,20 @@ export function Header({ tracks }: HeaderProps) {
               )}
             </div>
 
-            <Link
-              href={featuredLink.href}
-              onClick={closeAllMenus}
-              className={[
-                'px-4 py-3 text-base font-bold border-l-4 transition-colors duration-150',
-                pathname.startsWith(featuredLink.href)
-                  ? 'text-[#cc0000] border-[#cc0000] bg-[#cc0000]/5'
-                  : 'text-[#cc0000] border-[#cc0000]/40 hover:border-[#cc0000] hover:bg-[#cc0000]/5',
-              ].join(' ')}
-            >
-              {featuredLink.label}
-            </Link>
+            {showBeursPage && (
+              <Link
+                href={featuredLink.href}
+                onClick={closeAllMenus}
+                className={[
+                  'px-4 py-3 text-base font-bold border-l-4 transition-colors duration-150',
+                  pathname.startsWith(featuredLink.href)
+                    ? 'text-[#cc0000] border-[#cc0000] bg-[#cc0000]/5'
+                    : 'text-[#cc0000] border-[#cc0000]/40 hover:border-[#cc0000] hover:bg-[#cc0000]/5',
+                ].join(' ')}
+              >
+                {featuredLink.label}
+              </Link>
+            )}
             <Link
               href="/leden"
               onClick={closeAllMenus}

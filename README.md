@@ -80,6 +80,7 @@ Maak een `.env.local` bestand aan op basis van `.env.local.example`:
 | `RESEND_API_KEY` | Resend | API-sleutel voor e-mailverzending |
 | `DECLARATIE_EMAIL` | Resend | E-mailadres ontvanger declaraties |
 | `RECAPTCHA_SECRET_KEY` | Google reCAPTCHA | Geheime sleutel voor server-side verificatie |
+| `NEXT_PUBLIC_SHOW_BEURS_PAGE` | Website | Zet de beurspagina aan met `true` of uit met `false` (standaard: aan) |
 | `MEMBER_USERNAME` | Ledenportaal | Gebruikersnaam voor het ledenportaal |
 | `MEMBER_PASSWORD` | Ledenportaal | Wachtwoord voor het ledenportaal |
 | `SESSION_SECRET` | Ledenportaal | Willekeurige string voor sessieversleuteling |

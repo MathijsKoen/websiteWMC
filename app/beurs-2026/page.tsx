@@ -8,6 +8,8 @@ import { TiltCard } from '@/components/ui/TiltCard'
 import { FolderSection } from '@/components/ui/FolderViewer'
 import { LayoutCard } from '@/components/ui/LayoutCard'
 import { Eyebrow } from '@/components/ui/Eyebrow'
+import { showBeursPage } from '@/lib/site-config'
+import { notFound } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'WMC Beurs 2026 — Modelspoor Tentoonstelling',
@@ -29,6 +31,8 @@ const BEURS = {
 // ───────────────────────────────────────────────────────────────────────────
 
 export default async function Beurs2026Page() {
+  if (!showBeursPage) notFound()
+
   const layouts = await getAllBeursLayouts()
 
   return (

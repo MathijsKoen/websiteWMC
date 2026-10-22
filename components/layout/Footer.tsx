@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Mail, MapPin, Clock } from 'lucide-react'
+import { showBeursPage } from '@/lib/site-config'
 
 const footerLinks = {
   club: [
@@ -9,7 +10,7 @@ const footerLinks = {
     { href: '/sponsoren', label: 'Sponsoren' },
     { href: '/agenda', label: 'Agenda' },
     { href: '/nieuws', label: 'Nieuws' },
-    { href: '/beurs-2026', label: 'Beurs 2026' },
+    ...(showBeursPage ? [{ href: '/beurs-2026', label: 'Beurs 2026' }] : []),
   ],
   info: [
     { href: '/contact', label: 'Contact' },

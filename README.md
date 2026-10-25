@@ -24,6 +24,16 @@ Benodigde omgevingsvariabelen:
 - `CONTENTFUL_PREVIEW_TOKEN`
 - `CONTENTFUL_MANAGEMENT_TOKEN`
 
+De pagina `/beurs-2026` (Highlights Beurs 2026) gebruikt de content types `beursHighlights` (één item: titel, inleiding, terugblik, foto's, links, banen/sponsoren aan of uit) en `beursLink`. Aanmaken met:
+
+```bash
+npx contentful-cli space migration --space-id <SPACE_ID> --management-token <TOKEN> scripts/migrations/beurs-highlights.js
+```
+
+Daarna `scripts/migrations/beurs-highlights-2.js` (terugblik, cijfers, sponsoren, foto-widget) op dezelfde manier.
+
+Wijzigingen in Contentful staan binnen ongeveer 5 minuten live (cache van `getBeursHighlights`).
+
 ---
 
 ### E-mail
@@ -80,7 +90,7 @@ Maak een `.env.local` bestand aan op basis van `.env.local.example`:
 | `RESEND_API_KEY` | Resend | API-sleutel voor e-mailverzending |
 | `DECLARATIE_EMAIL` | Resend | E-mailadres ontvanger declaraties |
 | `RECAPTCHA_SECRET_KEY` | Google reCAPTCHA | Geheime sleutel voor server-side verificatie |
-| `NEXT_PUBLIC_SHOW_BEURS_PAGE` | Website | Zet de beurspagina aan met `true` of uit met `false` (standaard: aan) |
+| `NEXT_PUBLIC_SHOW_BEURS_PAGE` | Website | Zet de pagina Highlights Beurs 2026 (`/beurs-2026`) en de links ernaartoe aan met `true` of uit met `false` (standaard: aan) |
 | `MEMBER_USERNAME` | Ledenportaal | Gebruikersnaam voor het ledenportaal |
 | `MEMBER_PASSWORD` | Ledenportaal | Wachtwoord voor het ledenportaal |
 | `SESSION_SECRET` | Ledenportaal | Willekeurige string voor sessieversleuteling |

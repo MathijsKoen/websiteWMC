@@ -160,6 +160,32 @@ export interface BeursLayout {
 }
 
 // =============================================
+// BEURS 2026 — HIGHLIGHTS (terugblik)
+// =============================================
+
+export interface BeursLink {
+  id: string
+  label: string
+  url: string
+  omschrijving?: string
+  /** Eigen voorbeeldafbeelding; gaat voor op de automatisch opgehaalde. */
+  afbeelding?: ContentfulImage
+}
+
+export interface BeursHighlights {
+  id: string
+  titel: string
+  intro?: string
+  verhaal?: ContentfulRichText
+  fotos: ContentfulImage[]
+  linksKop?: string
+  links: BeursLink[]
+  toonBanen: boolean
+  toonSponsoren: boolean
+  seoOmschrijving?: string
+}
+
+// =============================================
 // SITE SETTINGS
 // =============================================
 

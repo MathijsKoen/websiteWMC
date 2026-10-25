@@ -22,9 +22,11 @@ export default defineStackbitConfig({
     { name: 'newsArticle',  type: 'page', urlPath: '/nieuws/{slug}' },
     { name: 'agendaEvent',  type: 'page', urlPath: '/agenda/{slug}' },
     { name: 'track',        type: 'page', urlPath: '/onze-banen/{slug}' },
-    { name: 'beursLayout',  type: 'page', urlPath: '/beurs-2026/{slug}' },
+    { name: 'beursHighlights', type: 'page', urlPath: '/beurs-2026' },
     // Data-modellen (geen eigen URL, globale instellingen)
     { name: 'siteSettings', type: 'data' },
+    { name: 'beursLayout',  type: 'data' },
+    { name: 'beursLink',    type: 'data' },
   ],
 
   // siteMap vertelt de editor welke pagina's bestaan en wat hun URL is.
@@ -40,7 +42,6 @@ export default defineStackbitConfig({
       { stableId: 'agenda',     urlPath: '/agenda',       label: 'Agenda',     isHomePage: false },
       { stableId: 'contact',    urlPath: '/contact',      label: 'Contact',    isHomePage: false },
       { stableId: 'sponsoren',  urlPath: '/sponsoren',    label: 'Sponsoren',  isHomePage: false },
-      { stableId: 'beurs-2026', urlPath: '/beurs-2026',   label: 'Beurs 2026', isHomePage: false },
     ]
 
     // Dynamische Contentful-pagina's
@@ -79,10 +80,10 @@ export default defineStackbitConfig({
               document,
               isHomePage: false,
             }]
-          case 'beursLayout':
+          case 'beursHighlights':
             return [{
               stableId: document.id,
-              urlPath: `/beurs-2026/${slug}`,
+              urlPath: '/beurs-2026',
               document,
               isHomePage: false,
             }]

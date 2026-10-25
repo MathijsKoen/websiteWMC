@@ -18,7 +18,7 @@ const navLinks = [
   { href: '/agenda', label: 'Agenda' },
 ]
 
-const featuredLink = { href: '/beurs-2026', label: 'Beurs 2026' }
+const featuredLink = { href: '/beurs-2026', label: 'Highlights Beurs 2026', shortLabel: 'Highlights' }
 const moreLinks = [
   { href: '/nieuws', label: 'Nieuws' },
   { href: '/sponsoren', label: 'Sponsoren' },
@@ -246,13 +246,15 @@ export function Header({ tracks }: HeaderProps) {
               <Link
                 href={featuredLink.href}
                 className={[
-                  'hidden md:inline-flex items-center gap-2 text-sm font-bold px-4 py-2 transition-colors duration-150 border',
+                  'hidden md:inline-flex items-center gap-2 whitespace-nowrap text-sm font-bold px-4 py-2 transition-colors duration-150 border',
                   pathname.startsWith(featuredLink.href)
                     ? 'bg-[#cc0000] text-white border-[#cc0000]'
                     : 'text-[#cc0000] border-[#cc0000] hover:bg-[#cc0000] hover:text-white',
                 ].join(' ')}
               >
-                {featuredLink.label}
+                {/* Tussen md en lg is er te weinig ruimte voor het volledige label */}
+                <span className="lg:hidden">{featuredLink.shortLabel}</span>
+                <span className="hidden lg:inline">{featuredLink.label}</span>
               </Link>
             )}
             <Link

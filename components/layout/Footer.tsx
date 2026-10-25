@@ -10,7 +10,7 @@ const footerLinks = {
     { href: '/sponsoren', label: 'Sponsoren' },
     { href: '/agenda', label: 'Agenda' },
     { href: '/nieuws', label: 'Nieuws' },
-    ...(showBeursPage ? [{ href: '/beurs-2026', label: 'Beurs 2026' }] : []),
+    ...(showBeursPage ? [{ href: '/beurs-2026', label: 'Highlights Beurs 2026' }] : []),
   ],
   info: [
     { href: '/contact', label: 'Contact' },

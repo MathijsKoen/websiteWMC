@@ -1,7 +1,7 @@
 import type { EntrySkeletonType, EntryFieldTypes } from 'contentful'
 import { unstable_cache } from 'next/cache'
 import { getContentfulClient } from './client'
-import type { NewsArticle, AgendaEvent, TrackInfo, Sponsor, BeursLayout, SiteSettings, TimelineItem, RecurrenceInterval, MemberAnnouncement, MemberDocument } from './types'
+import type { NewsArticle, AgendaEvent, TrackInfo, Sponsor, BeursLayout, BeursHighlights, ContentfulImage, SiteSettings, TimelineItem, RecurrenceInterval, MemberAnnouncement, MemberDocument } from './types'
 
 // =============================================
 // ENTRY SKELETON TYPES (Contentful SDK v11)
@@ -74,6 +74,31 @@ interface BeursLayoutSkeleton extends EntrySkeletonType {
     coverImage?: EntryFieldTypes.AssetLink
     images?: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>
     website?: EntryFieldTypes.Symbol
+  }
+}
+
+interface BeursLinkSkeleton extends EntrySkeletonType {
+  contentTypeId: 'beursLink'
+  fields: {
+    label: EntryFieldTypes.Symbol
+    url: EntryFieldTypes.Symbol
+    omschrijving?: EntryFieldTypes.Symbol
+    afbeelding?: EntryFieldTypes.AssetLink
+  }
+}
+
+interface BeursHighlightsSkeleton extends EntrySkeletonType {
+  contentTypeId: 'beursHighlights'
+  fields: {
+    titel: EntryFieldTypes.Symbol
+    intro?: EntryFieldTypes.Text
+    verhaal?: EntryFieldTypes.RichText
+    fotos?: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>
+    linksKop?: EntryFieldTypes.Symbol
+    links?: EntryFieldTypes.Array<EntryFieldTypes.EntryLink<BeursLinkSkeleton>>
+    toonBanen?: EntryFieldTypes.Boolean
+    toonSponsoren?: EntryFieldTypes.Boolean
+    seoOmschrijving?: EntryFieldTypes.Symbol
   }
 }
 
@@ -559,6 +584,69 @@ export const getAllBeursLayouts = unstable_cache(
   },
   ['contentful-beurs-layouts'],
   { revalidate: TTL_STATIC, tags: ['beurs', 'contentful'] }
+)
+
+// =============================================
+// BEURS 2026 — HIGHLIGHTS
+// =============================================
+
+// Fallback zolang er nog geen "Highlights Beurs"-item in Contentful staat
+const BEURS_HIGHLIGHTS_FALLBACK: BeursHighlights = {
+  id: 'fallback',
+  titel: 'Highlights Beurs 2026',
+  fotos: [],
+  links: [],
+  toonBanen: false,
+  toonSponsoren: false,
+}
+
+export const getBeursHighlights = unstable_cache(
+  async (): Promise<BeursHighlights> => {
+    try {
+      const entries = await getContentfulClient().getEntries<BeursHighlightsSkeleton>({
+        content_type: 'beursHighlights',
+        limit: 1,
+        include: 2,
+      })
+
+      if (!entries.items.length) return BEURS_HIGHLIGHTS_FALLBACK
+
+      const item = entries.items[0]
+      // Verwijderde of ongepubliceerde assets/links komen terug als losse
+      // verwijzing zonder `fields` — die slaan we over.
+      const fotos = ((item.fields.fotos ?? []) as unknown as Partial<ContentfulImage>[])
+        .filter((foto): foto is ContentfulImage => Boolean(foto?.fields?.file?.url))
+        .filter((foto) => foto.fields.file.contentType.startsWith('image/'))
+      const links = ((item.fields.links ?? []) as unknown as Array<{ sys: { id: string }; fields?: Record<string, unknown> }>)
+        .filter((link) => typeof link.fields?.label === 'string' && typeof link.fields?.url === 'string')
+        .map((link) => ({
+          id: link.sys.id,
+          label: link.fields!.label as string,
+          url: link.fields!.url as string,
+          omschrijving: link.fields!.omschrijving as string | undefined,
+          afbeelding: (link.fields!.afbeelding as Partial<ContentfulImage> | undefined)?.fields?.file?.url
+            ? (link.fields!.afbeelding as ContentfulImage)
+            : undefined,
+        }))
+
+      return {
+        id: item.sys.id,
+        titel: (item.fields.titel as string) ?? BEURS_HIGHLIGHTS_FALLBACK.titel,
+        intro: item.fields.intro as string | undefined,
+        verhaal: item.fields.verhaal as BeursHighlights['verhaal'],
+        fotos,
+        linksKop: item.fields.linksKop as string | undefined,
+        links,
+        toonBanen: (item.fields.toonBanen as boolean) ?? false,
+        toonSponsoren: (item.fields.toonSponsoren as boolean) ?? false,
+        seoOmschrijving: item.fields.seoOmschrijving as string | undefined,
+      }
+    } catch {
+      return BEURS_HIGHLIGHTS_FALLBACK
+    }
+  },
+  ['contentful-beurs-highlights'],
+  { revalidate: TTL_CONTENT, tags: ['beurs', 'contentful'] }
 )
 
 // =============================================

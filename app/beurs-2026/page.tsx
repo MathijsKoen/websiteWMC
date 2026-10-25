@@ -1,166 +1,191 @@
 ﻿import type { Metadata } from 'next'
-import Link from 'next/link'
-import { Clock, Calendar, MapPin, Train, ArrowRight, Users, ExternalLink } from 'lucide-react'
-import { getAllBeursLayouts } from '@/lib/contentful/queries'
+import Image from 'next/image'
+import { notFound } from 'next/navigation'
+import type { Document } from '@contentful/rich-text-types'
+import { ArrowRight, Camera, Images } from 'lucide-react'
+import { getAllBeursLayouts, getBeursHighlights, getSponsors } from '@/lib/contentful/queries'
+import type { ContentfulRichText } from '@/lib/contentful/types'
 import { Button } from '@/components/ui/Button'
+import { LinkCard } from '@/components/ui/LinkCard'
+import { PageHero } from '@/components/ui/PageHero'
+import { PhotoGallery } from '@/components/ui/PhotoGallery'
+import { RichText } from '@/components/ui/RichText'
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/ui/ScrollReveal'
 import { TiltCard } from '@/components/ui/TiltCard'
-import { FolderSection } from '@/components/ui/FolderViewer'
 import { LayoutCard } from '@/components/ui/LayoutCard'
 import { Eyebrow } from '@/components/ui/Eyebrow'
+import { getLinkPreview } from '@/lib/linkPreview'
 import { showBeursPage } from '@/lib/site-config'
-import { notFound } from 'next/navigation'
-
-export const metadata: Metadata = {
-  title: 'WMC Beurs 2026 — Modelspoor Tentoonstelling',
-  description:
-    'Kom naar de WMC Modelspoor Beurs 2026 in Heerhugowaard. Bewonder spectaculaire banen van clubs uit heel Nederland. Gratis toegang voor kinderen.',
-}
 
 export const revalidate = 300
 
-// ─── Pas hier de beurs-details aan zodra ze bekend zijn ────────────────────
-const BEURS = {
-  date: '17 & 18 oktober 2026',        // bijv. '14 & 15 maart 2026'
-  time: 'Zaterdag: 10:00 – 16:00, zondag: 10:00 – 15:00',      // bijv. '10:00 – 17:00 uur'
-  location: 'Heerhugowaard',
-  venue: 'De Waardergolf\nBeukenlaan 1B\n1723 HX Heerhugowaard',
-  admission: '€ 6,— | kinderen t/m 12 jaar gratis onder begeleiding',
-  mapsUrl: 'https://maps.google.com/?q=Beukenlaan+1B+1723+HX+Heerhugowaard',
-}
-// ───────────────────────────────────────────────────────────────────────────
+const DEFAULT_DESCRIPTION =
+  'Terugblik op de WMC Modelspoor Beurs 2026 in Heerhugowaard: foto’s van de banen, de demonstraties en de bezoekers.'
 
-export default async function Beurs2026Page() {
+/** Een rich-text-veld dat alleen uit lege alinea's bestaat, telt als leeg. */
+function hasContent(doc?: ContentfulRichText): doc is ContentfulRichText {
+  const hasText = (node: unknown): boolean => {
+    const n = node as { nodeType?: string; value?: string; content?: unknown[] }
+    if (n.nodeType === 'text') return Boolean(n.value?.trim())
+    if (n.nodeType && n.nodeType !== 'paragraph' && n.nodeType !== 'document') return true
+    return (n.content ?? []).some(hasText)
+  }
+  return Boolean(doc && hasText(doc))
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const highlights = await getBeursHighlights()
+  const description = highlights.seoOmschrijving || highlights.intro?.slice(0, 160) || DEFAULT_DESCRIPTION
+  const cover = highlights.fotos[0]
+
+  return {
+    title: highlights.titel,
+    description,
+    alternates: {
+      canonical: 'https://dewmc.nl/beurs-2026',
+    },
+    // openGraph uit de root layout wordt hier volledig vervangen, niet samengevoegd
+    openGraph: {
+      type: 'website',
+      locale: 'nl_NL',
+      siteName: 'De WMC',
+      title: `${highlights.titel} | De WMC`,
+      description,
+      url: 'https://dewmc.nl/beurs-2026',
+      images: [
+        cover
+          ? {
+              url: `https:${cover.fields.file.url}?w=1200&h=630&fit=fill&fm=jpg&q=80`,
+              width: 1200,
+              height: 630,
+              alt: cover.fields.description || cover.fields.title || highlights.titel,
+            }
+          : { url: '/og-image.jpg', width: 1200, height: 630, alt: 'De WMC — Westfriese Modelspoor Club' },
+      ],
+    },
+  }
+}
+
+export default async function BeursHighlightsPage() {
   if (!showBeursPage) notFound()
 
-  const layouts = await getAllBeursLayouts()
+  const highlights = await getBeursHighlights()
+  const [layouts, sponsors] = await Promise.all([
+    highlights.toonBanen ? getAllBeursLayouts() : [],
+    highlights.toonSponsoren ? getSponsors() : [],
+  ])
+  const sponsorsWithLogo = sponsors.filter((sponsor) => sponsor.logo?.fields?.file?.url)
+  const links = await Promise.all(
+    highlights.links.map(async (link) => ({ link, preview: await getLinkPreview(link.url) }))
+  )
+
+  const hasStory = hasContent(highlights.verhaal)
+  const hasPhotos = highlights.fotos.length > 0
+  const hasLinks = links.length > 0
 
   return (
     <>
-      {/* ===== HERO ===== */}
-      <section className="relative bg-[#1a1c1c] text-white overflow-hidden min-h-[70vh] flex items-center">
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 0,transparent 50%),repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 0,transparent 50%)',
-            backgroundSize: '40px 40px',
-          }}
-        />
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-[#cc0000]/10 skew-x-[-15deg] translate-x-1/3" />
-        <div className="absolute bottom-0 left-1/4 w-1 h-3/4 bg-[#cc0000]" />
-        <div className="absolute top-0 right-1/4 w-0.5 h-1/2 bg-[#cc0000]/40" />
+      <PageHero
+        eyebrow="Terugblik · 17 & 18 oktober 2026"
+        title={highlights.titel}
+        lead={highlights.intro}
+      >
+        {hasPhotos && (
+          <Button href="#fotos" size="lg" skewed>
+            <span>Bekijk de foto&apos;s</span>
+            <ArrowRight size={18} />
+          </Button>
+        )}
+      </PageHero>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 py-24">
-          <div className="max-w-3xl">
-            <ScrollReveal duration={0.7}>
-              <Eyebrow className="mb-6">Westfriese Modelspoor Club</Eyebrow>
-              <h1 className="font-black text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-none mb-4">
-                WMC
-                <br />
-                <span className="text-[#cc0000]">Beurs</span>
-                <br />
-                2026
-              </h1>
-            </ScrollReveal>
-
-            <ScrollReveal delay={0.15}>
-              <p className="text-lg md:text-xl text-white/70 leading-relaxed max-w-xl mb-10">
-                Beleef hoe modelspoorbouwers uit Nederland, België, Duitsland en Frankrijk hun meesterwerken tot leven wekken. Doe mee aan de Booknook-wedstrijd, laat je inspireren door diverse modelbouw-demonstraties of steek zelf de handen uit de mouwen. Ook voor de jonge bezoekers is er volop plezier met knutselactiviteiten, zelf treinen besturen en een springkussen!
-              </p>
-            </ScrollReveal>
-
-            <ScrollReveal delay={0.25}>
-              <div className="flex flex-wrap gap-6 mb-10">
-                {[
-                  { icon: Calendar, label: 'Datum', value: BEURS.date },
-                  { icon: Clock, label: 'Tijden', value: BEURS.time },
-                  { icon: MapPin, label: 'Locatie', value: BEURS.location },
-                ].map(({ icon: Icon, label, value }) => (
-                  <div key={label} className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#cc0000] flex items-center justify-center shrink-0">
-                      <Icon size={18} className="text-white" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-0.5">{label}</p>
-                      <p className="text-sm font-bold text-white">{value}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </ScrollReveal>
-
-            <ScrollReveal delay={0.35}>
-              <div className="flex flex-wrap gap-4">
-                <Button href="#banen" size="lg" skewed>
-                  <span>Bekijk de banen</span>
-                  <ArrowRight size={18} />
-                </Button>
-                <Button href="#route" variant="ghost" size="lg">
-                  Route &amp; info
-                </Button>
-              </div>
-            </ScrollReveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== INFO STRIP ===== */}
-      <section className="bg-[#cc0000]">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 py-6">
-          <div className="flex flex-wrap gap-8 md:gap-12 items-center justify-between">
-            <div className="flex flex-wrap gap-8 md:gap-12">
-              {[
-                { label: 'Datum', value: BEURS.date },
-                { label: 'Openingstijden', value: BEURS.time },
-                { label: 'Locatie', value: BEURS.location },
-                { label: 'Toegang', value: BEURS.admission },
-              ].map(({ label, value }) => (
-                <div key={label}>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-0.5">{label}</p>
-                  <p className="font-headline text-sm font-black text-white">{value}</p>
-                </div>
-              ))}
+      {/* ===== TERUGBLIK ===== */}
+      {hasStory && (
+        <section className="bg-white py-16 md:py-20 border-b border-[#e2e2e2]">
+          <div className="max-w-3xl mx-auto px-6 md:px-8">
+            <Eyebrow className="mb-6">Terugblik</Eyebrow>
+            <div className="text-base md:text-lg">
+              <RichText document={highlights.verhaal as unknown as Document} />
             </div>
-            {layouts.length > 0 && (
-              <div className="flex items-center gap-2">
-                <Users size={16} className="text-white/70" />
-                <span className="text-sm font-bold text-white">
-                  {layouts.length} uitgenodigde {layouts.length === 1 ? 'baan' : 'banen'}
-                </span>
-              </div>
+          </div>
+        </section>
+      )}
+
+      {/* ===== FOTOGALERIJ ===== */}
+      <section id="fotos" className="bg-[#f3f3f3] py-20 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-6 md:px-8">
+          <div className="flex items-center gap-3 mb-8">
+            <Images size={18} className="text-[#cc0000]" />
+            <h2 className="font-black text-2xl md:text-3xl tracking-tight text-[#1a1c1c]">
+              Fotogalerij
+            </h2>
+            {hasPhotos && (
+              <span className="text-sm text-[#926e69] font-bold ml-1">
+                {highlights.fotos.length} foto&apos;s
+              </span>
             )}
           </div>
+
+          {hasPhotos ? (
+            <PhotoGallery photos={highlights.fotos} fallbackAlt="WMC Beurs 2026" />
+          ) : (
+            <div className="bg-white border border-[#e2e2e2] p-16 text-center">
+              <Camera size={40} className="mx-auto text-[#e2e2e2] mb-4" />
+              <p className="font-headline font-black text-xl text-[#1a1c1c] mb-2">
+                Foto&apos;s volgen binnenkort
+              </p>
+              <p className="text-sm text-[#926e69] max-w-sm mx-auto">
+                We zijn de mooiste foto&apos;s van de beurs aan het uitzoeken. Kom snel nog eens kijken.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* ===== UITGENODIGDE BANEN ===== */}
-      <section id="banen" className="bg-[#f3f3f3] py-20">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <ScrollReveal className="mb-12">
-            <Eyebrow className="mb-4">Uitgenodigde clubs</Eyebrow>
-            <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c] mb-4">
-              Uitgenodigde Banen
-            </h2>
-            <p className="text-[#4d4c4c] text-lg max-w-2xl leading-relaxed">
-              Hieronder vind je een voorproefje van wat je kunt verwachten.
-            </p>
-          </ScrollReveal>
-
-          {layouts.length === 0 ? (
-            <ScrollReveal>
-              <div className="bg-white border border-[#e2e2e2] p-16 text-center">
-                <Train size={40} className="mx-auto text-[#e2e2e2] mb-4" />
-                <p className="font-headline font-black text-xl text-[#1a1c1c] mb-2">
-                  Banen worden binnenkort bekendgemaakt
-                </p>
-                <p className="text-sm text-[#926e69] max-w-sm mx-auto">
-                  De uitgenodigde clubs worden binnenkort aangekondigd. Houd deze pagina
-                  en onze agenda in de gaten.
-                </p>
-              </div>
+      {/* ===== LINKS ===== */}
+      {hasLinks && (
+        <section className="bg-white py-20 border-t border-[#e2e2e2]">
+          <div className="max-w-7xl mx-auto px-6 md:px-8">
+            <ScrollReveal className="mb-10">
+              <Eyebrow className="mb-4">Links</Eyebrow>
+              <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]">
+                {highlights.linksKop || 'Meer zien'}
+              </h2>
             </ScrollReveal>
-          ) : (
+
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {links.map(({ link, preview }) => (
+                <li key={link.id}>
+                  <LinkCard
+                    url={link.url}
+                    label={link.label}
+                    description={link.omschrijving || preview.description}
+                    siteName={preview.siteName}
+                    image={
+                      link.afbeelding
+                        ? { src: `https:${link.afbeelding.fields.file.url}?w=800&h=420&fit=fill&f=center&fm=webp&q=80`, external: false }
+                        : preview.image
+                          ? { src: preview.image, external: true }
+                          : undefined
+                    }
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {/* ===== DEZE BANEN WAREN TE ZIEN ===== */}
+      {layouts.length > 0 && (
+        <section className="bg-[#f3f3f3] py-20 border-t border-[#e2e2e2]">
+          <div className="max-w-7xl mx-auto px-6 md:px-8">
+            <ScrollReveal className="mb-12">
+              <Eyebrow className="mb-4">Gastclubs</Eyebrow>
+              <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]">
+                Deze banen waren te zien
+              </h2>
+            </ScrollReveal>
+
             <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {layouts.map((layout) => (
                 <StaggerItem key={layout.id}>
@@ -170,130 +195,55 @@ export default async function Beurs2026Page() {
                 </StaggerItem>
               ))}
             </StaggerContainer>
-          )}
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
-      {/* ===== OVER DE BEURS ===== */}
-      <section className="bg-white py-20 border-t border-[#e2e2e2]">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-            <ScrollReveal>
-              <Eyebrow className="mb-4">Over de beurs</Eyebrow>
-              <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c] mb-6">
-                Een dag vol<br />modeltreinen
-              </h2>
-              <div className="flex flex-col gap-4 text-[#4d4c4c] text-base leading-relaxed">
-                <p>
-                  De Westfriese Modelspoor Club organiseert een groot modelspoor- en modelbouwevenement,
-                  waarbij exposanten uit Nederland, België, Duitsland en Frankrijk hun banen presenteren.
-                </p>
-                <p>
-                  Of je nu een fervent modelspoor- of modelbouwfan bent, of gewoon benieuwd bent naar
-                  deze bijzondere hobby - de beurs is toegankelijk voor iedereen. Kom kijken, stel vragen
-                  en laat je inspireren.
-                </p>
-                <p>
-                  Naast de tentoonstelling is er ook de mogelijkheid om in contact te
-                  komen met onze leden over het lidmaatschap van de WMC.
-                </p>
+      {/* ===== SPONSOREN ===== */}
+      {sponsorsWithLogo.length > 0 && (
+        <section className="bg-white py-20 border-t border-[#e2e2e2]">
+          <div className="max-w-7xl mx-auto px-6 md:px-8">
+            <ScrollReveal className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+              <div>
+                <Eyebrow className="mb-4">Sponsoren</Eyebrow>
+                <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]">
+                  Met dank aan onze sponsoren
+                </h2>
               </div>
-              <div className="mt-8">
-                <Button href="/contact" skewed>
-                  <span>Vragen? Neem contact op</span>
-                  <ArrowRight size={16} />
-                </Button>
-              </div>
+              <Button href="/sponsoren" variant="outline" size="sm">
+                Alle sponsoren
+                <ArrowRight size={14} />
+              </Button>
             </ScrollReveal>
 
-            <StaggerContainer className="flex flex-col gap-4">
-              {[
-                { icon: Calendar, label: 'Datum', value: BEURS.date, sub: 'Noteer het alvast in je agenda' },
-                { icon: Clock, label: 'Openingstijden', value: BEURS.time, sub: 'Zorg dat je op tijd bent' },
-                { icon: MapPin, label: 'Locatie', value: BEURS.location, sub: BEURS.venue.replace('\n', ', ') },
-              ].map(({ icon: Icon, label, value, sub }) => (
-                <StaggerItem key={label} direction="left">
-                  <div className="flex items-start gap-5 p-6 border border-[#e2e2e2] bg-[#f9f9f9]">
-                    <div className="w-12 h-12 bg-[#cc0000] flex items-center justify-center shrink-0">
-                      <Icon size={20} className="text-white" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-[#926e69] mb-1">{label}</p>
-                      <p className="font-headline font-black text-lg text-[#1a1c1c] leading-tight">
-                        {value}
-                      </p>
-                      <p className="text-xs text-[#926e69] mt-0.5">{sub}</p>
-                    </div>
-                  </div>
-                </StaggerItem>
+            <ul className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-px bg-[#e2e2e2] border border-[#e2e2e2]">
+              {sponsorsWithLogo.map((sponsor) => (
+                <li key={sponsor.id} className="relative h-28 bg-white">
+                  <Image
+                    src={`https:${sponsor.logo.fields.file.url}?w=400&fit=fill&f=center&fm=webp`}
+                    alt={sponsor.name}
+                    fill
+                    loading="lazy"
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 16vw"
+                    className="object-contain p-5"
+                  />
+                </li>
               ))}
-            </StaggerContainer>
+            </ul>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* ===== FOLDER ===== */}
-      <FolderSection />
-
-      {/* ===== ROUTE ===== */}
-      <section id="route" className="bg-[#1a1c1c] py-20 relative overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: 'repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%)',
-            backgroundSize: '20px 20px',
-          }}
-        />
-        <div className="relative max-w-7xl mx-auto px-6 md:px-8">
-          <ScrollReveal>
-            <Eyebrow className="mb-4">Bereikbaarheid</Eyebrow>
-            <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-white mb-8">
-              Hoe kom je er?
-            </h2>
-          </ScrollReveal>
-
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <StaggerItem>
-              <div className="bg-white/5 border border-white/10 p-8">
-                <h3 className="font-black text-xl text-white mb-3">
-                  Adres
-                </h3>
-                <p className="text-white/70 text-sm leading-relaxed whitespace-pre-line mb-6">
-                  {BEURS.venue}
-                </p>
-                <a
-                  href={BEURS.mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#cc0000] text-white text-sm font-bold px-5 py-2.5 hover:bg-[#9e0000] transition-colors"
-                >
-                  <MapPin size={14} />
-                  Open in Google Maps
-                  <ExternalLink size={12} />
-                </a>
-              </div>
-            </StaggerItem>
-
-            <StaggerItem>
-              <div className="bg-white/5 border border-white/10 p-8">
-                <h3 className="font-black text-xl text-white mb-3">
-                  Per OV
-                </h3>
-                <p className="text-white/70 text-sm leading-relaxed mb-4">
-                  Vanaf station Alkmaar met buslijn 160. Deze bus stopt voor de sporthal/zwembad.
-                </p>
-                <h3 className="font-black text-xl text-white mb-3">
-                  Vragen?
-                </h3>
-                <p className="text-white/70 text-sm leading-relaxed">
-                  Stuur ons een e-mail via{' '}
-                  <a href="mailto:info@dewmc.nl" className="text-[#cc0000] hover:text-white transition-colors font-bold">
-                    info@dewmc.nl
-                  </a>
-                </p>
-              </div>
-            </StaggerItem>
-          </StaggerContainer>
+      {/* ===== CTA ===== */}
+      <section className="bg-[#1a1c1c] py-16">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
+          <p className="font-headline font-black text-2xl text-white tracking-tight">
+            Zelf ook meebouwen aan de volgende beurs?
+          </p>
+          <Button href="/contact" skewed>
+            <span>Word lid van de WMC</span>
+            <ArrowRight size={16} />
+          </Button>
         </div>
       </section>
     </>

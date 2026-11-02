@@ -178,6 +178,9 @@ export interface BeursHighlights {
   intro?: string
   verhaal?: ContentfulRichText
   fotos: ContentfulImage[]
+  booknookKop?: string
+  booknookTekst?: ContentfulRichText
+  booknookFotos: ContentfulImage[]
   linksKop?: string
   links: BeursLink[]
   toonBanen: boolean

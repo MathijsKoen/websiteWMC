@@ -30,7 +30,7 @@ De pagina `/beurs-2026` (Highlights Beurs 2026) gebruikt de content types `beurs
 npx contentful-cli space migration --space-id <SPACE_ID> --management-token <TOKEN> scripts/migrations/beurs-highlights.js
 ```
 
-Daarna `scripts/migrations/beurs-highlights-2.js` (terugblik, cijfers, sponsoren, foto-widget) op dezelfde manier.
+Daarna `scripts/migrations/beurs-highlights-2.js` (terugblik, cijfers, sponsoren, foto-widget), `beurs-highlights-3.js` (voorbeeldafbeelding bij links) en `beurs-highlights-4.js` (winnaar booknook-wedstrijd) op dezelfde manier.
 
 Wijzigingen in Contentful staan binnen ongeveer 5 minuten live (cache van `getBeursHighlights`).
 

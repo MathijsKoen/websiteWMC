@@ -11,6 +11,23 @@ interface PhotoGalleryProps {
   photos: ContentfulImage[]
   /** Gebruikt als alt-tekst wanneer een foto geen titel of beschrijving heeft. */
   fallbackAlt: string
+  /** `compact` is voor een kolom naast tekst: twee grote, staande foto's naast elkaar. */
+  layout?: 'grid' | 'compact'
+}
+
+const LAYOUTS = {
+  grid: {
+    list: 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4',
+    item: '',
+    thumb: 'aspect-[4/3]',
+    sizes: '(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw',
+  },
+  compact: {
+    list: 'grid-cols-2 gap-2 md:gap-4',
+    item: 'only:col-span-2',
+    thumb: 'aspect-[4/5]',
+    sizes: '(max-width: 1024px) 50vw, 25vw',
+  },
 }
 
 /** Beschrijving van de foto in Contentful gaat voor; anders de titel. */
@@ -22,7 +39,8 @@ function altText(photo: ContentfulImage, index: number, fallbackAlt: string) {
   )
 }
 
-export function PhotoGallery({ photos, fallbackAlt }: PhotoGalleryProps) {
+export function PhotoGallery({ photos, fallbackAlt, layout = 'grid' }: PhotoGalleryProps) {
+  const styles = LAYOUTS[layout]
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const thumbRefs = useRef<(HTMLButtonElement | null)[]>([])
   const dialogRef = useRef<HTMLDivElement>(null)
@@ -84,14 +102,14 @@ export function PhotoGallery({ photos, fallbackAlt }: PhotoGalleryProps) {
 
   return (
     <>
-      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
+      <ul className={`grid ${styles.list}`}>
         {photos.map((photo, i) => (
-          <li key={`${photo.fields.file.url}-${i}`}>
+          <li key={`${photo.fields.file.url}-${i}`} className={styles.item}>
             <button
               type="button"
               ref={(el) => { thumbRefs.current[i] = el }}
               onClick={() => open(i)}
-              className="group relative block w-full aspect-[4/3] overflow-hidden bg-[#e2e2e2] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#cc0000]"
+              className={`group relative block w-full ${styles.thumb} overflow-hidden bg-[#e2e2e2] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#cc0000]`}
               aria-label={`Vergroot foto ${i + 1} van ${count}: ${altText(photo, i, fallbackAlt)}`}
             >
               <Image
@@ -99,7 +117,7 @@ export function PhotoGallery({ photos, fallbackAlt }: PhotoGalleryProps) {
                 alt={altText(photo, i, fallbackAlt)}
                 fill
                 loading="lazy"
-                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                sizes={layout === 'compact' && count === 1 ? '(max-width: 1024px) 100vw, 50vw' : styles.sizes}
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
               />
               {/* Rood accent bij hover */}

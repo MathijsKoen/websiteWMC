@@ -82,6 +82,8 @@ export default async function BeursHighlightsPage() {
   const hasStory = hasContent(highlights.verhaal)
   const hasPhotos = highlights.fotos.length > 0
   const hasLinks = links.length > 0
+  const hasBooknookText = hasContent(highlights.booknookTekst)
+  const hasBooknookPhotos = highlights.booknookFotos.length > 0
 
   return (
     <>
@@ -140,6 +142,35 @@ export default async function BeursHighlightsPage() {
           )}
         </div>
       </section>
+
+      {/* ===== WINNAAR BOOKNOOK-WEDSTRIJD ===== */}
+      {(hasBooknookText || hasBooknookPhotos) && (
+        <section id="booknook" className="bg-white py-20 border-t border-[#e2e2e2] scroll-mt-20">
+          <div className="max-w-7xl mx-auto px-6 md:px-8">
+            <ScrollReveal className="mb-10">
+              <Eyebrow className="mb-4">Booknook-wedstrijd</Eyebrow>
+              <h2 className="font-black text-4xl md:text-5xl tracking-tighter text-[#1a1c1c]">
+                {highlights.booknookKop || 'De winnaar'}
+              </h2>
+            </ScrollReveal>
+
+            <div className={hasBooknookText && hasBooknookPhotos ? 'grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start' : undefined}>
+              {hasBooknookText && (
+                <div className="max-w-3xl text-base md:text-lg">
+                  <RichText document={highlights.booknookTekst as unknown as Document} />
+                </div>
+              )}
+              {hasBooknookPhotos && (
+                <PhotoGallery
+                  photos={highlights.booknookFotos}
+                  fallbackAlt="Winnaar booknook-wedstrijd"
+                  layout={hasBooknookText ? 'compact' : 'grid'}
+                />
+              )}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ===== LINKS ===== */}
       {hasLinks && (

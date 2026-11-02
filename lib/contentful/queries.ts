@@ -94,6 +94,9 @@ interface BeursHighlightsSkeleton extends EntrySkeletonType {
     intro?: EntryFieldTypes.Text
     verhaal?: EntryFieldTypes.RichText
     fotos?: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>
+    booknookKop?: EntryFieldTypes.Symbol
+    booknookTekst?: EntryFieldTypes.RichText
+    booknookFotos?: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>
     linksKop?: EntryFieldTypes.Symbol
     links?: EntryFieldTypes.Array<EntryFieldTypes.EntryLink<BeursLinkSkeleton>>
     toonBanen?: EntryFieldTypes.Boolean
@@ -595,9 +598,20 @@ const BEURS_HIGHLIGHTS_FALLBACK: BeursHighlights = {
   id: 'fallback',
   titel: 'Highlights Beurs 2026',
   fotos: [],
+  booknookFotos: [],
   links: [],
   toonBanen: false,
   toonSponsoren: false,
+}
+
+/**
+ * Verwijderde of ongepubliceerde assets komen terug als losse verwijzing
+ * zonder `fields` — die slaan we over, net als alles wat geen afbeelding is.
+ */
+function toImages(assets: unknown): ContentfulImage[] {
+  return ((assets ?? []) as Partial<ContentfulImage>[])
+    .filter((foto): foto is ContentfulImage => Boolean(foto?.fields?.file?.url))
+    .filter((foto) => foto.fields.file.contentType.startsWith('image/'))
 }
 
 export const getBeursHighlights = unstable_cache(
@@ -612,12 +626,8 @@ export const getBeursHighlights = unstable_cache(
       if (!entries.items.length) return BEURS_HIGHLIGHTS_FALLBACK
 
       const item = entries.items[0]
-      // Verwijderde of ongepubliceerde assets/links komen terug als losse
-      // verwijzing zonder `fields` — die slaan we over.
-      const fotos = ((item.fields.fotos ?? []) as unknown as Partial<ContentfulImage>[])
-        .filter((foto): foto is ContentfulImage => Boolean(foto?.fields?.file?.url))
-        .filter((foto) => foto.fields.file.contentType.startsWith('image/'))
-      const links = ((item.fields.links ?? []) as unknown as Array<{ sys: { id: string }; fields?: Record<string, unknown> }>)
+      // Ook verwijderde of ongepubliceerde links hebben geen `fields`.
+      const links =((item.fields.links ?? []) as unknown as Array<{ sys: { id: string }; fields?: Record<string, unknown> }>)
         .filter((link) => typeof link.fields?.label === 'string' && typeof link.fields?.url === 'string')
         .map((link) => ({
           id: link.sys.id,
@@ -634,7 +644,10 @@ export const getBeursHighlights = unstable_cache(
         titel: (item.fields.titel as string) ?? BEURS_HIGHLIGHTS_FALLBACK.titel,
         intro: item.fields.intro as string | undefined,
         verhaal: item.fields.verhaal as BeursHighlights['verhaal'],
-        fotos,
+        fotos: toImages(item.fields.fotos),
+        booknookKop: item.fields.booknookKop as string | undefined,
+        booknookTekst: item.fields.booknookTekst as BeursHighlights['booknookTekst'],
+        booknookFotos: toImages(item.fields.booknookFotos),
         linksKop: item.fields.linksKop as string | undefined,
         links,
         toonBanen: (item.fields.toonBanen as boolean) ?? false,

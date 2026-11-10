@@ -17,7 +17,6 @@ import { Eyebrow } from '@/components/ui/Eyebrow'
 import { getLinkPreview } from '@/lib/linkPreview'
 import { showBeursPage } from '@/lib/site-config'
 
-export const revalidate = 300
 
 const DEFAULT_DESCRIPTION =
   'Terugblik op de WMC Modelspoor Beurs 2026 in Heerhugowaard: foto’s van de banen, de demonstraties en de bezoekers.'

@@ -172,9 +172,9 @@ interface MemberDocumentSkeleton extends EntrySkeletonType {
 //    revalidateTag('tracks') in een webhook-route
 // =============================================
 
-const TTL_CONTENT = 300    // 5 min — nieuws, agenda, banen
-const TTL_SPONSORS = 60    // 1 min — sponsoren snel zichtbaar na publish
-const TTL_STATIC  = 3600   // 1 uur — instellingen en beurs-layouts
+const TTL_CONTENT = false    // 5 min — nieuws, agenda, banen
+const TTL_SPONSORS = false    // 1 min — sponsoren snel zichtbaar na publish
+const TTL_STATIC  = false   // 1 uur — instellingen en beurs-layouts
 
 // =============================================
 // NIEUWS

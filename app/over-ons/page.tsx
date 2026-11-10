@@ -6,7 +6,6 @@ import { PageHero } from '@/components/ui/PageHero'
 import { TimelineReveal } from '@/components/ui/TimelineReveal'
 import { getSiteSettings } from '@/lib/contentful/queries'
 
-export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Over ons',

@@ -10,7 +10,6 @@ import { renderInlineMarkdownLinks } from '@/lib/inlineMarkdown'
 import type { AgendaEvent } from '@/lib/contentful/types'
 import { sbObject, sbField } from '@/lib/stackbit'
 
-export const revalidate = 300
 
 type EventCategory = AgendaEvent['category']
 

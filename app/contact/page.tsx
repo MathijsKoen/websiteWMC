@@ -3,7 +3,6 @@ import { Mail, MapPin, Clock, ExternalLink } from 'lucide-react'
 import { PageHero } from '@/components/ui/PageHero'
 import { getSiteSettings } from '@/lib/contentful/queries'
 
-export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Contact',

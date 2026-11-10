@@ -34,3 +34,11 @@ stitchWMC/
 
 # oude site backup (niet nodig in git)
 HuidigeSiteWMC/
+
+# OpenNext
+.open-next
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
